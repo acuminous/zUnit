@@ -122,6 +122,41 @@ You can define pending tests / skip tests in the following ways...
     });
     ```
 
+## Exclusive Tests
+You can selectively run tests or suites as follows...
+
+1. Create a dedicated suite
+    ```js
+    const { describe } = require('zunit');
+    const homePageTests = require('./frontend/profile-page.test');
+    const settingsPageTests = require('./frontend/settings-page.test');
+    const searchPageTests = require('./frontend/search-page.test');
+
+    describe('Frontend Tests', ({ it }) => {
+      include(homePageTests, settingsPageTests, searchPageTests);
+    });
+    ```
+
+1. Passing an option to `it`
+    ```js
+    const { describe } = require('zunit');
+
+    describe('My Suite', ({ it }) => {
+      it('should do something wonderful', async () => {
+      }, { exclusive: true });
+    });
+    ```
+
+1. Passing an option to `describe` (affects all tests in the enclosing and included suites)
+    ```js
+    const { describe } = require('zunit');
+
+    describe('My Suite', ({ it }) => {
+      it('should do something wonderful', async () => {
+      });
+    }, { exclusive: true });
+    ```
+
 ## Timeouts
 Tests default to timing out after 5 seconds. You can override this as follows...
 
@@ -142,7 +177,7 @@ Tests default to timing out after 5 seconds. You can override this as follows...
     });
     ```
 
-1. Passing a timeout option to `describe` (affects all tests)
+1. Passing a timeout option to `describe` (affects all tests in the suite)
     ```js
     const { describe } = require('zunit');
 
