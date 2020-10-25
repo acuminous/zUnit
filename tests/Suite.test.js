@@ -104,16 +104,26 @@ describe('Suites', ({ it, xit }) => {
 
     assert.equal(parent.passed, false);
     assert.equal(parent.name, 'Parent');
+    assert.equal(parent.stats.passed, 2);
+    assert.equal(parent.stats.failed, 1);
+    assert.equal(parent.stats.skipped, 0);
 
     assert.equal(child1.name, 'Child 1');
     assert.equal(child1.passed, false);
+    assert.equal(child1.stats.passed, 1);
+    assert.equal(child1.stats.failed, 1);
+    assert.equal(child1.stats.skipped, 0);
+
+    assert.equal(child2.name, 'Child 2');
+    assert.equal(child2.passed, true);
+    assert.equal(child2.stats.passed, 1);
+    assert.equal(child2.stats.failed, 0);
+    assert.equal(child2.stats.skipped, 0);
+
     assert.equal(test1.name, 'Test 1');
     assert.equal(test1.passed, true);
     assert.equal(test2.name, 'Test 2');
     assert.equal(test2.failed, true);
-
-    assert.equal(child2.name, 'Child 2');
-    assert.equal(child2.passed, true);
     assert.equal(test3.name, 'Test 3');
     assert.equal(test3.passed, true);
   });
