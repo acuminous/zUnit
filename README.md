@@ -48,9 +48,9 @@ Consequently ZUnit is nowhere near as feature rich as mocha, e.g. it does not su
 
         xit('should list matching users', async () => {
         });
-  })
-});
-```
+      })
+    });
+    ```
 
 1. Run the tests
     ```bash
