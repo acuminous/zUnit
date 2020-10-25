@@ -88,5 +88,13 @@ describe('Tests', ({ it }) => {
     assert.equal(test.skipped, true);
   });
 
+  it('should bypass skipped tests (pending)', async () => {
+    const test = new Test('Test')
+
+    await test.run(reporter);
+
+    assert.equal(test.skipped, true);
+  });
+
 });
 
