@@ -172,6 +172,97 @@ Test suites continue running tests after failure by default. You can override th
     }, { abort: true });
     ```
 
+## Lifecycle Hooks (before, after, beforeEach, afterEach)
+
+* before - runs once before the first test in the enclosing and included suites
+* after - runs once after the last test in the enclosing and included suites
+* beforeEach - runs before each test in the enclosing and included suites
+* afterEach - runs after each test in the enclosing and included suites
+
+This is best demonstrated with an example
+```js
+const { describe } = require('zunit');
+
+describe('Suite', ({ before, after, beforeEach, afterEach, describe, it }) => {
+
+  before(async () => {
+    console.log('Before')
+  })
+
+  beforeEach(async () => {
+    console.log('Before Each')
+  })
+
+  after(async () => {
+    console.log('After')
+  })
+
+  afterEach(async () => {
+    console.log('After Each')
+  })
+
+  it('Test 1', async () => {
+  })
+
+  it('Test 2', async () => {
+  })
+
+  describe('Nested Suite', ({ before, after, beforeEach, afterEach, it }) => {
+
+    before(async () => {
+      console.log('Nested Before')
+    })
+
+    beforeEach(async () => {
+      console.log('Nested Before Each')
+    })
+
+    after(async () => {
+      console.log('Nested After')
+    })
+
+    afterEach(async () => {
+      console.log('Nester After Each')
+    })
+
+    it('Nested Test 1', async () => {
+    })
+
+    it('Nested Test 2', async () => {
+    })
+  });
+
+})
+```
+
+```bash
+node tests hooks-example.js
+
+  Suite
+Before
+Before Each
+    ✓ Test 1
+After Each
+Before Each
+    ✓ Test 2
+After Each
+    Nested Suite
+Nested Before
+Before Each
+Nested Before Each
+      ✓ Nested Test 1
+Nester After Each
+After Each
+Before Each
+Nested Before Each
+      ✓ Nested Test 2
+Nester After Each
+After Each
+Nested After
+After
+
+```
+
 ## Reporters
 ZUnit ships with the following reporters
 

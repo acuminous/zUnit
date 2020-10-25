@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { describe, NullReporter, Suite, Test } = require('..');
+const { describe, NullReporter, AggregateReporter, Suite, Test } = require('..');
 
 describe('Suites', ({ it, xit }) => {
 
@@ -87,6 +87,18 @@ describe('Suites', ({ it, xit }) => {
     assert.equal(suite.failed, true);
     assert.equal(test1.failed, true);
     assert.equal(test2.skipped, true);
+  });
+
+  it('should only run exclusive tests (configuration)', async () => {
+    const test1 = new Test('should not run test 1', pass);
+    const test2 = new Test('should run test 2', pass, { exclusive: true });
+    const suite = new Suite('Test Suite').add(test1, test2);
+
+    await suite.run(reporter);
+
+    assert.equal(suite.stats.passed, 1);
+    assert.equal(suite.stats.failed, 0);
+    assert.equal(suite.stats.skipped, 0);
   });
 
   it('should support nesting', async () => {

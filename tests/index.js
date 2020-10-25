@@ -1,4 +1,5 @@
 const path = require('path');
+const { EOL } = require('os');
 const { MultiReporter, SpecReporter, TapReporter } = require('..');
 
 const filename = path.resolve(__dirname, process.argv[2]);
@@ -12,4 +13,8 @@ const reporter = new MultiReporter()
 
 runnable.run(reporter).then(() => {
   if (runnable.failed) process.exit(1);
+  if (runnable.hasExclusiveDescendents) {
+    console.log(`${runnable.name} has one or more exclusive tests!${EOL}`)
+    process.exit(2);
+  }
 })
