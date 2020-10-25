@@ -1,7 +1,7 @@
 # ZUnit
-ZUnit is a zero dependency, non polluting, test harness for Node that you can run without any special scripts. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the #1 source of vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies reports an audit warning.
+ZUnit is a zero dependency, non polluting, test harness for Node that you can run without any special scripts. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the #1 culprit for vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies causes an audit warning.
 
-Consequently ZUnit is nowhere near as feature rich as mocha, e.g. it does not support parallel test, retries or file globbing, but most of the simpler features are present.
+Completely reimplementing mocha without dependencies would likely introduce even more issues. Consequently, ZUnit is nowhere near as feature rich, e.g. it does not support parallel test, retries or file globbing, but most of the simpler features are present, so it should still be perfectly usable.
 
 ## TL;DR
 
@@ -55,15 +55,15 @@ Consequently ZUnit is nowhere near as feature rich as mocha, e.g. it does not su
 1. Run the tests
     ```bash
     node tests user-db.test.js
-    
+
     User DB
       List Users
         should list all users - PASSED (2ms)
         should list matching use - SKIPPED (0ms)
-        
+
     Summary
       Passed: 1, Skipped: 1, Failed: 0, Duration: 2ms
-      
+
     ```
 
 ## Composing Test Suites
@@ -99,7 +99,7 @@ You can define pending tests / skip tests in the following ways...
       });
     });
     ```
-    
+
 1. Defining a test without a test function
     ```js
     const { describe } = require('zunit');
