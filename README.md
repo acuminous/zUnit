@@ -62,7 +62,7 @@ Consequently ZUnit is nowhere near as feature rich as mocha, e.g. it does not su
         should list matching use - SKIPPED (0ms)
         
     Summary
-      Passed: 2, Skipped: 1, Failed: 0, Duration: 2ms
+      Passed: 1, Skipped: 1, Failed: 0, Duration: 2ms
       
     ```
 
