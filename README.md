@@ -65,14 +65,14 @@ Consequently ZUnit is nowhere near as feature rich as mocha, e.g. it does not su
 ## Composing Test Suites
 Because ZUnit doesn't automatically build tests suites by file globbing, you need to define them explicitly. This easiest way of doing this is by creating a main test suite and including others from it. e.g.
 
-    ```js
-    const userDbTests = require('./userDbTests');
-    const productDbTests = require('./productDbTests');
+```js
+const userDbTests = require('./userDbTests');
+const productDbTests = require('./productDbTests');
 
-    describe('All Tests', ({ include }) => {
-      include(userDbTests, productDbTests)
-    })
-    ```
+describe('All Tests', ({ include }) => {
+  include(userDbTests, productDbTests)
+})
+```
 
 ## Pending / Skipping Tests
 You can define pending tests / skip tests in the following ways...
