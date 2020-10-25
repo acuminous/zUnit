@@ -10,12 +10,12 @@ Completely reimplementing mocha without dependencies would likely introduce even
     const { reporters } = require('zunit');
     const path = require('path');
 
-    const { MultiReporter, ConsoleReporter, TapReporter } = reporters;
+    const { MultiReporter, SpecReporter, TapReporter } = reporters;
     const filename = path.resolve(__dirname, process.argv[2]);
     const runnable = require(filename);
 
     const reporter = new MultiReporter()
-      .add(new ConsoleReporter(), new TapReporter());
+      .add(new SpecReporter(), new TapReporter());
 
     runnable.run(reporter).then(() => {
       if (runnable.failed) process.exit(1);
@@ -58,8 +58,10 @@ Completely reimplementing mocha without dependencies would likely introduce even
 
     User DB
       List Users
-        should list all users - PASSED (2ms)
-        should list matching use - SKIPPED (0ms)
+        should list all users
+        - PASSED (2ms)
+        should list matching use
+        - SKIPPED (0ms)
 
     Summary
       Passed: 1, Skipped: 1, Failed: 0, Duration: 2ms
@@ -173,7 +175,7 @@ Test suites continue running tests after failure by default. You can override th
 ## Reporters
 ZUnit ships with the following reporters
 
-* [ConsoleReporter](#consolereporter)
+* [SpecReporter](#specreporter)
 * [TapReporter](#tapreporter)
 * [GraphReporter](#graphreporter)
 * [MultiReporter](#multireporter)
