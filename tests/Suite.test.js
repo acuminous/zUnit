@@ -89,7 +89,7 @@ describe('Suites', ({ it, xit }) => {
     assert.equal(test2.skipped, true);
   });
 
-  it('should only run exclusive tests (configuration)', async () => {
+  it('should only run exclusive tests (test configuration)', async () => {
     const test1 = new Test('should not run test 1', pass);
     const test2 = new Test('should run test 2', pass, { exclusive: true });
     const suite = new Suite('Test Suite').add(test1, test2);
@@ -101,16 +101,43 @@ describe('Suites', ({ it, xit }) => {
     assert.equal(suite.stats.skipped, 0);
   });
 
+  it('should only run exclusive tests (suite configuration)', async () => {
+    const test1 = new Test('Test 1', pass);
+    const test2 = new Test('Test 2', pass);
+    const test3 = new Test('Test 3', fail);
+    const child1 = new Suite('Child 1', { exclusive: true }).add(test1, test2);
+    const child2 = new Suite('Child 2').add(test3);
+    const parent = new Suite('Parent').add(child1, child2);
+
+    await parent.run(reporter);
+
+    assert.equal(parent.stats.passed, 2);
+    assert.equal(parent.stats.failed, 0);
+    assert.equal(parent.stats.skipped, 0);
+  });
+
+  it('should only run exclusive tests (suite and test configuration)', async () => {
+    const test1 = new Test('Test 1', pass);
+    const test2 = new Test('Test 2', pass, { exclusive: true });
+    const test3 = new Test('Test 3', fail);
+    const child1 = new Suite('Child 1', { exclusive: true }).add(test1, test2);
+    const child2 = new Suite('Child 2').add(test3);
+    const parent = new Suite('Parent').add(child1, child2);
+
+    await parent.run(reporter);
+
+    assert.equal(parent.stats.passed, 1);
+    assert.equal(parent.stats.failed, 0);
+    assert.equal(parent.stats.skipped, 0);
+  });
+
   it('should support nesting', async () => {
-    const parent = new Suite('Parent');
-    const child1 = new Suite('Child 1');
-    const child2 = new Suite('Child 2');
     const test1 = new Test('Test 1', pass);
     const test2 = new Test('Test 2', fail);
     const test3 = new Test('Test 3', pass);
-    child1.add(test1, test2);
-    child2.add(test3);
-    parent.add(child1, child2);
+    const child1 = new Suite('Child 1').add(test1, test2);
+    const child2 = new Suite('Child 2').add(test3);
+    const parent = new Suite('Parent').add(child1, child2);
 
     await parent.run(reporter);
 
