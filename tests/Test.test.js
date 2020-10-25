@@ -96,5 +96,17 @@ describe('Tests', ({ it }) => {
     assert.equal(test.skipped, true);
   });
 
+  it('should timeout unresolved promises', async () => {
+    const test = new Test('Test', () => {
+      return new Promise((resolve) => {
+      });
+    }, { timeout: 2000 });
+
+    await test.run(reporter);
+
+    assert.equal(test.failed, true);
+    assert.equal(test.error.message, 'Timed out after 2,000ms');
+  });
+
 });
 
