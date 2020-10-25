@@ -5,7 +5,7 @@ Consequently ZUnit is nowhere near as feature rich as mocha, e.g. it does not su
 
 ## TL;DR
 
-1. Create a runner in tests/index.js
+1. Create a runner, e.g. `tests/index.js`
     ```js
     const { reporters } = require('zunit');
     const path = require('path');
@@ -22,7 +22,7 @@ Consequently ZUnit is nowhere near as feature rich as mocha, e.g. it does not su
     })
     ```
 
-1. Create a test suite, e.g. tests/user-db.test.js
+1. Create a test suite, e.g. `tests/user-db.test.js`
     ```js
     const { describe } = require('zunit');
     const assert = require('assert');
