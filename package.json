@@ -1,0 +1,11 @@
+{
+  "name": "zunit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests all.test.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
