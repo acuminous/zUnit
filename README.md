@@ -60,6 +60,10 @@ Consequently ZUnit is nowhere near as feature rich as mocha, e.g. it does not su
       List Users
         should list all users - PASSED (2ms)
         should list matching use - SKIPPED (0ms)
+        
+    Summary
+      Passed: 2, Skipped: 1, Failed: 0, Duration: 2ms
+      
     ```
 
 ## Composing Test Suites
