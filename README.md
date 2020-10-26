@@ -132,7 +132,7 @@ You can selectively run tests or suites as follows...
     const settingsPageTests = require('./frontend/settings-page.test');
     const searchPageTests = require('./frontend/search-page.test');
 
-    describe('Frontend Tests', ({ it }) => {
+    describe('Frontend Tests', ({ it, include }) => {
       include(homePageTests, settingsPageTests, searchPageTests);
     });
     ```
