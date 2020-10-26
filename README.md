@@ -1,7 +1,7 @@
-# ZUnit
-ZUnit is a zero dependency, non polluting, test harness for Node that you can run without any special scripts. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the #1 culprit for vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies causes an audit warning.
+# zUnit
+zUnit is a zero dependency, non polluting, test harness for Node that you can run without any special scripts. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the #1 culprit for vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies causes an audit warning.
 
-Completely reimplementing mocha without dependencies would likely introduce even more issues. Consequently, ZUnit is nowhere near as feature rich, e.g. it does not support parallel test, retries or file globbing, but most of the simpler features are present, so it should still be perfectly usable.
+Completely reimplementing mocha without dependencies would likely introduce even more issues. Consequently, zUnit is nowhere near as feature rich, e.g. it does not support parallel test, retries or file globbing, but most of the simpler features are present, so it should still be perfectly usable.
 
 ## TL;DR
 
@@ -69,7 +69,7 @@ Completely reimplementing mocha without dependencies would likely introduce even
     ```
 
 ## Composing Test Suites
-Because ZUnit doesn't automatically build tests suites by file globbing, you need to define them explicitly. This easiest way of doing this is by creating a main test suite and including others from it. e.g.
+Because zUnit doesn't automatically build tests suites by file globbing, you need to define them explicitly. This easiest way of doing this is by creating a main test suite and including others from it. e.g.
 
 ```js
 const userDbTests = require('./userDbTests');
@@ -299,7 +299,7 @@ After
 ```
 
 ## Reporters
-ZUnit ships with the following reporters
+zUnit ships with the following reporters
 
 * [SpecReporter](#specreporter)
 * [TapReporter](#tapreporter)
