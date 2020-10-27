@@ -7,7 +7,7 @@ describe('User API Tests', ({ beforeEach, describe, xdescribe }) => {
 
   beforeEach(async () => {
     await userDb.flush();
-  })
+  });
 
   describe('List Users', ({ it, xit }) => {
 
@@ -27,9 +27,9 @@ describe('User API Tests', ({ beforeEach, describe, xdescribe }) => {
     xit('should list matching users', async () => {
     });
 
-  })
+  });
 
-  xdescribe('Get User', ({ it, xit }) => {
+  xdescribe('Get User', ({ it }) => {
 
     it('should find a user by user id', async () => {
       await userDb.create({ name: 'John' });
@@ -38,13 +38,13 @@ describe('User API Tests', ({ beforeEach, describe, xdescribe }) => {
       assert.equal(response.status, 200);
       assert.equal(response.body.userId, 1);
       assert.equal(response.body.name, 'John');
-    })
+    });
 
     it('should 404 when a user is not found', async () => {
-      const response = await get('/api/users/999');
+      const response = await userApi.findById('/api/users/999');
       assert.equal(response.status, 404);
-    })
-  })
+    });
+  });
 
   describe('Create User', ({ it }) => {
 
@@ -54,7 +54,7 @@ describe('User API Tests', ({ beforeEach, describe, xdescribe }) => {
       assert.equal(response.body.userId, 1);
     });
 
-  })
+  });
 
   describe('Update User', ({ it }) => {
 
@@ -63,12 +63,12 @@ describe('User API Tests', ({ beforeEach, describe, xdescribe }) => {
 
       const response = await userApi.update(1, { name: 'Fred' });
       assert.equal(response.status, 204);
-    })
+    });
 
     it('should 404 when a user is not found', async () => {
       const response = await userApi.update(999, { name: 'Fred' });
       assert.equal(response.status, 404);
-    })
-  })
+    });
+  });
 
 });

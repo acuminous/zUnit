@@ -1,13 +1,13 @@
-const users = []
+const users = [];
 
 module.exports = {
   list: async () => {
-    return users
+    return users;
   },
   findById: async (userId) => {
     const user = users.find(u => u.userId === userId);
     if (user) return user;
-    throw new Error(`Not found: ${userId}`)
+    throw new Error(`Not found: ${userId}`);
   },
   create: async (details) => {
     const maxUserId = users.reduce((userId, user) => {
@@ -28,5 +28,5 @@ module.exports = {
   flush: async () => {
     users.length = 0;
   }
-}
+};
 

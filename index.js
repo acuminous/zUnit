@@ -12,4 +12,4 @@ module.exports = {
   RunnableOutcomes,
   ...Syntax,
   ...reporters,
-}
+};

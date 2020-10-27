@@ -4,4 +4,4 @@ const dbTests = require('./db/db.test');
 
 describe('All Tests', ({ include }) => {
   include(apiTests, dbTests);
-})
+});

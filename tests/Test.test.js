@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { describe, NullReporter, Suite, Test } = require('..');
+const { describe, NullReporter, Test } = require('..');
 
 describe('Tests', ({ it }) => {
 
@@ -32,7 +32,7 @@ describe('Tests', ({ it }) => {
   it('should abort slow asynchronous tests (runner)', async () => {
     const test = new Test('Test', () => {
       return new Promise((resolve) => setTimeout(resolve, 2000));
-    })
+    });
 
     await test.run(reporter, { timeout: 1000 });
 
@@ -43,7 +43,7 @@ describe('Tests', ({ it }) => {
   it('should abort slow tests (configuration)', async () => {
     const test = new Test('Test', () => {
       return new Promise((resolve) => setTimeout(resolve, 2000));
-    }, { timeout: 1000 })
+    }, { timeout: 1000 });
 
     await test.run(reporter);
 
@@ -56,7 +56,7 @@ describe('Tests', ({ it }) => {
       return new Promise((resolve, reject) => {
         setTimeout(() => reject(new Error('Oh Noes!')), 100);
       });
-    })
+    });
 
     await test.run(reporter, { skip: true });
 
@@ -68,7 +68,7 @@ describe('Tests', ({ it }) => {
       return new Promise((resolve, reject) => {
         setTimeout(() => reject(new Error('Oh Noes!')), 100);
       });
-    }, { skip: true })
+    }, { skip: true });
 
     await test.run(reporter);
 
@@ -77,11 +77,11 @@ describe('Tests', ({ it }) => {
 
   it('should bypass skipped tests (programmatic)', async () => {
     const test = new Test('Test', (t) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         t.skip();
         resolve();
       });
-    })
+    });
 
     await test.run(reporter);
 
@@ -89,7 +89,7 @@ describe('Tests', ({ it }) => {
   });
 
   it('should bypass skipped tests (pending)', async () => {
-    const test = new Test('Test')
+    const test = new Test('Test');
 
     await test.run(reporter);
 
@@ -98,7 +98,7 @@ describe('Tests', ({ it }) => {
 
   it('should timeout unresolved promises', async () => {
     const test = new Test('Test', () => {
-      return new Promise((resolve) => {
+      return new Promise(() => {
       });
     }, { timeout: 2000 });
 

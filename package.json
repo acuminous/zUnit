@@ -8,5 +8,6 @@
     "example": "pushd example; npm t; popd"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {}
 }

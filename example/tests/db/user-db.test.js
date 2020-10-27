@@ -6,7 +6,7 @@ xdescribe('User DB Tests', ({ beforeEach, describe, xdescribe }) => {
 
   beforeEach(async () => {
     await userDb.flush();
-  })
+  });
 
   describe('List Users', ({ it, xit }) => {
 
@@ -23,9 +23,9 @@ xdescribe('User DB Tests', ({ beforeEach, describe, xdescribe }) => {
     xit('should list matching users', async () => {
     });
 
-  })
+  });
 
-  xdescribe('Get User', ({ it, xit }) => {
+  xdescribe('Get User', ({ it }) => {
 
     it('should find a user by user id', async () => {
       const { userId } = await userDb.create({ name: 'John' });
@@ -33,14 +33,14 @@ xdescribe('User DB Tests', ({ beforeEach, describe, xdescribe }) => {
       const user = await userDb.findById(userId);
       assert.equal(user.userId, userId);
       assert.equal(user.name, 'John');
-    })
+    });
 
     it('should error when a user is not found', async () => {
       await assert.rejects(() => {
         return userDb.findById(999);
       });
-    })
-  })
+    });
+  });
 
   describe('Create User', ({ it }) => {
 
@@ -52,7 +52,7 @@ xdescribe('User DB Tests', ({ beforeEach, describe, xdescribe }) => {
       assert.equal(user.name, 'John');
     });
 
-  })
+  });
 
   describe('Update User', ({ it }) => {
 
@@ -63,13 +63,13 @@ xdescribe('User DB Tests', ({ beforeEach, describe, xdescribe }) => {
 
       const user = await userDb.findById(userId);
       assert.equal(user.name, 'Fred');
-    })
+    });
 
     it('should error when a user is not found', async () => {
       await assert.rejects(() => {
         return userDb.update(999, { name: 'Sam' });
       });
-    })
-  })
+    });
+  });
 });
 

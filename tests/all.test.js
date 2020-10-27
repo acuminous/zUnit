@@ -4,4 +4,4 @@ const testTests = require('./Test.test');
 
 describe('ZUnit', ({ include }) => {
   include(suiteTests, testTests);
-})
+});

@@ -7,7 +7,7 @@ describe('Product API Tests', ({ beforeEach, describe, xdescribe }) => {
 
   beforeEach(async () => {
     await productDb.flush();
-  })
+  });
 
   describe('List Products', ({ it, xit }) => {
 
@@ -27,9 +27,9 @@ describe('Product API Tests', ({ beforeEach, describe, xdescribe }) => {
     xit('should list matching products', async () => {
     });
 
-  })
+  });
 
-  xdescribe('Get Product', ({ it, xit }) => {
+  xdescribe('Get Product', ({ it }) => {
 
     it('should find a product by product id', async () => {
       await productDb.create({ name: 'Broken Sword' });
@@ -38,13 +38,13 @@ describe('Product API Tests', ({ beforeEach, describe, xdescribe }) => {
       assert.equal(response.status, 200);
       assert.equal(response.body.productId, 1);
       assert.equal(response.body.name, 'Broken Sword');
-    })
+    });
 
     it('should 404 when a product is not found', async () => {
       const response = await productApi.findById('/api/products/999');
       assert.equal(response.status, 404);
-    })
-  })
+    });
+  });
 
   describe('Create Product', ({ it }) => {
 
@@ -53,7 +53,7 @@ describe('Product API Tests', ({ beforeEach, describe, xdescribe }) => {
       assert.equal(response.status, 200);
       assert.equal(response.body.productId, 1);
     });
-  })
+  });
 
   describe('Update Product', ({ it }) => {
 
@@ -62,13 +62,13 @@ describe('Product API Tests', ({ beforeEach, describe, xdescribe }) => {
 
       const response = await productApi.update(1, { name: 'Beneath a Steel Sky' });
       assert.equal(response.status, 204);
-    })
+    });
 
     it('should 404 when a product is not found', async () => {
       const response = await productApi.update(999, { name: 'Sam & Max: Hit the Road' });
       assert.equal(response.status, 404);
-    })
-  })
+    });
+  });
 
 });
 

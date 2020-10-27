@@ -12,4 +12,4 @@ const reporter = new MultiReporter()
 
 runnable.run(reporter).then(() => {
   if (runnable.failed) process.exit(1);
-})
+});

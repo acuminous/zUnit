@@ -14,7 +14,7 @@ const reporter = new MultiReporter()
 runnable.run(reporter).then(() => {
   if (runnable.failed) process.exit(1);
   if (runnable.hasExclusiveTests()) {
-    console.log(`${runnable.name} has one or more exclusive tests!${EOL}`)
+    console.log(`${runnable.name} has one or more exclusive tests!${EOL}`);
     process.exit(2);
   }
-})
+});

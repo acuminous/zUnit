@@ -1,7 +1,7 @@
 const assert = require('assert');
-const { describe, NullReporter, AggregateReporter, Suite, Test } = require('..');
+const { describe, NullReporter, Suite, Test } = require('..');
 
-describe('Suites', ({ it, xit }) => {
+describe('Suites', ({ it }) => {
 
   const reporter = new NullReporter();
 

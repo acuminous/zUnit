@@ -1,13 +1,13 @@
-const products = []
+const products = [];
 
 module.exports = {
   list: async () => {
-    return products
+    return products;
   },
   findById: async (productId) => {
     const product = products.find(u => u.productId === productId);
     if (product) return product;
-    throw new Error(`Not found: ${productId}`)
+    throw new Error(`Not found: ${productId}`);
   },
   create: async (details) => {
     const maxProductId = products.reduce((productId, product) => {
@@ -28,5 +28,5 @@ module.exports = {
   flush: async () => {
     products.length = 0;
   }
-}
+};
 

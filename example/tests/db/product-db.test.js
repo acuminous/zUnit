@@ -6,7 +6,7 @@ describe('Product DB Tests', ({ beforeEach, describe, xdescribe }) => {
 
   beforeEach(async () => {
     await productDb.flush();
-  })
+  });
 
   describe('List Products', ({ it, xit }) => {
 
@@ -23,9 +23,9 @@ describe('Product DB Tests', ({ beforeEach, describe, xdescribe }) => {
     xit('should list matching products', async () => {
     });
 
-  })
+  });
 
-  xdescribe('Get Product', ({ it, xit }) => {
+  xdescribe('Get Product', ({ it }) => {
 
     it('should find a product by product id', async () => {
       const { productId } = await productDb.create({ name: 'Broken Sword' });
@@ -33,14 +33,14 @@ describe('Product DB Tests', ({ beforeEach, describe, xdescribe }) => {
       const product = await productDb.findById(productId);
       assert.equal(product.productId, productId);
       assert.equal(product.name, 'Broken Sword');
-    })
+    });
 
     it('should error when a product is not found', async () => {
       await assert.rejects(() => {
         return productDb.findById(999);
       });
-    })
-  })
+    });
+  });
 
   describe('Create Product', ({ it }) => {
 
@@ -52,7 +52,7 @@ describe('Product DB Tests', ({ beforeEach, describe, xdescribe }) => {
       assert.equal(product.name, 'Broken Sword');
     });
 
-  })
+  });
 
   describe('Update Product', ({ it }) => {
 
@@ -63,13 +63,13 @@ describe('Product DB Tests', ({ beforeEach, describe, xdescribe }) => {
 
       const product = await productDb.findById(productId);
       assert.equal(product.name, 'Beneath a Steel Sky');
-    })
+    });
 
     it('should error when a product is not found', async () => {
       await assert.rejects(() => {
         return productDb.update(999, { name: 'Sam & Max: Hit the Road' });
       });
-    })
-  })
+    });
+  });
 });
 
