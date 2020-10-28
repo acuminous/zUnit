@@ -7,19 +7,26 @@ Completely reimplementing mocha without dependencies would likely introduce even
 
 1. Create a runner, e.g. `tests/index.js`
     ```js
-    const { reporters } = require('zunit');
     const path = require('path');
+    const { EOL } = require('os');
+    const { Harness, MultiReporter, SpecReporter, TapReporter } = require('..');
 
-    const { MultiReporter, SpecReporter, TapReporter } = reporters;
     const filename = path.resolve(__dirname, process.argv[2]);
-    const runnable = require(filename);
+    const harness = new Harness().load(filename);
+
+    const interactive = String(process.env.CI).toLowerCase() !== 'true';
 
     const reporter = new MultiReporter()
-      .add(new SpecReporter(), new TapReporter());
+      .add(new SpecReporter({ colours: interactive }))
+      .add(new TapReporter());
 
-    runnable.run(reporter).then(() => {
-      if (runnable.failed) process.exit(1);
-    })
+    harness.run(reporter).then(() => {
+      if (harness.failed) process.exit(1);
+      if (harness.hasExclusiveTests()) {
+        console.log(`Found one or more exclusive tests!${EOL}`);
+        process.exit(2);
+      }
+    });
     ```
 
 1. Create a test suite, e.g. `tests/user-db.test.js`
