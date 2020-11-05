@@ -166,6 +166,66 @@ describe('Suites', ({ it }) => {
     assert.equal(test3.name, 'Test 3');
     assert.equal(test3.passed, true);
   });
+
+  it('should finalise a suite of tests', async () => {
+    const test1 = new Test('should run test 1', pass);
+    const test2 = new Test('should run test 2', pass);
+    const test3 = new Test('should run test 3', pass);
+    const child1 = new Suite('Child 1').add(test1, test2);
+    const child2 = new Suite('Child 2').add(test3);
+    const parent = new Suite('Parent').add(child1, child2);
+
+    const finalised = parent.finalise();
+    await finalised.run(reporter);
+
+    assert.equal(parent.passed, false);
+    assert.equal(child1.passed, false);
+    assert.equal(child2.passed, false);
+    assert.equal(test1.passed, false);
+    assert.equal(test1.number, undefined);
+    assert.equal(test2.passed, false);
+    assert.equal(test2.number, undefined);
+    assert.equal(test3.passed, false);
+    assert.equal(test3.number, undefined);
+
+    assert.equal(finalised.name, 'Parent');
+    assert.equal(finalised.passed, true);
+    assert.equal(finalised._runnables[0]._runnables[0].name, 'should run test 1');
+    assert.equal(finalised._runnables[0]._runnables[0].number, 1);
+    assert.equal(finalised._runnables[0]._runnables[1].passed, true);
+    assert.equal(finalised._runnables[0]._runnables[1].name, 'should run test 2');
+    assert.equal(finalised._runnables[0]._runnables[1].number, 2);
+    assert.equal(finalised._runnables[0]._runnables[0].passed, true);
+    assert.equal(finalised._runnables[1]._runnables[0].name, 'should run test 3');
+    assert.equal(finalised._runnables[1]._runnables[0].number, 3);
+    assert.equal(finalised._runnables[1]._runnables[0].passed, true);
+    assert.equal(finalised.nextNumber, 4);
+  });
+
+  it('should finalise a nested suite of tests', async () => {
+    const test1 = new Test('should run test 1', pass);
+    const test2 = new Test('should run test 2', pass);
+    const suite = new Suite('Test Suite').add(test1, test2);
+
+    const finalised = suite.finalise();
+    await finalised.run(reporter);
+
+    assert.equal(suite.passed, false);
+    assert.equal(test1.passed, false);
+    assert.equal(test1.number, undefined);
+    assert.equal(test2.passed, false);
+    assert.equal(test2.number, undefined);
+
+    assert.equal(finalised.name, 'Test Suite');
+    assert.equal(finalised.passed, true);
+    assert.equal(finalised._runnables[0].name, 'should run test 1');
+    assert.equal(finalised._runnables[0].number, 1);
+    assert.equal(finalised._runnables[0].passed, true);
+    assert.equal(finalised._runnables[1].name, 'should run test 2');
+    assert.equal(finalised._runnables[1].number, 2);
+    assert.equal(finalised._runnables[1].passed, true);
+    assert.equal(finalised.nextNumber, 3);
+  });
 });
 
 function pass() {

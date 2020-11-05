@@ -98,14 +98,28 @@ describe('Tests', ({ it }) => {
 
   it('should timeout unresolved promises', async () => {
     const test = new Test('Test', () => {
-      return new Promise(() => {
-      });
+      return new Promise(() => {});
     }, { timeout: 2000 });
 
     await test.run(reporter);
 
     assert.equal(test.failed, true);
     assert.equal(test.error.message, 'Timed out after 2,000ms');
+  });
+
+  it('should finalise a test', async () => {
+    const test = new Test('Test', () => {}, { exclusive: true });
+    const finalised = test.finalise(99);
+
+    await finalised.run(reporter);
+
+    assert.equal(test.name, 'Test');
+    assert.equal(test.number, undefined);
+    assert.equal(test.passed, false);
+
+    assert.equal(finalised.name, 'Test');
+    assert.equal(finalised.number, 99);
+    assert.equal(finalised.passed, true);
   });
 
 });
