@@ -93,17 +93,13 @@ describe('Tests', ({ it }) => {
 
   it('should finalise a test', async () => {
     const test = new Test('Test', pass(), { exclusive: true });
-    const finalised = test.finalise(null, 99);
+    test._finalise(null, 99);
 
-    await finalised.run(reporter);
+    await test.run(reporter);
 
     assert.equal(test.name, 'Test');
-    assert.equal(test.number, undefined);
-    assert.equal(test.passed, false);
-
-    assert.equal(finalised.name, 'Test');
-    assert.equal(finalised.number, 99);
-    assert.equal(finalised.passed, true);
+    assert.equal(test.number, 99);
+    assert.equal(test.passed, true);
   });
 
 });

@@ -208,18 +208,8 @@ describe('Suites', ({ it }) => {
     const parent = new Suite('Parent').add(child1, child2);
 
     const reporter = new GraphReporter();
-    const finalised = parent.finalise();
-    await finalised.run(reporter);
-
-    assert.equal(parent.passed, false);
-    assert.equal(child1.passed, false);
-    assert.equal(child2.passed, false);
-    assert.equal(test1.passed, false);
-    assert.equal(test1.number, undefined);
-    assert.equal(test2.passed, false);
-    assert.equal(test2.number, undefined);
-    assert.equal(test3.passed, false);
-    assert.equal(test3.number, undefined);
+    parent._finalise();
+    await parent.run(reporter);
 
     const graph = reporter.toGraph();
     assert.equal(graph.name, 'Parent');
