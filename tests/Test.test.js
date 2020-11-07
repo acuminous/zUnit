@@ -31,24 +31,24 @@ describe('Tests', ({ it }) => {
 
   it('should abort slow asynchronous tests (runner)', async () => {
     const test = new Test('Test', () => {
-      return new Promise((resolve) => setTimeout(resolve, 2000));
+      return new Promise((resolve) => setTimeout(resolve, 200));
     });
 
-    await test.run(reporter, { timeout: 1000 });
+    await test.run(reporter, { timeout: 100 });
 
     assert.equal(test.failed, true);
-    assert.equal(test.error.message, 'Timed out after 1,000ms');
+    assert.equal(test.error.message, 'Timed out after 100ms');
   });
 
   it('should abort slow tests (configuration)', async () => {
     const test = new Test('Test', () => {
-      return new Promise((resolve) => setTimeout(resolve, 2000));
-    }, { timeout: 1000 });
+      return new Promise((resolve) => setTimeout(resolve, 200));
+    }, { timeout: 100 });
 
     await test.run(reporter);
 
     assert.equal(test.failed, true);
-    assert.equal(test.error.message, 'Timed out after 1,000ms');
+    assert.equal(test.error.message, 'Timed out after 100ms');
   });
 
   it('should bypass skipped tests (runner)', async () => {
@@ -99,12 +99,12 @@ describe('Tests', ({ it }) => {
   it('should timeout unresolved promises', async () => {
     const test = new Test('Test', () => {
       return new Promise(() => {});
-    }, { timeout: 2000 });
+    }, { timeout: 200 });
 
     await test.run(reporter);
 
     assert.equal(test.failed, true);
-    assert.equal(test.error.message, 'Timed out after 2,000ms');
+    assert.equal(test.error.message, 'Timed out after 200ms');
   });
 
   it('should finalise a test', async () => {
