@@ -318,6 +318,14 @@ zUnit ships with the following reporters
 
 ### eslint
 It can be annoying to repeatedly add and remove `xit` and `xdescribe` imports in your tests. You can exclude these from eslint's no-unused-vars rule with the following config...
-```js
-/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "xit|xdescribe" }]*/
+```json
+{
+  "rules": {
+    "no-unused-vars": [
+      "error", {
+        "varsIgnorePattern": "xit|xdescribe"
+      }
+    ]
+  }
+}
 ```
