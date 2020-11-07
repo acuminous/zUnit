@@ -19,8 +19,8 @@ function failingTest(name = 'Test', options) {
   return new Test(name, fail(), options);
 }
 
-function skippedTest(name) {
-  return failingTest(name, { skip: true });
+function skippedTest(name, reason) {
+  return failingTest(name, { skip: true, reason });
 }
 
 function exclusiveTest(name) {

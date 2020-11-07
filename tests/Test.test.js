@@ -93,7 +93,7 @@ describe('Tests', ({ it }) => {
 
   it('should finalise a test', async () => {
     const test = new Test('Test', pass(), { exclusive: true });
-    const finalised = test.finalise(99);
+    const finalised = test.finalise(null, 99);
 
     await finalised.run(reporter);
 

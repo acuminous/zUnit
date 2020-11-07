@@ -117,7 +117,6 @@ describe('Harnesses', ({ it }) => {
     assert.equal(graph.resolve(1), undefined);
   });
 
-
   it('should skip an entire suite in a nested suite, even when exclusive', async () => {
     const test1 = passingTest();
     const test2 = passingTest();
@@ -139,7 +138,4 @@ describe('Harnesses', ({ it }) => {
     assert.equal(graph.resolve(1, 0).result, RunnableOutcomes.PASSED);
   });
 });
-
-
-
 
