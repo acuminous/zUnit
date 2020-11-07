@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { pass, fail } = require('./support/fixtures');
+const { fail, passingTest, failingTest, skippedTest, exclusiveTest } = require('./support/fixtures');
 const { describe, GraphReporter, NullReporter, Suite, Test, RunnableOutcomes } = require('..');
 
 describe('Suites', ({ it }) => {
@@ -7,8 +7,8 @@ describe('Suites', ({ it }) => {
   const reporter = new NullReporter();
 
   it('should report successful tests', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', pass());
+    const test1 = passingTest();
+    const test2 = passingTest();
     const suite = new Suite('Test Suite').add(test1, test2);
 
     await suite.run(reporter);
@@ -19,8 +19,8 @@ describe('Suites', ({ it }) => {
   });
 
   it('should report failing tests', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', fail());
+    const test1 = passingTest();
+    const test2 = failingTest();
     const suite = new Suite('Test Suite').add(test1, test2);
 
     await suite.run(reporter);
@@ -30,9 +30,9 @@ describe('Suites', ({ it }) => {
     assert.equal(test2.failed, true);
   });
 
-  it('should skip all tests in the test run', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', fail());
+  it('should skip tests (run configuration)', async () => {
+    const test1 = passingTest();
+    const test2 = failingTest();
     const suite = new Suite('Test Suite').add(test1, test2);
 
     await suite.run(reporter, { skip: true });
@@ -42,9 +42,9 @@ describe('Suites', ({ it }) => {
     assert.equal(test2.skipped, true);
   });
 
-  it('should skip the entire test suite', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', fail());
+  it('should skip tests (suite configuration)', async () => {
+    const test1 = passingTest();
+    const test2 = failingTest();
     const suite = new Suite('Test Suite', { skip: true }).add(test1, test2);
 
     await suite.run(reporter);
@@ -54,9 +54,9 @@ describe('Suites', ({ it }) => {
     assert.equal(test2.skipped, true);
   });
 
-  it('should skip individual tests', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', pass, { skip: true });
+  it('should skip tests (test configuration)', async () => {
+    const test1 = passingTest();
+    const test2 = skippedTest();
     const suite = new Suite('Test Suite').add(test1, test2);
 
     await suite.run(reporter);
@@ -66,9 +66,21 @@ describe('Suites', ({ it }) => {
     assert.equal(test2.skipped, true);
   });
 
-  it('should abort early (runner)', async () => {
-    const test1 = new Test('Test 1', fail());
-    const test2 = new Test('Test 2', pass());
+  it('should pass a suite with only skipped tests', async () => {
+    const test1 = skippedTest();
+    const test2 = skippedTest();
+    const suite = new Suite('Test Suite').add(test1, test2);
+
+    await suite.run(reporter);
+
+    assert.equal(suite.passed, true);
+    assert.equal(test1.skipped, true);
+    assert.equal(test2.skipped, true);
+  });
+
+  it('should abort early (run configuration)', async () => {
+    const test1 = failingTest();
+    const test2 = passingTest();
     const suite = new Suite('Test Suite').add(test1, test2);
 
     await suite.run(reporter, { abort: true });
@@ -78,9 +90,9 @@ describe('Suites', ({ it }) => {
     assert.equal(test2.skipped, true);
   });
 
-  it('should aborting early (configuration)', async () => {
-    const test1 = new Test('Test 1', fail());
-    const test2 = new Test('Test 2', pass());
+  it('should aborting early (suite configuration)', async () => {
+    const test1 = failingTest();
+    const test2 = passingTest();
     const suite = new Suite('Test Suite', { abort: true }).add(test1, test2);
 
     await suite.run(reporter);
@@ -91,8 +103,8 @@ describe('Suites', ({ it }) => {
   });
 
   it('should only run exclusive tests (test configuration)', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', pass, { exclusive: true });
+    const test1 = passingTest();
+    const test2 = exclusiveTest();
     const suite = new Suite('Test Suite').add(test1, test2);
 
     await suite.run(reporter, {}, false);
@@ -103,9 +115,9 @@ describe('Suites', ({ it }) => {
   });
 
   it('should only run exclusive tests (suite configuration)', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', pass());
-    const test3 = new Test('Test 3', fail());
+    const test1 = passingTest();
+    const test2 = passingTest();
+    const test3 = passingTest();
     const child1 = new Suite('Child 1', { exclusive: true }).add(test1, test2);
     const child2 = new Suite('Child 2').add(test3);
     const parent = new Suite('Parent').add(child1, child2);
@@ -118,9 +130,9 @@ describe('Suites', ({ it }) => {
   });
 
   it('should only run exclusive tests (suite and test configuration)', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', pass, { exclusive: true });
-    const test3 = new Test('Test 3', fail());
+    const test1 = passingTest();
+    const test2 = exclusiveTest();
+    const test3 = passingTest();
     const child1 = new Suite('Child 1', { exclusive: true }).add(test1, test2);
     const child2 = new Suite('Child 2').add(test3);
     const parent = new Suite('Parent').add(child1, child2);
@@ -132,34 +144,29 @@ describe('Suites', ({ it }) => {
     assert.equal(parent.stats.skipped, 0);
   });
 
-  it('should skip exclusive tests', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', pass, { skip: true, exclusive: true });
-    const suite = new Suite('Test Suite').add(test1, test2);
-
-    await suite.run(reporter);
-
-    assert.equal(suite.passed, true);
-    assert.equal(test1.passed, true);
-    assert.equal(test2.skipped, true);
-  });
-
-  it('should skip the exclusive test suites', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', fail());
-    const suite = new Suite('Test Suite', { skip: true, exclusive: true }).add(test1, test2);
+  it('should skip the exclusive test (suite configuration)', async () => {
+    const test = failingTest();
+    const suite = new Suite('Test Suite', { skip: true, exclusive: true }).add(test);
 
     await suite.run(reporter);
 
     assert.equal(suite.skipped, true);
-    assert.equal(test1.skipped, true);
-    assert.equal(test2.skipped, true);
+    assert.equal(test.skipped, true);
+  });
+
+  it('should skip exclusive tests (test configuration)', async () => {
+    const test = new Test('Test', fail(), { skip: true, exclusive: true });
+    const suite = new Suite('Test Suite').add(test);
+
+    await suite.run(reporter);
+    assert.equal(suite.passed, true);
+    assert.equal(test.skipped, true);
   });
 
   it('should support nesting', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', fail());
-    const test3 = new Test('Test 3', pass());
+    const test1 = passingTest('Test 1');
+    const test2 = failingTest('Test 2');
+    const test3 = passingTest('Test 3');
     const child1 = new Suite('Child 1').add(test1, test2);
     const child2 = new Suite('Child 2').add(test3);
     const parent = new Suite('Parent').add(child1, child2);
@@ -193,9 +200,9 @@ describe('Suites', ({ it }) => {
   });
 
   it('should finalise a suite of tests', async () => {
-    const test1 = new Test('Test 1', pass());
-    const test2 = new Test('Test 2', pass());
-    const test3 = new Test('Test 3', pass());
+    const test1 = passingTest('Test 1');
+    const test2 = passingTest('Test 2');
+    const test3 = passingTest('Test 3');
     const child1 = new Suite('Child 1').add(test1, test2);
     const child2 = new Suite('Child 2').add(test3);
     const parent = new Suite('Parent').add(child1, child2);
