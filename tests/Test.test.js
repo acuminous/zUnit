@@ -1,4 +1,5 @@
 const assert = require('assert');
+const { pass, fail } = require('./support/fixtures');
 const { describe, NullReporter, Test } = require('..');
 
 describe('Tests', ({ it }) => {
@@ -6,9 +7,7 @@ describe('Tests', ({ it }) => {
   const reporter = new NullReporter();
 
   it('should run successful asynchronous tests', async () => {
-    const test = new Test('Test', () => {
-      return new Promise((resolve) => setTimeout(resolve, 100));
-    });
+    const test = new Test('Test', pass({ delay: 100 }));
 
     await test.run(reporter);
 
@@ -17,22 +16,17 @@ describe('Tests', ({ it }) => {
   });
 
   it('should run failing asynchronous tests', async () => {
-    const test = new Test('Test', () => {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => reject(new Error('Oh Noes!')), 100);
-      });
-    });
+    const test = new Test('Test', fail({ delay: 100 }));
 
     await test.run(reporter);
 
     assert.equal(test.failed, true);
     assert.equal(test.error.message, 'Oh Noes!');
+    assert.ok(test.duration >= 100);
   });
 
   it('should abort slow asynchronous tests (runner)', async () => {
-    const test = new Test('Test', () => {
-      return new Promise((resolve) => setTimeout(resolve, 200));
-    });
+    const test = new Test('Test', pass({ delay: 200 }));
 
     await test.run(reporter, { timeout: 100 });
 
@@ -41,9 +35,7 @@ describe('Tests', ({ it }) => {
   });
 
   it('should abort slow tests (configuration)', async () => {
-    const test = new Test('Test', () => {
-      return new Promise((resolve) => setTimeout(resolve, 200));
-    }, { timeout: 100 });
+    const test = new Test('Test', pass({ delay: 200 }), { timeout: 100 });
 
     await test.run(reporter);
 
@@ -52,11 +44,7 @@ describe('Tests', ({ it }) => {
   });
 
   it('should bypass skipped tests (runner)', async () => {
-    const test = new Test('Test', () => {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => reject(new Error('Oh Noes!')), 100);
-      });
-    });
+    const test = new Test('Test', fail());
 
     await test.run(reporter, { skip: true });
 
@@ -64,11 +52,7 @@ describe('Tests', ({ it }) => {
   });
 
   it('should bypass skipped tests (configuration)', async () => {
-    const test = new Test('Test', () => {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => reject(new Error('Oh Noes!')), 100);
-      });
-    }, { skip: true });
+    const test = new Test('Test', fail(), { skip: true });
 
     await test.run(reporter);
 
@@ -108,7 +92,7 @@ describe('Tests', ({ it }) => {
   });
 
   it('should finalise a test', async () => {
-    const test = new Test('Test', () => {}, { exclusive: true });
+    const test = new Test('Test', pass(), { exclusive: true });
     const finalised = test.finalise(99);
 
     await finalised.run(reporter);
