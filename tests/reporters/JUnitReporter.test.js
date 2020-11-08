@@ -7,7 +7,7 @@ describe('JUnit Reporter', ({ it }) => {
 
   it('should report the xml version and encoding', async () => {
     const suite = new Suite('Test Suite');
-    const harness = new Harness().set(suite);
+    const harness = new Harness(suite);
     const stream = new TestOutputStream();
 
     const reporter = new JUnitReporter({ stream });
@@ -19,7 +19,7 @@ describe('JUnit Reporter', ({ it }) => {
 
   it('should report an empty test suite', async () => {
     const suite = new Suite('Test Suite');
-    const harness = new Harness().set(suite);
+    const harness = new Harness(suite);
     const stream = new TestOutputStream();
 
     const reporter = new JUnitReporter({ stream });
@@ -33,7 +33,7 @@ describe('JUnit Reporter', ({ it }) => {
   it('should report a successful test suite', async () => {
     const test = passingTest('Test 1');
     const suite = new Suite('Test Suite').add(test);
-    const harness = new Harness().set(suite);
+    const harness = new Harness(suite);
     const stream = new TestOutputStream();
 
     const reporter = new JUnitReporter({ stream });
@@ -51,7 +51,7 @@ describe('JUnit Reporter', ({ it }) => {
   it('should report a failing test suite', async () => {
     const test = failingTest('Test 1');
     const suite = new Suite('Test Suite').add(test);
-    const harness = new Harness().set(suite);
+    const harness = new Harness(suite);
     const stream = new TestOutputStream();
 
     const reporter = new JUnitReporter({ stream });
@@ -73,7 +73,7 @@ describe('JUnit Reporter', ({ it }) => {
   it('should report a skipped test suite', async () => {
     const test = skippedTest('Test 1', 'Mercy');
     const suite = new Suite('Test Suite').add(test);
-    const harness = new Harness().set(suite);
+    const harness = new Harness(suite);
     const stream = new TestOutputStream();
 
     const reporter = new JUnitReporter({ stream });
@@ -97,7 +97,7 @@ describe('JUnit Reporter', ({ it }) => {
     const child1 = new Suite('Child 1').add(test1, test2);
     const child2 = new Suite('Child 2').add(test3);
     const parent = new Suite('Parent').add(child1, child2);
-    const harness = new Harness().set(parent);
+    const harness = new Harness(parent);
     const stream = new TestOutputStream();
 
     const reporter = new JUnitReporter({ stream });
@@ -125,7 +125,7 @@ describe('JUnit Reporter', ({ it }) => {
     const child2 = new Suite('Child 2').add(test3);
     const child1 = new Suite('Child 1').add(test1, test2).add(child2);
     const parent = new Suite('Parent').add(child1);
-    const harness = new Harness().set(parent);
+    const harness = new Harness(parent);
     const stream = new TestOutputStream();
 
     const reporter = new JUnitReporter({ stream });

@@ -3,7 +3,8 @@ const { EOL } = require('os');
 const { Harness, MultiReporter, SpecReporter } = require('..');
 
 const filename = path.resolve(__dirname, process.argv[2]);
-const harness = new Harness().load(filename);
+const suite = require(filename);
+const harness = new Harness(suite);
 
 const interactive = String(process.env.CI).toLowerCase() !== 'true';
 

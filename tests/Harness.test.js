@@ -10,7 +10,7 @@ describe('Harnesses', ({ it }) => {
     const test1 = passingTest();
     const test2 = passingTest();
     const suite = new Suite('Test Suite').add(test1, test2);
-    const harness = new Harness().set(suite);
+    const harness = new Harness(suite);
 
     await harness.run(reporter);
 
@@ -20,7 +20,7 @@ describe('Harnesses', ({ it }) => {
 
   it('should run an individual test', async () => {
     const test = passingTest();
-    const harness = new Harness().set(test);
+    const harness = new Harness(test);
 
     await harness.run(reporter);
 
@@ -35,7 +35,7 @@ describe('Harnesses', ({ it }) => {
     const child1 = new Suite('Child 1').add(test1, test2);
     const child2 = new Suite('Child 2').add(test3);
     const parent = new Suite('Parent').add(child1, child2);
-    const harness = new Harness().set(parent);
+    const harness = new Harness(parent);
 
     const reporter = new GraphReporter();
     await harness.run(reporter);
@@ -56,7 +56,7 @@ describe('Harnesses', ({ it }) => {
     const child1 = new Suite('Child 1', { skip: true }).add(test1, test2);
     const child2 = new Suite('Child 2').add(test3);
     const parent = new Suite('Parent').add(child1, child2);
-    const harness = new Harness().set(parent);
+    const harness = new Harness(parent);
 
     const reporter = new GraphReporter();
     await harness.run(reporter);
@@ -78,7 +78,7 @@ describe('Harnesses', ({ it }) => {
     const child1 = new Suite('Child 1').add(test1, test2, test3);
     const child2 = new Suite('Child 2').add(test4);
     const parent = new Suite('Parent').add(child1, child2);
-    const harness = new Harness().set(parent);
+    const harness = new Harness(parent);
 
     const reporter = new GraphReporter();
     await harness.run(reporter);
@@ -102,7 +102,7 @@ describe('Harnesses', ({ it }) => {
     const child1 = new Suite('Child 1', { exclusive: true }).add(test1, test2);
     const child2 = new Suite('Child 2').add(test3);
     const parent = new Suite('Parent').add(child1, child2);
-    const harness = new Harness().set(parent);
+    const harness = new Harness(parent);
 
     const reporter = new GraphReporter();
     await harness.run(reporter);
@@ -124,7 +124,7 @@ describe('Harnesses', ({ it }) => {
     const child1 = new Suite('Child 1', { skip: true, exclusive: true }).add(test1, test2);
     const child2 = new Suite('Child 2').add(test3);
     const parent = new Suite('Parent').add(child1, child2);
-    const harness = new Harness().set(parent);
+    const harness = new Harness(parent);
 
     const reporter = new GraphReporter();
     await harness.run(reporter);

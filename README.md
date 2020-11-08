@@ -9,16 +9,16 @@ Completely reimplementing mocha without dependencies would likely introduce even
     ```js
     const path = require('path');
     const { EOL } = require('os');
-    const { Harness, MultiReporter, SpecReporter, TapReporter } = require('..');
+    const { Harness, MultiReporter, SpecReporter } = require('..');
 
     const filename = path.resolve(__dirname, process.argv[2]);
-    const harness = new Harness().load(filename);
+    const suite = require(filename);
+    const harness = new Harness(suite);
 
     const interactive = String(process.env.CI).toLowerCase() !== 'true';
 
     const reporter = new MultiReporter()
-      .add(new SpecReporter({ colours: interactive }))
-      .add(new TapReporter());
+      .add(new SpecReporter({ colours: interactive }));
 
     harness.run(reporter).then(() => {
       if (harness.failed) process.exit(1);
