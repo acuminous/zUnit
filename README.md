@@ -76,7 +76,7 @@ Completely reimplementing mocha without dependencies would likely introduce even
     ```
 
 ## Composing Test Suites
-Because zUnit doesn't automatically build tests suites by file globbing, you need to define them explicitly. This easiest way of doing this is by creating a main test suite and including others from it. e.g.
+Because zUnit doesn't walk the filesystem to discover tests suites, you need to define them explicitly. This easiest way of doing this is by creating an `all.tests.js` suite and including others from it. e.g.
 
 ```js
 const userDbTests = require('./userDbTests');
