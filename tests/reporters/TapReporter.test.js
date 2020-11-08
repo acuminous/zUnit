@@ -114,7 +114,7 @@ describe('Tap Reporter', ({ it }) => {
     const test1 = passingTest('Test 1');
     const test2 = passingTest('Test 2');
     const test3 = passingTest('Test 3');
-    const suite = new Suite('Test Suite', { skip: true, reason: 'Mercy' }).add(test1, test2, test3);
+    const suite = new Suite('Test Suite', { skip: true, reason: 'Whatever' }).add(test1, test2, test3);
     const harness = new Harness(suite);
     const stream = new TestOutputStream();
 
@@ -122,9 +122,9 @@ describe('Tap Reporter', ({ it }) => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[2], 'ok 1 - Test Suite / Test 1 # skip Mercy');
-    assert.equal(lines[3], 'ok 2 - Test Suite / Test 2 # skip Mercy');
-    assert.equal(lines[4], 'ok 3 - Test Suite / Test 3 # skip Mercy');
+    assert.equal(lines[2], 'ok 1 - Test Suite / Test 1 # skip Whatever');
+    assert.equal(lines[3], 'ok 2 - Test Suite / Test 2 # skip Whatever');
+    assert.equal(lines[4], 'ok 3 - Test Suite / Test 3 # skip Whatever');
   });
 
 });

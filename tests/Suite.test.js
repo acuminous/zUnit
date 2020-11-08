@@ -107,7 +107,7 @@ describe('Suites', ({ it }) => {
     const test2 = exclusiveTest();
     const suite = new Suite('Test Suite').add(test1, test2);
 
-    await suite.run(reporter, {}, false);
+    await suite.run(reporter, {}, {}, false);
 
     assert.equal(suite.stats.passed, 1);
     assert.equal(suite.stats.failed, 0);
@@ -122,7 +122,7 @@ describe('Suites', ({ it }) => {
     const child2 = new Suite('Child 2').add(test3);
     const parent = new Suite('Parent').add(child1, child2);
 
-    await parent.run(reporter, {}, false);
+    await parent.run(reporter, {}, {}, false);
 
     assert.equal(parent.stats.passed, 2);
     assert.equal(parent.stats.failed, 0);
@@ -137,7 +137,7 @@ describe('Suites', ({ it }) => {
     const child2 = new Suite('Child 2').add(test3);
     const parent = new Suite('Parent').add(child1, child2);
 
-    await parent.run(reporter, {}, false);
+    await parent.run(reporter, {}, {}, false);
 
     assert.equal(parent.stats.passed, 1);
     assert.equal(parent.stats.failed, 0);
