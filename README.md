@@ -330,8 +330,8 @@ Each node in the graph has the following properties
 |----------|---------------------------------|----------------------------------------|
 | name     | String                          | The node name                          |
 | type     | String                          | The node type (`test` or `suite`)      |
-| isTest   | Function : Boolean              | Indicates whether the node is a test   |
-| isSuite  | Function : Boolean              | Indicates whether the node is a suite  |
+| isTest   | Function() : Boolean            | Indicates whether the node is a test   |
+| isSuite  | Function() : Boolean            | Indicates whether the node is a suite  |
 | number   | Number                          | The test number (undefined for suites) |
 | result   | String                          | One of RunnableOutcomes                |
 | passed   | Boolean                         | Indicates wither the node passed       |
@@ -437,6 +437,29 @@ ok 1 - Harnesses / should run a test suite
 ok 2 - Harnesses / should run an individual test
 ```
 
+## Creating suites and tests by hand
+There's no need to use `describe` and `it` if you prefer not to. You can just as easily create test suites as follows...
+```js
+const assert = require('assert');
+const { Suite, Test } = require('zunit');
+
+const suite = new Suite('Test Suite');
+const test1 = new Test('Test 1', async () => {
+  assert.equal(1, 2);
+});
+const test2 = new Test('Test 1', async () => {
+  assert.equal(1, 2);
+});
+suite.add(test1, test2);
+
+module.exports = suite;
+```
+Both the `Suite` and `Test` constructors accept an optional `options` object which can be used for aborting early, skipping tests or making them exclusive. e.g.
+```js
+const suite = new Suite('Test Suite', { abort: true, skip: true });
+const test = new Test('Test 1', { exclusive: true });
+```
+
 ## Tips
 
 ### eslint
@@ -452,3 +475,4 @@ It can be annoying to repeatedly add and remove `xit` and `xdescribe` imports in
   }
 }
 ```
+
