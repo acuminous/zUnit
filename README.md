@@ -1,5 +1,5 @@
 # zUnit
-zUnit is a zero dependency, non polluting, test harness for Node that you can run without any special scripts. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies triggered an audit warning.
+zUnit is a zero dependency, non-polluting, non-magical, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies triggered an audit warning.
 
 Completely reimplementing mocha without dependencies would likely introduce even more issues. Consequently, zUnit is nowhere near as feature rich, e.g. it does not support parallel test, retries or file globbing, but most of the simpler features are present, so it should still be perfectly usable.
 
