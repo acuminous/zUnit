@@ -447,7 +447,7 @@ const suite = new Suite('Test Suite');
 const test1 = new Test('Test 1', async () => {
   assert.equal(1, 2);
 });
-const test2 = new Test('Test 1', async () => {
+const test2 = new Test('Test 2', async () => {
   assert.equal(1, 2);
 });
 suite.add(test1, test2);
