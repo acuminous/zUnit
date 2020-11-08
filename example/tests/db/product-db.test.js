@@ -49,7 +49,7 @@ describe('Product DB Tests', ({ beforeEach, describe, xdescribe }) => {
 
       const product = await productDb.findById(productId);
       assert.equal(product.productId, productId);
-      assert.equal(product.name, 'Broken Sword');
+      assert.equal(product.name, 'Borked Sword');
     });
 
   });

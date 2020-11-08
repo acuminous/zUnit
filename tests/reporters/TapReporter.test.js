@@ -95,7 +95,7 @@ describe('Tap Reporter', ({ it }) => {
 
   it('should output skipped tests', async () => {
     const test1 = skippedTest('Test 1');
-    const test2 = skippedTest('Test 2', 'Mercy');
+    const test2 = skippedTest('Test 2', 'A good reason');
     const test3 = skippedTest('Test 3', 'Meh');
     const suite = new Suite('Test Suite').add(test1, test2, test3);
     const harness = new Harness(suite);
@@ -106,7 +106,7 @@ describe('Tap Reporter', ({ it }) => {
 
     const lines = stream.lines;
     assert.equal(lines[2], 'ok 1 - Test Suite / Test 1 # skip No reason given');
-    assert.equal(lines[3], 'ok 2 - Test Suite / Test 2 # skip Mercy');
+    assert.equal(lines[3], 'ok 2 - Test Suite / Test 2 # skip A good reason');
     assert.equal(lines[4], 'ok 3 - Test Suite / Test 3 # skip Meh');
   });
 
