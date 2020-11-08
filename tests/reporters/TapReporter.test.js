@@ -1,7 +1,8 @@
 const assert = require('assert');
+const { EOL } = require('os');
 const TestOutputStream = require('../support/TestOutputStream');
-const { passingTest, failingTest, skippedTest } = require('../support/fixtures');
-const { describe, TapReporter, Harness, Suite } = require('../..');
+const { passingTest, failingTest, skippedTest, fail } = require('../support/fixtures');
+const { describe, TapReporter, Harness, Suite, Test } = require('../..');
 
 describe('Tap Reporter', ({ it }) => {
 
@@ -72,8 +73,24 @@ describe('Tap Reporter', ({ it }) => {
 
     const lines = stream.lines;
     assert.equal(lines[2], 'not ok 1 - Test Suite / Test 1');
-    assert.equal(lines[3], 'not ok 2 - Test Suite / Test 2');
-    assert.equal(lines[4], 'not ok 3 - Test Suite / Test 3');
+    assert.equal(lines[3], '# Error: Oh Noes!');
+    assert.match(lines[4], /^# {5}at fail \(.*\)/);
+    assert.match(lines[5], /^# {5}at failingTest \(.*\)/);
+  });
+
+  it('should prefix each error messages line with a # ', async () => {
+    const test = new Test('Test', fail({ error: new Error(`Oh${EOL}Noes!`) }));
+    const suite = new Suite('Test Suite').add(test);
+    const harness = new Harness(suite);
+    const stream = new TestOutputStream();
+
+    const reporter = new TapReporter({ stream });
+    await harness.run(reporter);
+
+    const lines = stream.lines;
+    assert.equal(lines[2], 'not ok 1 - Test Suite / Test');
+    assert.equal(lines[3], '# Error: Oh');
+    assert.equal(lines[4], '# Noes!');
   });
 
   it('should output skipped tests', async () => {
