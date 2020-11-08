@@ -341,7 +341,8 @@ Each node in the graph has the following properties
 | duration | Number                          | Milliseconds                           |
 | tests    | Number                          | Number of tests                        |
 | failures | Number                          | Number of failures                     |
-| children | Array<GraphNode>                | Array of child nodes                   |
+| skips    | Number                          | Number of skipped tests                |
+| children | Array&lt;GraphNode&gt;          | Array of child nodes                   |
 | parent   | GraphNode                       | Parent node                            |
 | resolve  | Function(...Number) : GraphNode | Resolves the specified child, e.g. `.resolve(1, 2, 3)` |
 
