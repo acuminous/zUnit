@@ -194,7 +194,7 @@ Tests default to timing out after 5 seconds. You can override this as follows...
     }, { timeout: 10000 });
     ```
 
-### Failing Fast / Aborting Early
+## Failing Fast / Aborting Early
 Test suites continue running tests after failure by default. You can override this in the following ways...
 
 1. Passing an abort option when running the main suite
