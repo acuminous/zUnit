@@ -9,7 +9,7 @@ Completely reimplementing mocha without dependencies would likely introduce even
     ```js
     const path = require('path');
     const { EOL } = require('os');
-    const { Harness, MultiReporter, SpecReporter } = require('..');
+    const { Harness, MultiReporter, SpecReporter } = require('zunit');
 
     const filename = path.resolve(__dirname, process.argv[2]);
     const suite = require(filename);

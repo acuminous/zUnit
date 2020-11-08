@@ -8,8 +8,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "node tests all.test.js"
+    "test": "node tests _all.test.js"
   },
-  "author": "",
+  "author": "Stephen Cresswell",
   "license": "ISC"
 }
