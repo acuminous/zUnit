@@ -308,11 +308,133 @@ After
 ## Reporters
 zUnit ships with the following reporters
 
+* [GraphReporter](#graphreporter)
+* [JUnitReporter](#junitreporter)
+* [MultiReporter](#multireporter)
 * [SpecReporter](#specreporter)
 * [TapReporter](#tapreporter)
-* [GraphReporter](#graphreporter)
-* [MultiReporter](#multireporter)
-* [NullReporter](#nullreporter)
+
+### GraphReporter
+This reporter builds up a graph of test results for subsequent interogation.
+
+#### Usage
+```js
+const reporter = new GraphReporter();
+await harness.run(reporter);
+const graph = reporter.toGraph();
+```
+
+Each node in the graph has the following properties
+
+| Name     | Type                            | Notes                                  |
+|----------|---------------------------------|----------------------------------------|
+| name     | String                          | The node name                          |
+| type     | String                          | The node type (`test` or `suite`)      |
+| isTest   | Function : Boolean              | Indicates whether the node is a test   |
+| isSuite  | Function : Boolean              | Indicates whether the node is a suite  |
+| number   | Number                          | The test number (undefined for suites) |
+| result   | String                          | One of RunnableOutcomes                |
+| passed   | Boolean                         | Indicates wither the node passed       |
+| failed   | Boolean                         | Indicates wither the node failed       |
+| skipped  | Boolean                         | Indicates wither the node skipped      |
+| error    | Error                           | Populated if the test fails            |
+| duration | Number                          | Milliseconds                           |
+| tests    | Number                          | Number of tests                        |
+| failures | Number                          | Number of failures                     |
+| children | Array<GraphNode>                | Array of child nodes                   |
+| parent   | GraphNode                       | Parent node                            |
+| resolve  | Function(...Number) : GraphNode | Resolves the specified child, e.g. `.resolve(1, 2, 3)` |
+
+### JUnitReporter
+A [JUnit](https://llg.cubic.org/docs/junit/) Reporter
+
+```js
+const reporter = new JunitReporter();
+await harness.run(reporter);
+```
+
+#### Options
+| Option  | Type            | Default | Notes           |
+|---------|-----------------|---------|-----------------|
+| stream  | stream.Writable | stdout  | Override to redirect output |
+
+#### Sample Output
+```bash
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="ZUnit" tests="45" failures="0" time="0.714">
+  <testsuite name="Harnesses" tests="7" failures="0" skipped="0" time="0.023">
+    <testcase name="should run a test suite" time="0.005">
+    </testcase>
+    <testcase name="should run an individual test" time="0.002">
+    </testcase>
+  </testsuite>
+</testsuites>
+```
+It is necessary to take some liberties with the JUnit format since:
+
+- it was designed for Java and expects package / class names rather than suite / test names
+- it differentiates between assertion failures and errors
+- it does not support deep nesting
+
+### MultiReporter
+Pipes test events to multiple reporters
+
+#### Usage
+```js
+const specReporter = new SpecReporter();
+const tapReporter = new TapReporter({ stream: fileStream });
+const multiReporter = new MultiReporter().add(specReporter, tapReporter);
+await harness.run(reporter);
+```
+
+### SpecReporter
+Similar to mocha's spec reporter
+
+#### Usage
+```js
+const reporter = new SpecReporter(options);
+await harness.run(reporter);
+```
+
+#### Sample Output
+```bash
+ZUnit
+  Harnesses
+    should run a test suite
+     - PASSED (4ms)
+    should run an individual test
+     - PASSED (2ms)
+
+Summary
+  Passed: 2, Failed: 0, Skipped: 0, Duration: 6ms
+```
+
+#### Options
+| Option  | Type            | Default | Notes           |
+|---------|-----------------|---------|-----------------|
+| stream  | stream.Writable | stdout  | Override to redirect output |
+| colours | Boolean         | true    | Toggles colours |
+
+### TapReporter
+A [TAP](https://testanything.org/tap-version-13-specification.html) Reporter
+
+```js
+const reporter = new TapReporter();
+await harness.run(reporter);
+```
+
+#### Options
+| Option  | Type            | Default | Notes           |
+|---------|-----------------|---------|-----------------|
+| stream  | stream.Writable | stdout  | Override to redirect output |
+
+#### Sample Output
+```bash
+TAP version 13
+1..2
+ok 1 - Harnesses / should run a test suite
+ok 2 - Harnesses / should run an individual test
+```
 
 ## Tips
 

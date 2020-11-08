@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node tests all.test.js",
+    "test": "node tests _all.test.js",
     "example": "pushd example; npm t; popd"
   },
   "author": "",
