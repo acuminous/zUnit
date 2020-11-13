@@ -109,9 +109,9 @@ describe('Suites', ({ it }) => {
 
     await suite.run(reporter, {}, {}, false);
 
-    assert.equal(suite.stats.passed, 1);
-    assert.equal(suite.stats.failed, 0);
-    assert.equal(suite.stats.skipped, 0);
+    assert.equal(suite.summary.passed, 1);
+    assert.equal(suite.summary.failed, 0);
+    assert.equal(suite.summary.skipped, 0);
   });
 
   it('should only run exclusive tests (suite configuration)', async () => {
@@ -124,9 +124,9 @@ describe('Suites', ({ it }) => {
 
     await parent.run(reporter, {}, {}, false);
 
-    assert.equal(parent.stats.passed, 2);
-    assert.equal(parent.stats.failed, 0);
-    assert.equal(parent.stats.skipped, 0);
+    assert.equal(parent.summary.passed, 2);
+    assert.equal(parent.summary.failed, 0);
+    assert.equal(parent.summary.skipped, 0);
   });
 
   it('should only run exclusive tests (suite and test configuration)', async () => {
@@ -139,9 +139,9 @@ describe('Suites', ({ it }) => {
 
     await parent.run(reporter, {}, {}, false);
 
-    assert.equal(parent.stats.passed, 1);
-    assert.equal(parent.stats.failed, 0);
-    assert.equal(parent.stats.skipped, 0);
+    assert.equal(parent.summary.passed, 1);
+    assert.equal(parent.summary.failed, 0);
+    assert.equal(parent.summary.skipped, 0);
   });
 
   it('should skip the exclusive test (suite configuration)', async () => {
@@ -175,21 +175,21 @@ describe('Suites', ({ it }) => {
 
     assert.equal(parent.passed, false);
     assert.equal(parent.name, 'Parent');
-    assert.equal(parent.stats.passed, 2);
-    assert.equal(parent.stats.failed, 1);
-    assert.equal(parent.stats.skipped, 0);
+    assert.equal(parent.summary.passed, 2);
+    assert.equal(parent.summary.failed, 1);
+    assert.equal(parent.summary.skipped, 0);
 
     assert.equal(child1.name, 'Child 1');
     assert.equal(child1.passed, false);
-    assert.equal(child1.stats.passed, 1);
-    assert.equal(child1.stats.failed, 1);
-    assert.equal(child1.stats.skipped, 0);
+    assert.equal(child1.summary.passed, 1);
+    assert.equal(child1.summary.failed, 1);
+    assert.equal(child1.summary.skipped, 0);
 
     assert.equal(child2.name, 'Child 2');
     assert.equal(child2.passed, true);
-    assert.equal(child2.stats.passed, 1);
-    assert.equal(child2.stats.failed, 0);
-    assert.equal(child2.stats.skipped, 0);
+    assert.equal(child2.summary.passed, 1);
+    assert.equal(child2.summary.failed, 0);
+    assert.equal(child2.summary.skipped, 0);
 
     assert.equal(test1.name, 'Test 1');
     assert.equal(test1.passed, true);
