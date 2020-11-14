@@ -98,7 +98,7 @@ describe('Tests', ({ it }) => {
     await test.run(reporter);
 
     assert.equal(test.name, 'Test');
-    assert.equal(test.number, 99);
+    assert.equal(test.point, 99);
     assert.equal(test.passed, true);
   });
 

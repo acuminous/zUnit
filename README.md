@@ -332,7 +332,7 @@ Each node in the graph has the following properties
 | type     | String                          | The node type (`test` or `suite`)      |
 | isTest   | Function() : Boolean            | Indicates whether the node is a test   |
 | isSuite  | Function() : Boolean            | Indicates whether the node is a suite  |
-| number   | Number                          | The test number (undefined for suites) |
+| point    | Number                          | The test point number (undefined for suites) |
 | result   | String                          | One of RunnableOutcomes                |
 | passed   | Boolean                         | Indicates wither the node passed       |
 | failed   | Boolean                         | Indicates wither the node failed       |

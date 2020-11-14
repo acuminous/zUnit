@@ -215,13 +215,13 @@ describe('Suites', ({ it }) => {
     assert.equal(graph.name, 'Parent');
     assert.equal(graph.result, RunnableOutcomes.PASSED);
     assert.equal(graph.resolve(0, 0).name, 'Test 1');
-    assert.equal(graph.resolve(0, 0).number, 1);
+    assert.equal(graph.resolve(0, 0).point, 1);
     assert.equal(graph.resolve(0, 1).result, RunnableOutcomes.PASSED);
     assert.equal(graph.resolve(0, 1).name, 'Test 2');
-    assert.equal(graph.resolve(0, 1).number, 2);
+    assert.equal(graph.resolve(0, 1).point, 2);
     assert.equal(graph.resolve(0, 0).result, RunnableOutcomes.PASSED);
     assert.equal(graph.resolve(1, 0).name, 'Test 3');
-    assert.equal(graph.resolve(1, 0).number, 3);
+    assert.equal(graph.resolve(1, 0).point, 3);
     assert.equal(graph.resolve(1, 0).result, RunnableOutcomes.PASSED);
   });
 });
