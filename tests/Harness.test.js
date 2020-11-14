@@ -15,7 +15,7 @@ describe('Harnesses', ({ it }) => {
     await harness.run(reporter);
 
     assert.equal(harness.passed, true);
-    assert.equal(harness.summary.passed, 2);
+    assert.equal(harness.stats.passed, 2);
   });
 
   it('should run an individual test', async () => {
@@ -25,7 +25,7 @@ describe('Harnesses', ({ it }) => {
     await harness.run(reporter);
 
     assert.equal(harness.passed, true);
-    assert.equal(harness.summary.passed, 1);
+    assert.equal(harness.stats.passed, 1);
   });
 
   it('should skip a single test in a nested suite', async () => {
