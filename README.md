@@ -411,10 +411,11 @@ Summary
 ```
 
 #### Options
-| Option  | Type            | Default | Notes           |
-|---------|-----------------|---------|-----------------|
+| Option  | Type            | Default | Notes                       |
+|---------|-----------------|---------|-----------------------------|
 | stream  | stream.Writable | stdout  | Override to redirect output |
-| colours | Boolean         | true    | Toggles colours |
+| colours | Boolean         | true    | Toggles colours             |
+| colors  | Boolean         | true    | Alias for colours           |
 
 ### TapReporter
 A [TAP](https://testanything.org/tap-version-13-specification.html) Reporter
