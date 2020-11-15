@@ -3,6 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "keywords": [
+    "testing",
+    "unit",
+    "jasmine",
+    "mocha",
+    "alternative",
+    "zero",
+    "dependencies",
+    "light",
+    "lightweight",
+    "simple"
+  ],
   "scripts": {
     "test": "node tests _all.test.js",
     "example": "pushd example; npm t; popd"
