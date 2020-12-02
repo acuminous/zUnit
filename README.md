@@ -1,7 +1,7 @@
 # zUnit
-zUnit is a zero dependency, non-polluting, non-magical, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies triggered an audit warning.
+zUnit is a zero dependency, non-polluting, low magic, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies triggered an audit warning.
 
-Completely reimplementing mocha without dependencies would likely introduce even more issues. Consequently, zUnit is nowhere near as feature rich, e.g. it does not support parallel test, retries or file globbing, but most of the simpler features are present, so it should still be perfectly usable.
+Completely reimplementing mocha without dependencies would likely introduce even more issues. Consequently, zUnit lacks some advanced features, e.g. it does not support concurrent tests, retries or test discovery, but most of the other day-to-day features are present. Since writing zUnit I've begun to wonder whether these features were necessary in the first place. Many projects test suites are too small to benefit from concurrent testing, yet it's use means output must be buffered, delaying feedback. Rather than retrying tests, I think it better to fix any that are flakey, and take a [statistical approach](https://www.npmjs.com/package/fast-stats) when results are somewhat unpredictable.
 
 ## TL;DR
 
@@ -196,7 +196,7 @@ Tests default to timing out after 5 seconds. You can override this as follows...
 
 The timeout includes the duration of all [lifecycle hooks](#lifecyclehooks).
 
-## Failing Fast / Aborting Early
+## Bailing Out / Failing Fast / Aborting Early
 Test suites continue running tests after failure by default. You can override this in the following ways...
 
 1. Passing an abort option when running the main suite
@@ -277,34 +277,6 @@ describe('Suite', ({ before, after, beforeEach, afterEach, describe, it }) => {
   });
 
 })
-```
-
-```bash
-node tests hooks-example.js
-
-  Suite
-Before
-Before Each
-    ✓ Test 1
-After Each
-Before Each
-    ✓ Test 2
-After Each
-    Nested Suite
-Nested Before
-Before Each
-Nested Before Each
-      ✓ Nested Test 1
-Nester After Each
-After Each
-Before Each
-Nested Before Each
-      ✓ Nested Test 2
-Nester After Each
-After Each
-Nested After
-After
-
 ```
 
 ## Reporters
@@ -444,9 +416,13 @@ ok 2 - Harnesses / should run an individual test
 There's no need to use `describe` and `it` if you prefer not to. You can just as easily create test suites as follows...
 ```js
 const assert = require('assert');
-const { Suite, Test } = require('zunit');
+const { Hook, Suite, Test } = require('zunit');
 
-const suite = new Suite('Test Suite');
+const reset = new Hook('Reset Environment', () => {
+  // ...
+});
+
+const suite = new Suite('Test Suite').beforeEach(reset);
 const test1 = new Test('Test 1', async () => {
   assert.equal(1, 2);
 });

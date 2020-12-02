@@ -1,6 +1,6 @@
 const assert = require('assert');
 const { pass, fail, skip } = require('./support/fixtures');
-const { describe, NullReporter, Test, Hook } = require('..');
+const { describe, NullReporter, Test, Hook, HookSet } = require('..');
 
 describe('Tests', ({ describe, it }) => {
 
@@ -111,7 +111,7 @@ describe('Tests', ({ describe, it }) => {
   });
 
   it('should finalise a test', async () => {
-    const test = new Test('Test', pass(), { exclusive: true });
+    const test = new Test('Test', pass());
     test._finalise(null, 99);
 
     await test.run(reporter);
@@ -128,7 +128,8 @@ describe('Tests', ({ describe, it }) => {
         const executed = [];
         const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
         const hook2 = new Hook('Hook 2', () => executed.push('Before 2'));
-        const test = new Test('Test', pass()).before(hook1, hook2);
+        const hooks = new HookSet().addBefores(hook1, hook2);
+        const test = new Test('Test', pass())._finalise(null, 1, hooks);
 
         await test.run(reporter);
 
@@ -140,7 +141,8 @@ describe('Tests', ({ describe, it }) => {
       it('should skip before hooks before a skipped test (runtime configuration)', async () => {
         const executed = [];
         const hook = new Hook('Hook', () => executed.push('Before'));
-        const test = new Test('Test', pass()).before(hook);
+        const hooks = new HookSet().addBefores(hook);
+        const test = new Test('Test', pass())._finalise(null, 1, hooks);
 
         await test.run(reporter, { skip: true });
 
@@ -150,7 +152,8 @@ describe('Tests', ({ describe, it }) => {
       it('should skip before hooks before a skipped test (inherited configuration)', async () => {
         const executed = [];
         const hook = new Hook('Hook', () => executed.push('Before'));
-        const test = new Test('Test', pass()).before(hook);
+        const hooks = new HookSet().addBefores(hook);
+        const test = new Test('Test', pass())._finalise(null, 1, hooks);
 
         await test.run(reporter, {}, { skip: true });
 
@@ -160,7 +163,8 @@ describe('Tests', ({ describe, it }) => {
       it('should skip before hooks before a skipped test (test configuration)', async () => {
         const executed = [];
         const hook = new Hook('Hook', () => executed.push('Before'));
-        const test = new Test('Test', pass(), { skip: true }).before(hook);
+        const hooks = new HookSet().addBefores(hook);
+        const test = new Test('Test', pass(), { skip: true })._finalise(null, 1, hooks);
 
         await test.run(reporter);
 
@@ -170,7 +174,8 @@ describe('Tests', ({ describe, it }) => {
       it('should skip before hooks before a skipped test (pending)', async () => {
         const executed = [];
         const hook = new Hook('Hook', () => executed.push('Before'));
-        const test = new Test('Test').before(hook);
+        const hooks = new HookSet().addBefores(hook);
+        const test = new Test('Test')._finalise(null, 1, hooks);
 
         await test.run(reporter);
 
@@ -182,7 +187,8 @@ describe('Tests', ({ describe, it }) => {
         const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
         const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
         const hook3 = new Hook('Hook 3', () => executed.push('Before 3'));
-        const test = new Test('Test', pass()).before(hook1, hook2, hook3);
+        const hooks = new HookSet().addBefores(hook1, hook2, hook3);
+        const test = new Test('Test', pass())._finalise(null, 1, hooks);
 
         await test.run(reporter);
 
@@ -191,7 +197,8 @@ describe('Tests', ({ describe, it }) => {
 
       it('should fail the test if a before hook fails', async () => {
         const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
-        const test = new Test('Test', pass()).before(hook);
+        const hooks = new HookSet().addBefores(hook);
+        const test = new Test('Test', pass())._finalise(null, 1, hooks);
 
         await test.run(reporter);
 
@@ -199,13 +206,14 @@ describe('Tests', ({ describe, it }) => {
       });
     });
 
-    describe('After Each', ({ it }) => {
+    describe('After', ({ it }) => {
 
-      it('should run after each hooks after a successful test', async () => {
+      it('should run after hooks after a successful test', async () => {
         const executed = [];
         const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
         const hook2 = new Hook('Hook 2', () => executed.push('After 2'));
-        const test = new Test('Test', pass()).after(hook1, hook2);
+        const hooks = new HookSet().addAfters(hook1, hook2);
+        const test = new Test('Test', pass())._finalise(null, 1, hooks);
 
         await test.run(reporter);
 
@@ -214,11 +222,12 @@ describe('Tests', ({ describe, it }) => {
         assert.equal(executed[1], 'After 2');
       });
 
-      it('should run after each hooks after a failing test', async () => {
+      it('should run after hooks after a failing test', async () => {
         const executed = [];
         const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
         const hook2 = new Hook('Hook 2', () => executed.push('After 2'));
-        const test = new Test('Test', fail()).after(hook1, hook2);
+        const hooks = new HookSet().addAfters(hook1, hook2);
+        const test = new Test('Test', fail())._finalise(null, 1, hooks);
 
         await test.run(reporter);
 
@@ -227,30 +236,33 @@ describe('Tests', ({ describe, it }) => {
         assert.equal(executed[1], 'After 2');
       });
 
-      it('should skip after each hooks after a skipped test (test configuration)', async () => {
+      it('should skip after hooks after a skipped test (test configuration)', async () => {
         const executed = [];
         const hook = new Hook('Hook', () => executed.push('After'));
-        const test = new Test('Test', pass()).after(hook);
+        const hooks = new HookSet().addAfters(hook);
+        const test = new Test('Test', pass())._finalise(null, 1, hooks);
 
         await test.run(reporter, { skip: true });
 
         assert.equal(executed.length, 0);
       });
 
-      it('should skip after each hooks after a skipped test (inherited configuration)', async () => {
+      it('should skip after hooks after a skipped test (inherited configuration)', async () => {
         const executed = [];
         const hook = new Hook('Hook', () => executed.push('After'));
-        const test = new Test('Test', pass()).after(hook);
+        const hooks = new HookSet().addAfters(hook);
+        const test = new Test('Test', pass())._finalise(null, 1, hooks);
 
         await test.run(reporter, {}, { skip: true });
 
         assert.equal(executed.length, 0);
       });
 
-      it('should run after each hooks after a skipped test (programmatic)', async () => {
+      it('should run after hooks after a skipped test (programmatic)', async () => {
         const executed = [];
         const hook = new Hook('Hook', () => executed.push('After'));
-        const test = new Test('Test', skip()).after(hook);
+        const hooks = new HookSet().addAfters(hook);
+        const test = new Test('Test', skip())._finalise(null, 1, hooks);
 
         await test.run(reporter, {});
 
@@ -258,25 +270,50 @@ describe('Tests', ({ describe, it }) => {
         assert.equal(executed[0], 'After');
       });
 
-      it('should fail the test if an after each hook fails', async () => {
+      it('should fail the test if an after hook fails', async () => {
         const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
-        const test = new Test('Test', pass()).after(hook);
+        const hooks = new HookSet().addAfters(hook);
+        const test = new Test('Test', pass())._finalise(null, 1, hooks);
 
         await test.run(reporter);
 
         assert.equal(test.failed, true);
       });
 
-      it('should skip remaining after each hooks following a failure', async () => {
+      it('should skip remaining after hooks following a failure', async () => {
         const executed = [];
         const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
         const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
         const hook3 = new Hook('Hook 3', () => executed.push('After 3'));
-        const test = new Test('Test', pass()).after(hook1, hook2, hook3);
+        const hooks = new HookSet().addAfters(hook1, hook2, hook3);
+        const test = new Test('Test', pass())._finalise(null, 1, hooks);
 
         await test.run(reporter);
 
         assert.equal(executed.length, 1);
+      });
+
+      it('should skip after hooks associated with skipped before hooks', async () => {
+        const executedBefore = [];
+        const before1 = new Hook('Before 1', () => executedBefore.push('Before 1'));
+        const before2 = new Hook('Before 2', () => { throw new Error('Oh Noes!'); });
+        const before3 = new Hook('Before 3', () => executedBefore.push('Before 3'));
+
+        const executedAfter = [];
+        const after1 = new Hook('After 1', () => executedAfter.push('After 1'));
+        const after2 = new Hook('After 2', () => executedAfter.push('After 2'));
+        const after3 = new Hook('After 3', () => executedAfter.push('After 3'));
+
+        const hooks1 = new HookSet().addBefores(before1).addAfters(after1);
+        const hooks2 = new HookSet().addBefores(before2).addAfters(after2);
+        const hooks3 = new HookSet().addBefores(before3).addAfters(after3);
+
+        const test = new Test('Test', pass())._finalise(null, 1, [hooks1, hooks2, hooks3]);
+
+        await test.run(reporter);
+
+        assert.equal(executedBefore.length, 1);
+        assert.equal(executedAfter.length, 2);
       });
     });
   });
