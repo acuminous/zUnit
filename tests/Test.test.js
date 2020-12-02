@@ -34,7 +34,14 @@ describe('Tests', ({ describe, it }) => {
     assert.equal(test.error.message, 'Timed out after 100ms');
   });
 
-  it('should abort slow tests (inherited configuration)');
+  it('should abort slow tests (inherited configuration)', async () => {
+    const test = new Test('Test', pass({ delay: 200 }));
+
+    await test.run(reporter, {}, { timeout: 100 });
+
+    assert.equal(test.failed, true);
+    assert.equal(test.error.message, 'Timed out after 100ms');
+  });
 
   it('should abort slow tests (test configuration)', async () => {
     const test = new Test('Test', pass({ delay: 200 }), { timeout: 100 });
