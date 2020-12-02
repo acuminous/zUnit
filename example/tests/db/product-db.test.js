@@ -2,7 +2,7 @@ const assert = require('assert');
 const { describe } = require('../../..');
 const productDb = require('../../lib/db/product-db');
 
-describe('Product DB Tests', ({ beforeEach, describe, xdescribe }) => {
+describe('Product DB Tests', ({ beforeEach, afterEach, describe, xdescribe }) => {
 
   beforeEach(async () => {
     await productDb.flush();
