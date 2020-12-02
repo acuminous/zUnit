@@ -11,6 +11,10 @@ function fail(params = {}) {
   return () => new Promise((resolve, reject) => setTimeout(() => reject(error), delay));
 }
 
+function skip(params = {}) {
+  return (t) => t.skip(params.reason);
+}
+
 function passingTest(name = 'Test', options) {
   return new Test(name, pass(), options);
 }
@@ -30,6 +34,7 @@ function exclusiveTest(name) {
 module.exports = {
   pass,
   fail,
+  skip,
   passingTest,
   failingTest,
   skippedTest,

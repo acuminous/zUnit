@@ -194,6 +194,8 @@ Tests default to timing out after 5 seconds. You can override this as follows...
     }, { timeout: 10000 });
     ```
 
+The timeout includes the duration of all [lifecycle hooks](#lifecyclehooks).
+
 ## Failing Fast / Aborting Early
 Test suites continue running tests after failure by default. You can override this in the following ways...
 
@@ -214,7 +216,7 @@ Test suites continue running tests after failure by default. You can override th
     }, { abort: true });
     ```
 
-## Lifecycle Hooks (before, after, beforeEach, afterEach)
+## Lifecycle Hooks
 
 * before - runs once before the first test in the enclosing and included suites
 * after - runs once after the last test in the enclosing and included suites
