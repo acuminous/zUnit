@@ -229,20 +229,20 @@ const { describe } = require('zunit');
 
 describe('Suite', ({ before, after, beforeEach, afterEach, describe, it }) => {
 
-  before(async () => {
-    console.log('Before')
+  before(async (h) => {
+    console.log(h.name)
   })
 
-  beforeEach(async () => {
-    console.log('Before Each')
+  beforeEach(async (h) => {
+    console.log(h.name)
   })
 
-  after(async () => {
-    console.log('After')
+  after(async (h) => {
+    console.log(h.name)
   })
 
-  afterEach(async () => {
-    console.log('After Each')
+  afterEach(async (h) => {
+    console.log(h.name)
   })
 
   it('Test 1', async () => {
@@ -253,20 +253,20 @@ describe('Suite', ({ before, after, beforeEach, afterEach, describe, it }) => {
 
   describe('Nested Suite', ({ before, after, beforeEach, afterEach, it }) => {
 
-    before(async () => {
-      console.log('Nested Before')
+    before(async (h) => {
+      console.log(h.name)
     })
 
-    beforeEach(async () => {
-      console.log('Nested Before Each')
+    beforeEach(async (h) => {
+      console.log(h.name)
     })
 
-    after(async () => {
-      console.log('Nested After')
+    after(async (h) => {
+      console.log(h.name)
     })
 
-    afterEach(async () => {
-      console.log('Nester After Each')
+    afterEach(async (h) => {
+      console.log(h.name)
     })
 
     it('Nested Test 1', async () => {
@@ -278,6 +278,7 @@ describe('Suite', ({ before, after, beforeEach, afterEach, describe, it }) => {
 
 })
 ```
+You can explicitly name hooks by passing a string as the first parameter, e.g. `beforeEach('Reset', async (h) => { ... })` and skip a test from a before hook by calling `h.test.skip()`;
 
 ## Reporters
 zUnit ships with the following reporters
@@ -307,7 +308,7 @@ Each node in the graph has the following properties
 | isTest   | Function() : Boolean            | Indicates whether the node is a test   |
 | isSuite  | Function() : Boolean            | Indicates whether the node is a suite  |
 | point    | Number                          | The test point number (undefined for suites) |
-| result   | String                          | One of RunnableOutcomes                |
+| result   | String                          | One of TestableOutcomes                |
 | passed   | Boolean                         | Indicates wither the node passed       |
 | failed   | Boolean                         | Indicates wither the node failed       |
 | skipped  | Boolean                         | Indicates wither the node skipped      |
@@ -416,9 +417,9 @@ ok 2 - Harnesses / should run an individual test
 There's no need to use `describe` and `it` if you prefer not to. You can just as easily create test suites as follows...
 ```js
 const assert = require('assert');
-const { Hook, Suite, Test } = require('zunit');
+const { Before, Suite, Test } = require('zunit');
 
-const reset = new Hook('Reset Environment', () => {
+const reset = new Before('Reset Environment', () => {
   // ...
 });
 

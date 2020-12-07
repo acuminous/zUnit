@@ -1,6 +1,6 @@
 const assert = require('assert');
-const { fail, passingTest, failingTest, skippedTest, exclusiveTest } = require('./support/fixtures');
-const { describe, GraphReporter, NullReporter, Suite, Test, RunnableOutcomes } = require('..');
+const { fail, passingTest, failingTest, skippedTest, exclusiveTest } = require('./support/helpers');
+const { describe, GraphReporter, NullReporter, Suite, Test, TestableOutcomes } = require('..');
 
 describe('Suites', ({ it }) => {
 
@@ -208,21 +208,21 @@ describe('Suites', ({ it }) => {
     const parent = new Suite('Parent').add(child1, child2);
 
     const reporter = new GraphReporter();
-    parent._finalise();
-    await parent.run(reporter);
+    const finalised = parent._finalise();
+    await finalised.run(reporter);
 
     const graph = reporter.toGraph();
     assert.equal(graph.name, 'Parent');
-    assert.equal(graph.result, RunnableOutcomes.PASSED);
+    assert.equal(graph.result, TestableOutcomes.PASSED);
     assert.equal(graph.resolve(0, 0).name, 'Test 1');
     assert.equal(graph.resolve(0, 0).point, 1);
-    assert.equal(graph.resolve(0, 1).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.resolve(0, 1).result, TestableOutcomes.PASSED);
     assert.equal(graph.resolve(0, 1).name, 'Test 2');
     assert.equal(graph.resolve(0, 1).point, 2);
-    assert.equal(graph.resolve(0, 0).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.resolve(0, 0).result, TestableOutcomes.PASSED);
     assert.equal(graph.resolve(1, 0).name, 'Test 3');
     assert.equal(graph.resolve(1, 0).point, 3);
-    assert.equal(graph.resolve(1, 0).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.resolve(1, 0).result, TestableOutcomes.PASSED);
   });
 });
 

@@ -1,7 +1,7 @@
 const assert = require('assert');
 const { EOL } = require('os');
 const TestOutputStream = require('../support/TestOutputStream');
-const { passingTest, failingTest, skippedTest, fail } = require('../support/fixtures');
+const { passingTest, failingTest, skippedTest, fail } = require('../support/helpers');
 const { describe, TapReporter, Harness, Suite, Test } = require('../..');
 
 describe('Tap Reporter', ({ it }) => {

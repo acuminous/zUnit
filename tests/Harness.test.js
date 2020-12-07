@@ -1,6 +1,6 @@
 const assert = require('assert');
-const { passingTest, skippedTest, exclusiveTest } = require('./support/fixtures');
-const { describe, GraphReporter, NullReporter, Harness, Suite, RunnableOutcomes } = require('..');
+const { passingTest, skippedTest, exclusiveTest } = require('./support/helpers');
+const { describe, GraphReporter, NullReporter, Harness, Suite, TestableOutcomes } = require('..');
 
 describe('Harnesses', ({ it }) => {
 
@@ -41,12 +41,12 @@ describe('Harnesses', ({ it }) => {
     await harness.run(reporter);
 
     const graph = reporter.toGraph();
-    assert.equal(graph.result, RunnableOutcomes.PASSED);
-    assert.equal(graph.resolve(0).result, RunnableOutcomes.PASSED);
-    assert.equal(graph.resolve(0, 0).result, RunnableOutcomes.PASSED);
-    assert.equal(graph.resolve(0, 1).result, RunnableOutcomes.SKIPPED);
-    assert.equal(graph.resolve(1).result, RunnableOutcomes.PASSED);
-    assert.equal(graph.resolve(1, 0).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.result, TestableOutcomes.PASSED);
+    assert.equal(graph.resolve(0).result, TestableOutcomes.PASSED);
+    assert.equal(graph.resolve(0, 0).result, TestableOutcomes.PASSED);
+    assert.equal(graph.resolve(0, 1).result, TestableOutcomes.SKIPPED);
+    assert.equal(graph.resolve(1).result, TestableOutcomes.PASSED);
+    assert.equal(graph.resolve(1, 0).result, TestableOutcomes.PASSED);
   });
 
   it('should skip an entire suite in a nested suite', async () => {
@@ -62,12 +62,12 @@ describe('Harnesses', ({ it }) => {
     await harness.run(reporter);
 
     const graph = reporter.toGraph();
-    assert.equal(graph.result, RunnableOutcomes.PASSED);
-    assert.equal(graph.resolve(0).result, RunnableOutcomes.SKIPPED);
-    assert.equal(graph.resolve(0, 0).result, RunnableOutcomes.SKIPPED);
-    assert.equal(graph.resolve(0, 1).result, RunnableOutcomes.SKIPPED);
-    assert.equal(graph.resolve(1).result, RunnableOutcomes.PASSED);
-    assert.equal(graph.resolve(1, 0).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.result, TestableOutcomes.PASSED);
+    assert.equal(graph.resolve(0).result, TestableOutcomes.SKIPPED);
+    assert.equal(graph.resolve(0, 0).result, TestableOutcomes.SKIPPED);
+    assert.equal(graph.resolve(0, 1).result, TestableOutcomes.SKIPPED);
+    assert.equal(graph.resolve(1).result, TestableOutcomes.PASSED);
+    assert.equal(graph.resolve(1, 0).result, TestableOutcomes.PASSED);
   });
 
   it('should only run exclusive tests in a nested suite', async () => {
@@ -84,15 +84,15 @@ describe('Harnesses', ({ it }) => {
     await harness.run(reporter);
 
     const graph = reporter.toGraph();
-    assert.equal(graph.result, RunnableOutcomes.PASSED);
-    assert.equal(graph.resolve(0).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.result, TestableOutcomes.PASSED);
+    assert.equal(graph.resolve(0).result, TestableOutcomes.PASSED);
     assert.equal(graph.resolve(0, 0).name, 'Test 2');
-    assert.equal(graph.resolve(0, 0).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.resolve(0, 0).result, TestableOutcomes.PASSED);
     assert.equal(graph.resolve(0, 1).name, 'Test 3');
-    assert.equal(graph.resolve(0, 1).result, RunnableOutcomes.PASSED);
-    assert.equal(graph.resolve(1).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.resolve(0, 1).result, TestableOutcomes.PASSED);
+    assert.equal(graph.resolve(1).result, TestableOutcomes.PASSED);
     assert.equal(graph.resolve(1, 0).name, 'Test 4');
-    assert.equal(graph.resolve(1, 0).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.resolve(1, 0).result, TestableOutcomes.PASSED);
   });
 
   it('should only run exclusive suites in a nested suite', async () => {
@@ -108,12 +108,12 @@ describe('Harnesses', ({ it }) => {
     await harness.run(reporter);
 
     const graph = reporter.toGraph();
-    assert.equal(graph.result, RunnableOutcomes.PASSED);
-    assert.equal(graph.resolve(0).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.result, TestableOutcomes.PASSED);
+    assert.equal(graph.resolve(0).result, TestableOutcomes.PASSED);
     assert.equal(graph.resolve(0, 0).name, 'Test 1');
-    assert.equal(graph.resolve(0, 0).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.resolve(0, 0).result, TestableOutcomes.PASSED);
     assert.equal(graph.resolve(0, 1).name, 'Test 2');
-    assert.equal(graph.resolve(0, 1).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.resolve(0, 1).result, TestableOutcomes.PASSED);
     assert.equal(graph.resolve(1), undefined);
   });
 
@@ -130,12 +130,12 @@ describe('Harnesses', ({ it }) => {
     await harness.run(reporter);
 
     const graph = reporter.toGraph();
-    assert.equal(graph.result, RunnableOutcomes.PASSED);
-    assert.equal(graph.resolve(0).result, RunnableOutcomes.SKIPPED);
-    assert.equal(graph.resolve(0, 0).result, RunnableOutcomes.SKIPPED);
-    assert.equal(graph.resolve(0, 1).result, RunnableOutcomes.SKIPPED);
-    assert.equal(graph.resolve(1).result, RunnableOutcomes.PASSED);
-    assert.equal(graph.resolve(1, 0).result, RunnableOutcomes.PASSED);
+    assert.equal(graph.result, TestableOutcomes.PASSED);
+    assert.equal(graph.resolve(0).result, TestableOutcomes.SKIPPED);
+    assert.equal(graph.resolve(0, 0).result, TestableOutcomes.SKIPPED);
+    assert.equal(graph.resolve(0, 1).result, TestableOutcomes.SKIPPED);
+    assert.equal(graph.resolve(1).result, TestableOutcomes.PASSED);
+    assert.equal(graph.resolve(1, 0).result, TestableOutcomes.PASSED);
   });
 });
 

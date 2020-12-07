@@ -1,6 +1,6 @@
 const assert = require('assert');
 const TestOutputStream = require('../support/TestOutputStream');
-const { passingTest, failingTest, skippedTest } = require('../support/fixtures');
+const { passingTest, failingTest, skippedTest } = require('../support/helpers');
 const { describe, JUnitReporter, Harness, Suite } = require('../..');
 
 describe('JUnit Reporter', ({ it }) => {

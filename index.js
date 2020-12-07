@@ -1,21 +1,23 @@
+const Fixture = require('./lib/Fixture');
 const Harness = require('./lib/Harness');
-const Hook = require('./lib/Hook');
+const Hooks = require('./lib/Hooks');
 const HookSet = require('./lib/HookSet');
 const Suite = require('./lib/Suite');
 const Test = require('./lib/Test');
-const RunnableEvents = require('./lib/RunnableEvents');
-const RunnableOutcomes = require('./lib/RunnableOutcomes');
+const TestableEvents = require('./lib/TestableEvents');
+const TestableOutcomes = require('./lib/TestableOutcomes');
 const Syntax = require('./lib/Syntax');
 const reporters = require('./lib/reporters');
 
 module.exports = {
+  Fixture,
   Harness,
-  Hook,
+  ...Hooks,
   HookSet,
   Suite,
   Test,
-  RunnableEvents,
-  RunnableOutcomes,
+  TestableEvents,
+  TestableOutcomes,
   ...Syntax,
   ...reporters,
 };
