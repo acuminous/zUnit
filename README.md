@@ -1,5 +1,5 @@
 # zUnit
-![Node.js CI](https://github.com/acuminous/zUnit/workflows/Node.js%20CI/badge.svg)
+[![Node.js CI](https://github.com/acuminous/zUnit/workflows/Node.js%20CI/badge.svg)](https://github.com/acuminous/zUnit/actions?query=workflow%3A%22Node.js+CI%22)
 [![NPM version](https://img.shields.io/npm/v/zunit.svg?style=flat-square)](https://www.npmjs.com/package/zunit)
 [![NPM downloads](https://img.shields.io/npm/dm/zunit.svg?style=flat-square)](https://www.npmjs.com/package/zunit)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6837424f9e1fc6a634bf/maintainability)](https://codeclimate.com/github/acuminous/zUnit/maintainability)
