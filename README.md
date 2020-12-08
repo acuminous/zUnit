@@ -6,7 +6,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6837424f9e1fc6a634bf/test_coverage)](https://codeclimate.com/github/acuminous/zUnit/test_coverage)
 
 ## TL;DR
-zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](https://www.npmjs.com/package/mocha))
+zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](https://www.npmjs.com/package/mocha)) - dependencies
 
 ## About
 zUnit is a zero dependency, non-polluting<sup>[1](#1-non-polluting)</sup>, low magic<sup>[2](#2-low-magic)</sup>, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning.
