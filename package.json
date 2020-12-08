@@ -20,6 +20,7 @@
   ],
   "scripts": {
     "test": "node tests _all.test.js",
+    "coverage": "nyc --report html --reporter lcov --reporter text-summary npm test",
     "example": "pushd example; npm t; popd"
   },
   "author": "Stephen Cresswell",
