@@ -60,7 +60,13 @@ describe('Tests', () => {
     assert.equal(test.skipped, true);
   });
 
-  it('should bypass skipped tests (inherited configuration)');
+  it('should bypass skipped tests (inherited configuration)', async () => {
+    const test = new Test('Test', fail());
+
+    await test.run(reporter, {}, { skip: true });
+
+    assert.equal(test.skipped, true);
+  });
 
   it('should bypass skipped tests (test configuration)', async () => {
     const test = new Test('Test', fail(), { skip: true });
