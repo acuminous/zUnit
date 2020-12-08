@@ -40,17 +40,17 @@ The only &#x2728; magical &#x2728; code in zunit is how it automatically exports
 
 1. Create a test suite, e.g. `tests/user-db.test.js`
     ```js
-    const { describe } = require('zunit');
+    const { describe, it, beforeEach } = require('zunit');
     const assert = require('assert');
     const userDb = require('../lib/user-db');
 
-    describe('User DB', ({ beforeEach, describe }) => {
+    describe('User DB', () => {
 
       beforeEach(async () => {
         await userDb.flush();
       })
 
-      describe('List Users', ({ it, xit }) => {
+      describe('List Users', () => {
 
         it('should list all users', async () => {
           await userDb.create({ name: 'John' });
