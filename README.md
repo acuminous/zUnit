@@ -91,10 +91,11 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
 Because zUnit doesn't walk the filesystem to discover tests suites, you need to define them explicitly. This easiest way of doing this is by creating a main suite and including others from it. e.g.
 
 ```js
+const { describe, include } = require('zunit');
 const userDbTests = require('./userDbTests');
 const productDbTests = require('./productDbTests');
 
-describe('All Tests', ({ include }) => {
+describe('All Tests', () => {
   include(userDbTests, productDbTests)
 })
 ```
@@ -104,18 +105,18 @@ You can define pending tests / skip tests in the following ways...
 
 1. Using `xit`
     ```js
-    const { describe } = require('zunit');
+    const { describe, xit } = require('zunit');
 
-    describe('My Suite', ({ xit }) => {
+    describe('My Suite', () => {
       xit('should do something wonderful', async () => {
       });
     });
     ```
 1. Using `xdescribe`
     ```js
-    const { xdescribe } = require('zunit');
+    const { xdescribe, it } = require('zunit');
 
-    xdescribe('My Suite', ({ it }) => {
+    xdescribe('My Suite', () => {
       it('should do something wonderful', async () => {
       });
     });
@@ -123,18 +124,18 @@ You can define pending tests / skip tests in the following ways...
 
 1. Defining a test without a test function
     ```js
-    const { describe } = require('zunit');
+    const { describe, it } = require('zunit');
 
-    describe('My Suite', ({ it }) => {
+    describe('My Suite', () => {
       it('should do something wonderful');
     });
     ```
 
 1. Returning `test.skip()` from within a test function
     ```js
-    const { describe } = require('zunit');
+    const { describe, it } = require('zunit');
 
-    describe('My Suite', ({ it }) => {
+    describe('My Suite', () => {
       it('should do something wonderful', async (test) => {
         return test.skip();
       });
@@ -146,21 +147,21 @@ You can selectively run tests or suites as follows...
 
 1. Create a dedicated suite
     ```js
-    const { describe } = require('zunit');
+    const { describe, it, include } = require('zunit');
     const homePageTests = require('./frontend/profile-page.test');
     const settingsPageTests = require('./frontend/settings-page.test');
     const searchPageTests = require('./frontend/search-page.test');
 
-    describe('Frontend Tests', ({ it, include }) => {
+    describe('Frontend Tests', () => {
       include(homePageTests, settingsPageTests, searchPageTests);
     });
     ```
 
 1. Passing an option to `it`
     ```js
-    const { describe } = require('zunit');
+    const { describe, it } = require('zunit');
 
-    describe('My Suite', ({ it }) => {
+    describe('My Suite', () => {
       it('should do something wonderful', async () => {
       }, { exclusive: true });
     });
@@ -168,9 +169,9 @@ You can selectively run tests or suites as follows...
 
 1. Passing an option to `describe` (affects all tests in the enclosing and included suites)
     ```js
-    const { describe } = require('zunit');
+    const { describe, it } = require('zunit');
 
-    describe('My Suite', ({ it }) => {
+    describe('My Suite', () => {
       it('should do something wonderful', async () => {
       });
     }, { exclusive: true });
@@ -188,9 +189,9 @@ Tests default to timing out after 5 seconds. You can override this as follows...
 
 1. Passing a timeout option to `it`
     ```js
-    const { describe } = require('zunit');
+    const { describe, it } = require('zunit');
 
-    describe('My Suite', ({ it }) => {
+    describe('My Suite', () => {
       it('should do something wonderful', async () => {
       }, { timeout: 10000 });
     });
@@ -198,9 +199,9 @@ Tests default to timing out after 5 seconds. You can override this as follows...
 
 1. Passing a timeout option to `describe` (affects all tests in the suite)
     ```js
-    const { describe } = require('zunit');
+    const { describe, it } = require('zunit');
 
-    describe('My Suite', ({ it }) => {
+    describe('My Suite', () => {
       it('should do something wonderful', async () => {
       });
     }, { timeout: 10000 });
@@ -220,9 +221,9 @@ Test suites continue running tests after failure by default. You can override th
 
 1. Passing an option to `describe`
     ```js
-    const { describe } = require('zunit');
+    const { describe, it } = require('zunit');
 
-    describe('My Suite', ({ it }) => {
+    describe('My Suite', () => {
       it('should do something wonderful', async () => {
       });
     }, { abort: true });
@@ -237,24 +238,24 @@ Test suites continue running tests after failure by default. You can override th
 
 This is best demonstrated with an example
 ```js
-const { describe } = require('zunit');
+const { describe, before, after, beforeEach, afterEach, it } = require('zunit');
 
-describe('Suite', ({ before, after, beforeEach, afterEach, describe, it }) => {
+describe('Suite', () => {
 
-  before(async (h) => {
-    console.log(h.name)
+  before(async (hook) => {
+    console.log(hook.name)
   })
 
-  beforeEach(async (h) => {
-    console.log(h.name)
+  beforeEach(async (hook) => {
+    console.log(hook.name)
   })
 
-  after(async (h) => {
-    console.log(h.name)
+  after(async (hook) => {
+    console.log(hook.name)
   })
 
-  afterEach(async (h) => {
-    console.log(h.name)
+  afterEach(async (hook) => {
+    console.log(hook.name)
   })
 
   it('Test 1', async () => {
@@ -263,22 +264,22 @@ describe('Suite', ({ before, after, beforeEach, afterEach, describe, it }) => {
   it('Test 2', async () => {
   })
 
-  describe('Nested Suite', ({ before, after, beforeEach, afterEach, it }) => {
+  describe('Nested Suite', () => {
 
-    before(async (h) => {
-      console.log(h.name)
+    before(async (hook) => {
+      console.log(hook.name)
     })
 
-    beforeEach(async (h) => {
-      console.log(h.name)
+    beforeEach(async (hook) => {
+      console.log(hook.name)
     })
 
-    after(async (h) => {
-      console.log(h.name)
+    after(async (hook) => {
+      console.log(hook.name)
     })
 
-    afterEach(async (h) => {
-      console.log(h.name)
+    afterEach(async (hook) => {
+      console.log(hook.name)
     })
 
     it('Nested Test 1', async () => {
