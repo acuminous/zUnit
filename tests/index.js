@@ -1,3 +1,4 @@
+require('./support/polyfill');
 const path = require('path');
 const { EOL } = require('os');
 const { Harness, MultiReporter, SpecReporter, syntax } = require('..');
