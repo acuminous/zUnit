@@ -4,3 +4,4 @@ plugins:
   enabled: false
 exclude_patterns:
 - "example/"
+- "tests/"
