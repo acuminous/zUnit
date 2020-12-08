@@ -88,7 +88,7 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
     ```
 
 ## Composing Test Suites
-Because zUnit doesn't walk the filesystem to discover tests suites, you need to define them explicitly. This easiest way of doing this is by creating an main suite and including others from it. e.g.
+Because zUnit doesn't walk the filesystem to discover tests suites, you need to define them explicitly. This easiest way of doing this is by creating a main suite and including others from it. e.g.
 
 ```js
 const userDbTests = require('./userDbTests');
