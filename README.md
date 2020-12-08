@@ -2,6 +2,8 @@
 ![Node.js CI](https://github.com/acuminous/zUnit/workflows/Node.js%20CI/badge.svg)
 [![NPM version](https://img.shields.io/npm/v/zunit.svg?style=flat-square)](https://www.npmjs.com/package/zunit)
 [![NPM downloads](https://img.shields.io/npm/dm/zunit.svg?style=flat-square)](https://www.npmjs.com/package/zunit)
+[![Maintainability](https://api.codeclimate.com/v1/badges/51128d41d04a7e948674/maintainability)](https://codeclimate.com/github/acuminous/zUnit/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/51128d41d04a7e948674/test_coverage)](https://codeclimate.com/github/acuminous/zUnit/test_coverage)
 
 zUnit is a zero dependency, non-polluting<sup>[1](#1-non-polluting)</sup>, low magic<sup>[2](#2-low-magic)</sup>, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning.
 
