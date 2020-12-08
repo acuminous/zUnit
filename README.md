@@ -1,5 +1,5 @@
 # zUnit
-![Node.js CI](https://github.com/actions/acuminous/zUnit/workflows/Node.js%20CI/badge.svg)
+![Node.js CI](https://github.com/acuminous/zUnit/workflows/Node.js%20CI/badge.svg)
 
 zUnit is a zero dependency, non-polluting<sup>[1](#1-non-polluting)</sup>, low magic<sup>[2](#2-low-magic)</sup>, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies triggered an audit warning.
 
