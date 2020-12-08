@@ -1,4 +1,6 @@
 # zUnit
+![Node.js CI](https://github.com/actions/acuminous/zUnit/workflows/Node.js%20CI/badge.svg)
+
 zUnit is a zero dependency, non-polluting<sup>[1](#1-non-polluting)</sup>, low magic<sup>[2](#2-low-magic)</sup>, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies triggered an audit warning.
 
 Completely reimplementing mocha without dependencies would likely introduce even more issues. Consequently, zUnit lacks some advanced features, e.g. it does not support concurrent tests, retries or test discovery, but most of the other day-to-day features are present. Since writing zUnit I've begun to wonder whether these features were necessary in the first place. Many projects test suites are too small to benefit from concurrent testing, yet it's use means output must be buffered, delaying feedback. Rather than retrying tests, I think it better to fix any that are flakey, and take a [statistical approach](https://www.npmjs.com/package/fast-stats) when results are somewhat unpredictable.
