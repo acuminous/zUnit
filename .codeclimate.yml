@@ -1,6 +1,6 @@
 version: "2"
 plugins:
  eslint:
-  enabled: true
+  enabled: false
 exclude_patterns:
 - "example/"
