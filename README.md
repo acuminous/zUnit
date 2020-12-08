@@ -23,7 +23,6 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
 1. Create a runner, e.g. `tests/index.js`
     ```js
     const path = require('path');
-    const { EOL } = require('os');
     const { Harness, MultiReporter, SpecReporter } = require('zunit');
 
     const filename = path.resolve(__dirname, process.argv[2]);
@@ -38,7 +37,7 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
     harness.run(reporter).then(() => {
       if (harness.failed) process.exit(1);
       if (harness.hasExclusiveTests()) {
-        console.log(`Found one or more exclusive tests!${EOL}`);
+        console.log(`Found one or more exclusive tests!`);
         process.exit(2);
       }
     });
