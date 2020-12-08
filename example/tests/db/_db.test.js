@@ -1,9 +1,7 @@
-const { describe } = require('../../..');
 const userDbTests = require('./user-db.test');
 const productDbTests = require('./product-db.test');
 
-describe('DB Tests', ({ include }) => {
-
+describe('DB Tests', () => {
   include(userDbTests, productDbTests);
 
 });

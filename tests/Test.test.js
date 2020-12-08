@@ -1,8 +1,8 @@
 const assert = require('assert');
 const { pass, fail, skip } = require('./support/helpers');
-const { describe, NullReporter, Test, Before, After, HookSet } = require('..');
+const { NullReporter, Test, Before, After, HookSet } = require('..');
 
-describe('Tests', ({ describe, it }) => {
+describe('Tests', () => {
 
   const reporter = new NullReporter();
 
@@ -127,9 +127,9 @@ describe('Tests', ({ describe, it }) => {
     assert.equal(finalised.passed, true);
   });
 
-  describe('Lifecycle Hooks', ({ describe }) => {
+  describe('Lifecycle Hooks', () => {
 
-    describe('Before', ({ it }) => {
+    describe('Before', () => {
 
       it('should inject hook api', async () => {
         let api;
@@ -245,7 +245,7 @@ describe('Tests', ({ describe, it }) => {
       });
     });
 
-    describe('After', ({ it }) => {
+    describe('After', () => {
 
       it('should inject hook api', async () => {
         let api;

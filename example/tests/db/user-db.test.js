@@ -1,14 +1,13 @@
 const assert = require('assert');
-const { xdescribe } = require('../../..');
 const userDb = require('../../lib/db/user-db');
 
-xdescribe('User DB Tests', ({ beforeEach, describe, xdescribe }) => {
+xdescribe('User DB Tests', () => {
 
   beforeEach(async () => {
     await userDb.flush();
   });
 
-  describe('List Users', ({ it, xit }) => {
+  describe('List Users', () => {
 
     it('should list all users', async () => {
       await userDb.create({ name: 'John' });
@@ -25,7 +24,7 @@ xdescribe('User DB Tests', ({ beforeEach, describe, xdescribe }) => {
 
   });
 
-  xdescribe('Get User', ({ it }) => {
+  xdescribe('Get User', () => {
 
     it('should find a user by user id', async () => {
       const { userId } = await userDb.create({ name: 'John' });
@@ -42,7 +41,7 @@ xdescribe('User DB Tests', ({ beforeEach, describe, xdescribe }) => {
     });
   });
 
-  describe('Create User', ({ it }) => {
+  describe('Create User', () => {
 
     it('should create a new user', async () => {
       const userId = await userDb.create({ name: 'John' });
@@ -54,7 +53,7 @@ xdescribe('User DB Tests', ({ beforeEach, describe, xdescribe }) => {
 
   });
 
-  describe('Update User', ({ it }) => {
+  describe('Update User', () => {
 
     it('should update a user', async () => {
       const userId = await userDb.create({ name: 'Steve' });

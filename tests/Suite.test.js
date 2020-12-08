@@ -1,8 +1,8 @@
 const assert = require('assert');
 const { fail, passingTest, failingTest, skippedTest, exclusiveTest } = require('./support/helpers');
-const { describe, GraphReporter, NullReporter, Suite, Test, TestableOutcomes } = require('..');
+const { GraphReporter, NullReporter, Suite, Test, TestableOutcomes } = require('..');
 
-describe('Suites', ({ it }) => {
+describe('Suites', () => {
 
   const reporter = new NullReporter();
 

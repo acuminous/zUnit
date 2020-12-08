@@ -1,7 +1,16 @@
 # zUnit
-zUnit is a zero dependency, non-polluting, low magic, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies triggered an audit warning.
+zUnit is a zero dependency, non-polluting<sub>[1](#1usingtheglobalnamespace)</sub>, low magic<sub>(#2lowmagic), test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because one of mocha's dependencies triggered an audit warning.
 
 Completely reimplementing mocha without dependencies would likely introduce even more issues. Consequently, zUnit lacks some advanced features, e.g. it does not support concurrent tests, retries or test discovery, but most of the other day-to-day features are present. Since writing zUnit I've begun to wonder whether these features were necessary in the first place. Many projects test suites are too small to benefit from concurrent testing, yet it's use means output must be buffered, delaying feedback. Rather than retrying tests, I think it better to fix any that are flakey, and take a [statistical approach](https://www.npmjs.com/package/fast-stats) when results are somewhat unpredictable.
+
+#### 1 - Using the global namespace
+You can pollute the global namespace as follows if you so wish...
+```js
+const { syntax } = require('zunit');
+Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
+```
+#### 2 - Low magic
+The only 'magical' code in zunit is how it automatically exports suites and modules from test files without using `module.exports`. If you prefer you can [create test suites by hand](#creatingsuitesandtestsbyhand).
 
 ## TL;DR
 
@@ -9,7 +18,7 @@ Completely reimplementing mocha without dependencies would likely introduce even
     ```js
     const path = require('path');
     const { EOL } = require('os');
-    const { Harness, MultiReporter, SpecReporter } = require('zunit');
+    const { Harness, MultiReporter, SpecReporter, syntax } = require('zunit');
 
     const filename = path.resolve(__dirname, process.argv[2]);
     const suite = require(filename);
@@ -443,15 +452,31 @@ const test = new Test('Test 1', { exclusive: true });
 ## Tips
 
 ### eslint
-It can be annoying to repeatedly add and remove `xit` and `xdescribe` imports in your tests. You can exclude these from eslint's no-unused-vars rule with the following config...
+It can be annoying to repeatedly add and remove syntax related imports in your tests. You can exclude these from eslint's no-unused-vars rule with the following config...
 ```json
 {
   "rules": {
     "no-unused-vars": [
       "error", {
-        "varsIgnorePattern": "xit|xdescribe"
+        "varsIgnorePattern": "xit|xdescribe|before|beforeEach|after|afterEach"
       }
     ]
+  }
+}
+```
+Alternatively, you are [using globals](#1usingtheglobalnamespace) then you should tell eslint to ignore them...
+```json
+{
+  "globals": {
+    "describe": "readonly",
+    "xdescribe": "readonly",
+    "it": "readonly",
+    "xit": "readonly",
+    "before": "readonly",
+    "beforeEach": "readonly",
+    "after": "readonly",
+    "afterEach": "readonly",
+    "include": "readonly"
   }
 }
 ```

@@ -2,12 +2,12 @@ const Fixture = require('./lib/Fixture');
 const Harness = require('./lib/Harness');
 const Hooks = require('./lib/Hooks');
 const HookSet = require('./lib/HookSet');
+const reporters = require('./lib/reporters');
 const Suite = require('./lib/Suite');
+const syntax = require('./lib/syntax');
 const Test = require('./lib/Test');
 const TestableEvents = require('./lib/TestableEvents');
 const TestableOutcomes = require('./lib/TestableOutcomes');
-const Syntax = require('./lib/Syntax');
-const reporters = require('./lib/reporters');
 
 module.exports = {
   Fixture,
@@ -18,6 +18,7 @@ module.exports = {
   Test,
   TestableEvents,
   TestableOutcomes,
-  ...Syntax,
+  syntax,
+  ...syntax,
   ...reporters,
 };

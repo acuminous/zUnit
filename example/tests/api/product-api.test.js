@@ -1,15 +1,14 @@
 const assert = require('assert');
-const { describe } = require('../../..');
 const productApi = require('../../lib/api/product-api');
 const productDb = require('../../lib/db/product-db');
 
-describe('Product API Tests', ({ beforeEach, describe, xdescribe }) => {
+describe('Product API Tests', () => {
 
   beforeEach(async () => {
     await productDb.flush();
   });
 
-  describe('List Products', ({ it, xit }) => {
+  describe('List Products', () => {
 
     it('should list all products', async () => {
       await productDb.create({ name: 'Broken Sword' });
@@ -29,7 +28,7 @@ describe('Product API Tests', ({ beforeEach, describe, xdescribe }) => {
 
   });
 
-  xdescribe('Get Product', ({ it }) => {
+  xdescribe('Get Product', () => {
 
     it('should find a product by product id', async () => {
       await productDb.create({ name: 'Broken Sword' });
@@ -46,7 +45,7 @@ describe('Product API Tests', ({ beforeEach, describe, xdescribe }) => {
     });
   });
 
-  describe('Create Product', ({ it }) => {
+  describe('Create Product', () => {
 
     it('should create a new product', async () => {
       const response = await productApi.create({ name: 'Full Throttle' });
@@ -55,7 +54,7 @@ describe('Product API Tests', ({ beforeEach, describe, xdescribe }) => {
     });
   });
 
-  describe('Update Product', ({ it }) => {
+  describe('Update Product', () => {
 
     it('should update a product', async () => {
       await productDb.create({ name: 'Broken Sword' });

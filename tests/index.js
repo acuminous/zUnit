@@ -1,6 +1,8 @@
 const path = require('path');
 const { EOL } = require('os');
-const { Harness, MultiReporter, SpecReporter } = require('..');
+const { Harness, MultiReporter, SpecReporter, syntax } = require('..');
+
+Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
 
 const filename = path.resolve(__dirname, process.argv[2]);
 const suite = require(filename);

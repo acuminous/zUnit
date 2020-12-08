@@ -1,9 +1,9 @@
 const assert = require('assert');
 const TestOutputStream = require('../support/TestOutputStream');
 const { passingTest, failingTest, skippedTest } = require('../support/helpers');
-const { describe, JUnitReporter, Harness, Suite } = require('../..');
+const { JUnitReporter, Harness, Suite } = require('../..');
 
-describe('JUnit Reporter', ({ it }) => {
+describe('JUnit Reporter', () => {
 
   it('should report the xml version and encoding', async () => {
     const suite = new Suite('Test Suite');
