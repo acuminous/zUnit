@@ -24,7 +24,7 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
     ```js
     const path = require('path');
     const { EOL } = require('os');
-    const { Harness, MultiReporter, SpecReporter, syntax } = require('zunit');
+    const { Harness, MultiReporter, SpecReporter } = require('zunit');
 
     const filename = path.resolve(__dirname, process.argv[2]);
     const suite = require(filename);
