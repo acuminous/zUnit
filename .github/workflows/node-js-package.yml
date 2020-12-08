@@ -11,6 +11,6 @@ jobs:
       with:
         node-version: '14.x'
     - run: npm install
-    - run: npm publish
+    - run: npm publish --access public
       env:
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
