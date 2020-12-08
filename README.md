@@ -464,7 +464,7 @@ It can be annoying to repeatedly add and remove syntax related imports in your t
   }
 }
 ```
-Alternatively, you are [using globals](#1-non-polluting) then you should tell eslint to ignore them...
+Alternatively, if you are [using globals](#1-non-polluting) then you should tell eslint to ignore them...
 ```json
 {
   "globals": {
