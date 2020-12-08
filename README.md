@@ -147,7 +147,7 @@ You can selectively run tests or suites as follows...
 
 1. Create a dedicated suite
     ```js
-    const { describe, it, include } = require('zunit');
+    const { describe, include } = require('zunit');
     const homePageTests = require('./frontend/profile-page.test');
     const settingsPageTests = require('./frontend/settings-page.test');
     const searchPageTests = require('./frontend/search-page.test');
