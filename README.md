@@ -23,7 +23,7 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
 1. Create a runner, e.g. `tests/index.js`
     ```js
     const path = require('path');
-    const { Harness, MultiReporter, SpecReporter } = require('zunit');
+    const { Harness, SpecReporter } = require('zunit');
 
     const filename = path.resolve(__dirname, process.argv[2]);
     const suite = require(filename);
@@ -31,8 +31,7 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
 
     const interactive = String(process.env.CI).toLowerCase() !== 'true';
 
-    const reporter = new MultiReporter()
-      .add(new SpecReporter({ colours: interactive }));
+    const reporter = new SpecReporter({ colours: interactive });
 
     harness.run(reporter).then(() => {
       if (harness.failed) process.exit(1);
