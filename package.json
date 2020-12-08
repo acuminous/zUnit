@@ -11,6 +11,8 @@
     "unit",
     "jasmine",
     "mocha",
+    "tape",
+    "jest",
     "alternative",
     "zero",
     "dependencies",
