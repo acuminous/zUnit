@@ -1,6 +1,6 @@
 const assert = require('assert');
 const { fail, passingTest, failingTest, skippedTest, exclusiveTest } = require('./support/helpers');
-const { GraphReporter, NullReporter, Suite, Test, TestableOutcomes } = require('..');
+const { GraphReporter, NullReporter, Suite, Test, Hook, TestableOutcomes } = require('..');
 
 describe('Suites', () => {
 
@@ -223,6 +223,248 @@ describe('Suites', () => {
     assert.equal(graph.resolve(1, 0).name, 'Test 3');
     assert.equal(graph.resolve(1, 0).point, 3);
     assert.equal(graph.resolve(1, 0).result, TestableOutcomes.PASSED);
+  });
+
+  describe('Lifecycle Hooks', () => {
+
+    describe('Before', () => {
+
+      it('should inject hook api', async () => {
+        let api;
+        const hook = new Hook('Hook', (h) => {
+          api = h;
+        });
+
+        const suite = new Suite('Suite').before(hook).add(passingTest())._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(api.name, 'Hook');
+        assert.equal(api.description, 'Suite / Hook');
+        assert.equal(api.suite.name, 'Suite');
+        assert.ok(api.suite.skip);
+      });
+
+      it('should run before hooks before tests', async () => {
+        const executed = [];
+        const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
+        const hook2 = new Hook('Hook 2', () => executed.push('Before 2'));
+        const test = new Test('Test', () => executed.push('Test'));
+        const suite = new Suite('Suite').before(hook1, hook2).add(test)._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(executed.length, 3);
+        assert.equal(executed[0], 'Before 1');
+        assert.equal(executed[1], 'Before 2');
+        assert.equal(executed[2], 'Test');
+      });
+
+      it('should skip before hooks before a skipped suite (runtime configuration)', async () => {
+        const executed = [];
+        const hook = new Hook('Hook', () => executed.push('Before'));
+        const test = new Test('Test', () => executed.push('Test'));
+        const suite = new Suite('Suite').before(hook).add(test)._finalise();
+
+        await suite.run(reporter, { skip: true });
+
+        assert.equal(executed.length, 0);
+      });
+
+      it('should skip before hooks before a skipped suite (inherited configuration)', async () => {
+        const executed = [];
+        const hook = new Hook('Hook', () => executed.push('Before'));
+        const test = new Test('Test', () => executed.push('Test'));
+        const suite = new Suite('Suite').before(hook).add(test)._finalise();
+
+        await suite.run(reporter, {}, { skip: true });
+
+        assert.equal(executed.length, 0);
+      });
+
+      it('should skip before hooks before a skipped suite (suite configuration)', async () => {
+        const executed = [];
+        const hook = new Hook('Hook', () => executed.push('Before'));
+        const test = new Test('Test', () => executed.push('Test'));
+        const suite = new Suite('Suite', { skip: true }).before(hook).add(test)._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(executed.length, 0);
+      });
+
+      it('should skip remaining before hooks and test following a skipped suite (programmatic)', async () => {
+        const executed = [];
+        const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
+        const hook2 = new Hook('Hook 2', (h) => { h.suite.skip('Whatever'); });
+        const hook3 = new Hook('Hook 3', () => executed.push('Before 3'));
+        const test = new Test('Test', () => executed.push('Test'));
+        const suite = new Suite('Suite').before(hook1, hook2, hook3).add(test)._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(executed.length, 1);
+        assert.equal(executed[0], 'Before 1');
+      });
+
+      it('should skip remaining before hooks following a failure', async () => {
+        const executed = [];
+        const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
+        const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
+        const hook3 = new Hook('Hook 3', () => executed.push('Before 3'));
+        const test = new Test('Test', () => executed.push('Test'));
+        const suite = new Suite('Suite').before(hook1, hook2, hook3).add(test)._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(executed.length, 1);
+      });
+
+      it('should fail the suite if a before hook fails', async () => {
+        const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+        const suite = new Suite('Suite').before(hook).add(passingTest())._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(suite.failed, true);
+      });
+    });
+
+    describe('After', () => {
+
+      it('should inject hook api', async () => {
+        let api;
+        const hook = new Hook('Hook', (h) => {
+          api = h;
+        });
+
+        const suite = new Suite('Suite').after(hook).add(passingTest())._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(api.name, 'Hook');
+        assert.equal(api.description, 'Suite / Hook');
+        assert.equal(api.suite.name, 'Suite');
+        assert.ok(!api.suite.skip);
+      });
+
+      it('should run after hooks after a successful test', async () => {
+        const executed = [];
+        const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
+        const hook2 = new Hook('Hook 2', () => executed.push('After 2'));
+        const test = new Test('Test', () => executed.push('Test'));
+        const suite = new Suite('Suite').after(hook1, hook2).add(test)._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(executed.length, 3);
+        assert.equal(executed[0], 'Test');
+        assert.equal(executed[1], 'After 1');
+        assert.equal(executed[2], 'After 2');
+      });
+
+      it('should run after hooks after a failing test', async () => {
+        const executed = [];
+        const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
+        const hook2 = new Hook('Hook 2', () => executed.push('After 2'));
+        const suite = new Suite('Suite').after(hook1, hook2).add(failingTest())._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(executed.length, 2);
+        assert.equal(executed[0], 'After 1');
+        assert.equal(executed[1], 'After 2');
+      });
+
+      it('should skip after hooks after a skipped suite (suite configuration)', async () => {
+        const executed = [];
+        const hook = new Hook('Hook', () => executed.push('After'));
+        const suite = new Suite('Suite', { skip: true }).after(hook).add(passingTest())._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(executed.length, 0);
+      });
+
+      it('should skip after hooks after a skipped suite (runtime configuration)', async () => {
+        const executed = [];
+        const hook = new Hook('Hook', () => executed.push('After'));
+        const suite = new Suite('Suite').after(hook).add(passingTest())._finalise();
+
+        await suite.run(reporter, { skip: true });
+
+        assert.equal(executed.length, 0);
+      });
+
+      it('should skip after hooks after a skipped suite (inherited configuration)', async () => {
+        const executed = [];
+        const hook = new Hook('Hook', () => executed.push('After'));
+        const suite = new Suite('Suite').after(hook).add(passingTest())._finalise();
+
+        await suite.run(reporter, {}, { skip: true });
+
+        assert.equal(executed.length, 0);
+      });
+
+      it('should run after hooks after a skipped suite (programmatic)', async () => {
+        const executed = [];
+        const hook1 = new Hook('Before', (h) => h.suite.skip('whatever'));
+        const hook2 = new Hook('After', () => executed.push('After'));
+        const suite = new Suite('Suite').before(hook1).after(hook2).add(passingTest())._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(executed.length, 1);
+        assert.equal(executed[0], 'After');
+      });
+
+      it('should fail the suite if an after hook fails', async () => {
+        const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+        const suite = new Suite('Suite').after(hook).add(passingTest())._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(suite.failed, true);
+      });
+
+      it('should skip remaining after hooks following a failure', async () => {
+        const executed = [];
+        const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
+        const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
+        const hook3 = new Hook('Hook 3', () => executed.push('After 3'));
+        const suite = new Suite('Suite').after(hook1, hook2, hook3).add(passingTest())._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(executed.length, 1);
+        assert.equal(executed[0], 'After 1');
+      });
+
+      it('should skip after hooks associated with skipped before hooks', async () => {
+        const executedBefore = [];
+        const before1 = new Hook('Before 1', () => executedBefore.push('Before 1'));
+        const before2 = new Hook('Before 2', () => { throw new Error('Oh Noes!'); });
+        const before3 = new Hook('Before 3', () => executedBefore.push('Before 3'));
+
+        const executedAfter = [];
+        const after1 = new Hook('After 1', () => executedAfter.push('After 1'));
+        const after2 = new Hook('After 2', () => executedAfter.push('After 2'));
+        const after3 = new Hook('After 3', () => executedAfter.push('After 3'));
+
+        const suite3 = new Suite('Suite 3').before(before3).after(after3).add(passingTest());
+        const suite2 = new Suite('Suite 2').before(before2).after(after2).add(suite3);
+        const suite1 = new Suite('Suite 1').before(before1).after(after1).add(suite2)._finalise();
+
+        await suite1.run(reporter);
+
+        assert.equal(executedBefore.length, 1);
+        assert.equal(executedBefore[0], 'Before 1');
+
+        assert.equal(executedAfter.length, 2);
+        assert.equal(executedAfter[0], 'After 2');
+        assert.equal(executedAfter[1], 'After 1');
+      });
+    });
   });
 });
 

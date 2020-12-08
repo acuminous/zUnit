@@ -159,13 +159,14 @@ describe('Tests', () => {
         const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
         const hook2 = new Hook('Hook 2', () => executed.push('Before 2'));
         const hooks = new HookSet().addBefores(hook1, hook2);
-        const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
+        const test = new Test('Test', () => executed.push('Test'))._finalise(null, 1, [ hooks ]);
 
         await test.run(reporter);
 
-        assert.equal(executed.length, 2);
+        assert.equal(executed.length, 3);
         assert.equal(executed[0], 'Before 1');
         assert.equal(executed[1], 'Before 2');
+        assert.equal(executed[2], 'Test');
       });
 
       it('should skip before hooks before a skipped test (runtime configuration)', async () => {
@@ -275,13 +276,14 @@ describe('Tests', () => {
         const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
         const hook2 = new Hook('Hook 2', () => executed.push('After 2'));
         const hooks = new HookSet().addAfters(hook1, hook2);
-        const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
+        const test = new Test('Test', () => executed.push('Test'))._finalise(null, 1, [ hooks ]);
 
         await test.run(reporter);
 
-        assert.equal(executed.length, 2);
-        assert.equal(executed[0], 'After 1');
-        assert.equal(executed[1], 'After 2');
+        assert.equal(executed.length, 3);
+        assert.equal(executed[0], 'Test');
+        assert.equal(executed[1], 'After 1');
+        assert.equal(executed[2], 'After 2');
       });
 
       it('should run after hooks after a failing test', async () => {
@@ -299,6 +301,17 @@ describe('Tests', () => {
       });
 
       it('should skip after hooks after a skipped test (test configuration)', async () => {
+        const executed = [];
+        const hook = new Hook('Hook', () => executed.push('After'));
+        const hooks = new HookSet().addAfters(hook);
+        const test = new Test('Test', pass(), { skip: true })._finalise(null, 1, [ hooks ]);
+
+        await test.run(reporter);
+
+        assert.equal(executed.length, 0);
+      });
+
+      it('should skip after hooks after a skipped test (runtime configuration)', async () => {
         const executed = [];
         const hook = new Hook('Hook', () => executed.push('After'));
         const hooks = new HookSet().addAfters(hook);
@@ -326,7 +339,7 @@ describe('Tests', () => {
         const hooks = new HookSet().addAfters(hook);
         const test = new Test('Test', skip())._finalise(null, 1, [ hooks ]);
 
-        await test.run(reporter, {});
+        await test.run(reporter);
 
         assert.equal(executed.length, 1);
         assert.equal(executed[0], 'After');
@@ -353,6 +366,7 @@ describe('Tests', () => {
         await test.run(reporter);
 
         assert.equal(executed.length, 1);
+        assert.equal(executed[0], 'After 1');
       });
 
       it('should skip after hooks associated with skipped before hooks', async () => {
@@ -375,7 +389,11 @@ describe('Tests', () => {
         await test.run(reporter);
 
         assert.equal(executedBefore.length, 1);
+        assert.equal(executedBefore[0], 'Before 1');
+
         assert.equal(executedAfter.length, 2);
+        assert.equal(executedAfter[0], 'After 2');
+        assert.equal(executedAfter[1], 'After 1');
       });
     });
   });
