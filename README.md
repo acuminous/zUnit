@@ -203,7 +203,7 @@ Tests default to timing out after 5 seconds. You can override this as follows...
     }, { timeout: 10000 });
     ```
 
-The timeout includes the duration of all [lifecycle hooks](#lifecyclehooks).
+The timeout includes the duration of all [lifecycle hooks](#lifecycle-hooks).
 
 ## Bailing Out / Failing Fast / Aborting Early
 Test suites continue running tests after failure by default. You can override this in the following ways...
@@ -464,7 +464,7 @@ It can be annoying to repeatedly add and remove syntax related imports in your t
   }
 }
 ```
-Alternatively, you are [using globals](#1usingtheglobalnamespace) then you should tell eslint to ignore them...
+Alternatively, you are [using globals](#1-non-polluting) then you should tell eslint to ignore them...
 ```json
 {
   "globals": {
