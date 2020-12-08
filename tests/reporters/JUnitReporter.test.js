@@ -42,7 +42,7 @@ describe('JUnit Reporter', () => {
     const lines = stream.lines;
     assert.match(lines[1], /^<testsuites name="Test Suite" tests="1" failures="0" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[2], /^ {2}<testsuite name="Test Suite" tests="1" failures="0" skipped="0" time="(?:\d+|\d+\.\d+)">/);
-    assert.match(lines[3], /^ {4}<testcase name="Test 1" time="(?:\d+|\d+\.\d+)">/);
+    assert.match(lines[3], /^ {4}<testcase name="Test Suite \/ Test 1" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[4], /^ {4}<\/testcase>/);
     assert.match(lines[5], /^ {2}<\/testsuite>/);
     assert.match(lines[6], /^<\/testsuites>/);
@@ -60,7 +60,7 @@ describe('JUnit Reporter', () => {
     const lines = stream.lines;
     assert.match(lines[1], /^<testsuites name="Test Suite" tests="1" failures="1" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[2], /^ {2}<testsuite name="Test Suite" tests="1" failures="1" skipped="0" time="(?:\d+|\d+\.\d+)">/);
-    assert.match(lines[3], /^ {4}<testcase name="Test 1" time="(?:\d+|\d+\.\d+)">/);
+    assert.match(lines[3], /^ {4}<testcase name="Test Suite \/ Test 1" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[4], /^ {6}<failure message="Oh Noes!">/);
     assert.match(lines[5], /^Error: Oh Noes!/);
     assert.match(lines[6], /^ {4}at fail \(.*\)/);
@@ -82,7 +82,7 @@ describe('JUnit Reporter', () => {
     const lines = stream.lines;
     assert.match(lines[1], /^<testsuites name="Test Suite" tests="1" failures="0" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[2], /^ {2}<testsuite name="Test Suite" tests="1" failures="0" skipped="1" time="(?:\d+|\d+\.\d+)">/);
-    assert.match(lines[3], /^ {4}<testcase name="Test 1" time="(?:\d+|\d+\.\d+)">/);
+    assert.match(lines[3], /^ {4}<testcase name="Test Suite \/ Test 1" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[4], /^ {6}<skipped message="Mercy">/);
     assert.match(lines[5], /^ {6}<\/skipped>/);
     assert.match(lines[6], /^ {4}<\/testcase>/);
@@ -106,13 +106,13 @@ describe('JUnit Reporter', () => {
     const lines = stream.lines;
     assert.match(lines[1], /^<testsuites name="Parent" tests="3" failures="0" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[2], /^ {2}<testsuite name="Child 1" tests="2" failures="0" skipped="0" time="(?:\d+|\d+\.\d+)">/);
-    assert.match(lines[3], /^ {4}<testcase name="Test 1" time="(?:\d+|\d+\.\d+)">/);
+    assert.match(lines[3], /^ {4}<testcase name="Child 1 \/ Test 1" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[4], /^ {4}<\/testcase>/);
-    assert.match(lines[5], /^ {4}<testcase name="Test 2" time="(?:\d+|\d+\.\d+)">/);
+    assert.match(lines[5], /^ {4}<testcase name="Child 1 \/ Test 2" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[6], /^ {4}<\/testcase>/);
     assert.match(lines[7], /^ {2}<\/testsuite>/);
     assert.match(lines[8], /^ {2}<testsuite name="Child 2" tests="1" failures="0" skipped="0" time="(?:\d+|\d+\.\d+)">/);
-    assert.match(lines[9], /^ {4}<testcase name="Test 3" time="(?:\d+|\d+\.\d+)">/);
+    assert.match(lines[9], /^ {4}<testcase name="Child 2 \/ Test 3" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[10], /^ {4}<\/testcase>/);
     assert.match(lines[11], /^ {2}<\/testsuite>/);
     assert.match(lines[12], /^<\/testsuites>/);
@@ -135,9 +135,9 @@ describe('JUnit Reporter', () => {
 
     assert.match(lines[1], /<testsuites name="Parent" tests="3" failures="0" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[2], / {2}<testsuite name="Child 1" tests="3" failures="0" skipped="0" time="(?:\d+|\d+\.\d+)">/);
-    assert.match(lines[3], / {4}<testcase name="Test 1" time="(?:\d+|\d+\.\d+)">/);
+    assert.match(lines[3], / {4}<testcase name="Child 1 \/ Test 1" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[4], / {4}<\/testcase>/);
-    assert.match(lines[5], / {4}<testcase name="Test 2" time="(?:\d+|\d+\.\d+)">/);
+    assert.match(lines[5], / {4}<testcase name="Child 1 \/ Test 2" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[6], / {4}<\/testcase>/);
     assert.match(lines[7], / {4}<testcase name="Child 2 \/ Test 3" time="(?:\d+|\d+\.\d+)">/);
     assert.match(lines[8], / {4}<\/testcase>/);
