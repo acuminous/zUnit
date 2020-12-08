@@ -1,7 +1,7 @@
 {
   "name": "zunit",
   "version": "0.0.1",
-  "description": "",
+  "description": "A zero dependency, non-polluting, low magic, test harness for Node.js",
   "engines": {
     "node": ">=10"
   },
@@ -25,5 +25,19 @@
   },
   "author": "Stephen Cresswell",
   "license": "ISC",
-  "devDependencies": {}
+  "devDependencies": {},
+  "directories": {
+    "example": "example",
+    "lib": "lib",
+    "test": "tests"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acuminous/ZUnit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/acuminous/ZUnit/issues"
+  },
+  "homepage": "https://acuminous.github.io/ZUnit/"
 }
