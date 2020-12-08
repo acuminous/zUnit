@@ -433,9 +433,9 @@ ok 2 - Harnesses / should run an individual test
 There's no need to use `describe` and `it` if you prefer not to. You can just as easily create test suites as follows...
 ```js
 const assert = require('assert');
-const { Before, Suite, Test } = require('zunit');
+const { Hook, Suite, Test } = require('zunit');
 
-const reset = new Before('Reset Environment', () => {
+const reset = new Hook('Reset Environment', () => {
   // ...
 });
 

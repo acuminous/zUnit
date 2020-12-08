@@ -1,6 +1,6 @@
 const Fixture = require('./lib/Fixture');
 const Harness = require('./lib/Harness');
-const Hooks = require('./lib/Hooks');
+const Hook = require('./lib/Hook');
 const HookSet = require('./lib/HookSet');
 const reporters = require('./lib/reporters');
 const Suite = require('./lib/Suite');
@@ -12,7 +12,7 @@ const TestableOutcomes = require('./lib/TestableOutcomes');
 module.exports = {
   Fixture,
   Harness,
-  ...Hooks,
+  Hook,
   HookSet,
   Suite,
   Test,

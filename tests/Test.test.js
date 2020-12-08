@@ -1,6 +1,6 @@
 const assert = require('assert');
 const { pass, fail, skip } = require('./support/helpers');
-const { NullReporter, Test, Before, After, HookSet } = require('..');
+const { NullReporter, Test, Hook, HookSet } = require('..');
 
 describe('Tests', () => {
 
@@ -139,7 +139,7 @@ describe('Tests', () => {
 
       it('should inject hook api', async () => {
         let api;
-        const hook = new Before('Hook', (h) => {
+        const hook = new Hook('Hook', (h) => {
           api = h;
         });
 
@@ -156,8 +156,8 @@ describe('Tests', () => {
 
       it('should run before hooks before the test', async () => {
         const executed = [];
-        const hook1 = new Before('Hook 1', () => executed.push('Before 1'));
-        const hook2 = new Before('Hook 2', () => executed.push('Before 2'));
+        const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
+        const hook2 = new Hook('Hook 2', () => executed.push('Before 2'));
         const hooks = new HookSet().addBefores(hook1, hook2);
         const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
 
@@ -170,7 +170,7 @@ describe('Tests', () => {
 
       it('should skip before hooks before a skipped test (runtime configuration)', async () => {
         const executed = [];
-        const hook = new Before('Hook', () => executed.push('Before'));
+        const hook = new Hook('Hook', () => executed.push('Before'));
         const hooks = new HookSet().addBefores(hook);
         const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
 
@@ -181,7 +181,7 @@ describe('Tests', () => {
 
       it('should skip before hooks before a skipped test (inherited configuration)', async () => {
         const executed = [];
-        const hook = new Before('Hook', () => executed.push('Before'));
+        const hook = new Hook('Hook', () => executed.push('Before'));
         const hooks = new HookSet().addBefores(hook);
         const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
 
@@ -192,7 +192,7 @@ describe('Tests', () => {
 
       it('should skip before hooks before a skipped test (test configuration)', async () => {
         const executed = [];
-        const hook = new Before('Hook', () => executed.push('Before'));
+        const hook = new Hook('Hook', () => executed.push('Before'));
         const hooks = new HookSet().addBefores(hook);
         const test = new Test('Test', pass(), { skip: true })._finalise(null, 1, [ hooks ]);
 
@@ -203,7 +203,7 @@ describe('Tests', () => {
 
       it('should skip before hooks before a skipped test (pending)', async () => {
         const executed = [];
-        const hook = new Before('Hook', () => executed.push('Before'));
+        const hook = new Hook('Hook', () => executed.push('Before'));
         const hooks = new HookSet().addBefores(hook);
         const test = new Test('Test')._finalise(null, 1, [ hooks ]);
 
@@ -214,9 +214,9 @@ describe('Tests', () => {
 
       it('should skip remaining before hooks following a skipped test (programmatic)', async () => {
         const executed = [];
-        const hook1 = new Before('Hook 1', () => executed.push('Before 1'));
-        const hook2 = new Before('Hook 2', (h) => { h.test.skip('Whatever'); });
-        const hook3 = new Before('Hook 3', () => executed.push('Before 3'));
+        const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
+        const hook2 = new Hook('Hook 2', (h) => { h.test.skip('Whatever'); });
+        const hook3 = new Hook('Hook 3', () => executed.push('Before 3'));
         const hooks = new HookSet().addBefores(hook1, hook2, hook3);
         const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
 
@@ -229,9 +229,9 @@ describe('Tests', () => {
 
       it('should skip remaining before hooks following a failure', async () => {
         const executed = [];
-        const hook1 = new Before('Hook 1', () => executed.push('Before 1'));
-        const hook2 = new Before('Hook 2', () => { throw new Error('Oh Noes!'); });
-        const hook3 = new Before('Hook 3', () => executed.push('Before 3'));
+        const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
+        const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
+        const hook3 = new Hook('Hook 3', () => executed.push('Before 3'));
         const hooks = new HookSet().addBefores(hook1, hook2, hook3);
         const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
 
@@ -241,7 +241,7 @@ describe('Tests', () => {
       });
 
       it('should fail the test if a before hook fails', async () => {
-        const hook = new Before('Hook', () => { throw new Error('Oh Noes!'); });
+        const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
         const hooks = new HookSet().addBefores(hook);
         const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
 
@@ -255,7 +255,7 @@ describe('Tests', () => {
 
       it('should inject hook api', async () => {
         let api;
-        const hook = new After('Hook', (h) => {
+        const hook = new Hook('Hook', (h) => {
           api = h;
         });
 
@@ -272,8 +272,8 @@ describe('Tests', () => {
 
       it('should run after hooks after a successful test', async () => {
         const executed = [];
-        const hook1 = new After('Hook 1', () => executed.push('After 1'));
-        const hook2 = new After('Hook 2', () => executed.push('After 2'));
+        const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
+        const hook2 = new Hook('Hook 2', () => executed.push('After 2'));
         const hooks = new HookSet().addAfters(hook1, hook2);
         const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
 
@@ -286,8 +286,8 @@ describe('Tests', () => {
 
       it('should run after hooks after a failing test', async () => {
         const executed = [];
-        const hook1 = new After('Hook 1', () => executed.push('After 1'));
-        const hook2 = new After('Hook 2', () => executed.push('After 2'));
+        const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
+        const hook2 = new Hook('Hook 2', () => executed.push('After 2'));
         const hooks = new HookSet().addAfters(hook1, hook2);
         const test = new Test('Test', fail())._finalise(null, 1, [ hooks ]);
 
@@ -300,7 +300,7 @@ describe('Tests', () => {
 
       it('should skip after hooks after a skipped test (test configuration)', async () => {
         const executed = [];
-        const hook = new After('Hook', () => executed.push('After'));
+        const hook = new Hook('Hook', () => executed.push('After'));
         const hooks = new HookSet().addAfters(hook);
         const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
 
@@ -311,7 +311,7 @@ describe('Tests', () => {
 
       it('should skip after hooks after a skipped test (inherited configuration)', async () => {
         const executed = [];
-        const hook = new After('Hook', () => executed.push('After'));
+        const hook = new Hook('Hook', () => executed.push('After'));
         const hooks = new HookSet().addAfters(hook);
         const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
 
@@ -322,7 +322,7 @@ describe('Tests', () => {
 
       it('should run after hooks after a skipped test (programmatic)', async () => {
         const executed = [];
-        const hook = new After('Hook', () => executed.push('After'));
+        const hook = new Hook('Hook', () => executed.push('After'));
         const hooks = new HookSet().addAfters(hook);
         const test = new Test('Test', skip())._finalise(null, 1, [ hooks ]);
 
@@ -333,7 +333,7 @@ describe('Tests', () => {
       });
 
       it('should fail the test if an after hook fails', async () => {
-        const hook = new After('Hook', () => { throw new Error('Oh Noes!'); });
+        const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
         const hooks = new HookSet().addAfters(hook);
         const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
 
@@ -344,9 +344,9 @@ describe('Tests', () => {
 
       it('should skip remaining after hooks following a failure', async () => {
         const executed = [];
-        const hook1 = new After('Hook 1', () => executed.push('After 1'));
-        const hook2 = new After('Hook 2', () => { throw new Error('Oh Noes!'); });
-        const hook3 = new After('Hook 3', () => executed.push('After 3'));
+        const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
+        const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
+        const hook3 = new Hook('Hook 3', () => executed.push('After 3'));
         const hooks = new HookSet().addAfters(hook1, hook2, hook3);
         const test = new Test('Test', pass())._finalise(null, 1, [ hooks ]);
 
@@ -357,14 +357,14 @@ describe('Tests', () => {
 
       it('should skip after hooks associated with skipped before hooks', async () => {
         const executedBefore = [];
-        const before1 = new Before('Before 1', () => executedBefore.push('Before 1'));
-        const before2 = new Before('Before 2', () => { throw new Error('Oh Noes!'); });
-        const before3 = new Before('Before 3', () => executedBefore.push('Before 3'));
+        const before1 = new Hook('Before 1', () => executedBefore.push('Before 1'));
+        const before2 = new Hook('Before 2', () => { throw new Error('Oh Noes!'); });
+        const before3 = new Hook('Before 3', () => executedBefore.push('Before 3'));
 
         const executedAfter = [];
-        const after1 = new After('After 1', () => executedAfter.push('After 1'));
-        const after2 = new After('After 2', () => executedAfter.push('After 2'));
-        const after3 = new After('After 3', () => executedAfter.push('After 3'));
+        const after1 = new Hook('After 1', () => executedAfter.push('After 1'));
+        const after2 = new Hook('After 2', () => executedAfter.push('After 2'));
+        const after3 = new Hook('After 3', () => executedAfter.push('After 3'));
 
         const hooks1 = new HookSet().addBefores(before1).addAfters(after1);
         const hooks2 = new HookSet().addBefores(before2).addAfters(after2);
