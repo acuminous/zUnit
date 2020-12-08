@@ -19,11 +19,11 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm install
     - run: npm install -g eslint nyc
-    # - run: npm run lint
+    - run: npm run lint
     # - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
     # - run: chmod +x ./cc-test-reporter
     # - run: ./cc-test-reporter before-build
-    # - run: npm run coverage
+    - run: npm run coverage
     # - run: ./cc-test-reporter format-coverage -t lcov coverage/lcov.info
     # - run: ./cc-test-reporter upload-coverage
       env:
