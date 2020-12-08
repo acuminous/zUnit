@@ -28,4 +28,4 @@ jobs:
     # - run: ./cc-test-reporter upload-coverage
       env:
         CI: true
-        # CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
