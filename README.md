@@ -293,6 +293,7 @@ describe('Suite', ({ before, after, beforeEach, afterEach, describe, it }) => {
 
 })
 ```
+
 You can explicitly name hooks by passing a string as the first parameter, e.g. `beforeEach('Reset', async (h) => { ... })` and skip a test from a before hook by calling `h.test.skip()`;
 
 ## Reporters
