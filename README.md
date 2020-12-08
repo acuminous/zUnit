@@ -30,7 +30,6 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
     const harness = new Harness(suite);
 
     const interactive = String(process.env.CI).toLowerCase() !== 'true';
-
     const reporter = new SpecReporter({ colours: interactive });
 
     harness.run(reporter).then(() => {
