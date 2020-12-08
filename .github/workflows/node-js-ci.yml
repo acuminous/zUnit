@@ -18,6 +18,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
-    - run: npm test
+    - run: npm install -g cc-test-reporter eslint
+    - npm: npm run lint
+    - run: npm run coverage
       env:
         CI: true
