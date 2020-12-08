@@ -10,7 +10,7 @@ const { syntax } = require('zunit');
 Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
 ```
 ##### 2 low-magic
-The only 'magical' code in zunit is how it automatically exports suites and modules from test files without using `module.exports`. If you prefer you can [create test suites by hand](#creatingsuitesandtestsbyhand).
+The only &#x2728 magical &#x2728 code in zunit is how it automatically exports suites and modules from test files without using `module.exports`. If you prefer you can [create test suites by hand](#creatingsuitesandtestsbyhand).
 
 ## TL;DR
 
