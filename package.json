@@ -1,9 +1,9 @@
 {
   "name": "zunit",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "engines" : {
-    "node" : ">=10"
+  "engines": {
+    "node": ">=10"
   },
   "main": "index.js",
   "keywords": [
