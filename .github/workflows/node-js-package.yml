@@ -10,9 +10,7 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '14.x'
-    - run: echo ${WIBBLE}
     - run: npm install
     - run: npm publish
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        WIBBLE: ${{ secrets.WIBBLE }}
