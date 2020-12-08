@@ -34,10 +34,10 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/acuminous/ZUnit.git"
+    "url": "git+https://github.com/acuminous/zUnit.git"
   },
   "bugs": {
-    "url": "https://github.com/acuminous/ZUnit/issues"
+    "url": "https://github.com/acuminous/zUnit/issues"
   },
-  "homepage": "https://acuminous.github.io/ZUnit/"
+  "homepage": "https://acuminous.github.io/zUnit/"
 }

@@ -14,7 +14,7 @@ const { syntax } = require('zunit');
 Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
 ```
 ##### 2 low-magic
-The only &#x2728;magical&#x2728; code in zunit is how it automatically exports suites without using `module.exports` by inspecting the call stack.
+The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports suites without using `module.exports` by inspecting the call stack.
 
 ## TL;DR
 
@@ -350,7 +350,7 @@ await harness.run(reporter);
 #### Sample Output
 ```bash
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="ZUnit" tests="45" failures="0" time="0.714">
+<testsuites name="zUnit" tests="45" failures="0" time="0.714">
   <testsuite name="Harnesses" tests="7" failures="0" skipped="0" time="0.023">
     <testcase name="should run a test suite" time="0.005">
     </testcase>
@@ -387,7 +387,7 @@ await harness.run(reporter);
 
 #### Sample Output
 ```bash
-ZUnit
+zUnit
   Harnesses
     should run a test suite
      - PASSED (4ms)
