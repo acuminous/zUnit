@@ -463,7 +463,7 @@ It can be annoying to repeatedly add and remove syntax related imports in your t
   "rules": {
     "no-unused-vars": [
       "error", {
-        "varsIgnorePattern": "xit|xdescribe|before|beforeEach|after|afterEach"
+        "varsIgnorePattern": "xit|xdescribe|before|beforeEach|after|afterEach|include"
       }
     ]
   }
