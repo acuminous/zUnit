@@ -245,19 +245,21 @@ describe('Suites', () => {
         assert.ok(api.suite.skip);
       });
 
-      it('should run before hooks before tests', async () => {
+      it('should run before hooks before all tests', async () => {
         const executed = [];
-        const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
-        const hook2 = new Hook('Hook 2', () => executed.push('Before 2'));
-        const test = new Test('Test', () => executed.push('Test'));
-        const suite = new Suite('Suite').before(hook1, hook2).add(test)._finalise();
+        const hook1 = new Hook('Hook 1', (h) => executed.push(h.name));
+        const hook2 = new Hook('Hook 2', (h) => executed.push(h.name));
+        const test1 = new Test('Test 1', (t) => executed.push(t.name));
+        const test2 = new Test('Test 2', (t) => executed.push(t.name));
+        const suite = new Suite('Suite').before(hook1, hook2).add(test1, test2)._finalise();
 
         await suite.run(reporter);
 
-        assert.equal(executed.length, 3);
-        assert.equal(executed[0], 'Before 1');
-        assert.equal(executed[1], 'Before 2');
-        assert.equal(executed[2], 'Test');
+        assert.equal(executed.length, 4);
+        assert.equal(executed[0], 'Hook 1');
+        assert.equal(executed[1], 'Hook 2');
+        assert.equal(executed[2], 'Test 1');
+        assert.equal(executed[2], 'Test 1');
       });
 
       it('should skip before hooks before a skipped suite (runtime configuration)', async () => {
@@ -438,6 +440,20 @@ describe('Suites', () => {
 
         assert.equal(executed.length, 1);
         assert.equal(executed[0], 'After 1');
+      });
+
+      it('should fail all non skipped tests following a failure', async () => {
+        const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+        const test1 = passingTest();
+        const test2 = skippedTest();
+        const test3 = failingTest();
+        const suite = new Suite('Suite').after(hook).add(test1, test2, test3)._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(suite.numberOfFailures, 2);
+        assert.equal(suite.numberOfPasses, 0);
+        assert.equal(suite.numberOfSkipped, 1);
       });
 
       it('should skip after hooks associated with skipped before hooks', async () => {
