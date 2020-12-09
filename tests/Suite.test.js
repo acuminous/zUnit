@@ -262,6 +262,16 @@ describe('Suites', () => {
         assert.equal(executed[2], 'Test 1');
       });
 
+      it('should skip before hooks when there are no tests', async () => {
+        const executed = [];
+        const hook = new Hook('Hook', (h) => executed.push(h.name));
+        const suite = new Suite('Suite').before(hook)._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(executed.length, 0);
+      });
+
       it('should skip before hooks before a skipped suite (runtime configuration)', async () => {
         const executed = [];
         const hook = new Hook('Hook', () => executed.push('Before'));
@@ -330,6 +340,20 @@ describe('Suites', () => {
 
         assert.equal(suite.failed, true);
       });
+
+      it('should fail all tests following a failure', async () => {
+        const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+        const test1 = passingTest();
+        const test2 = skippedTest();
+        const test3 = failingTest();
+        const suite = new Suite('Suite').before(hook).add(test1, test2, test3)._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(suite.numberOfFailures, 3);
+        assert.equal(suite.numberOfPasses, 0);
+        assert.equal(suite.numberOfSkipped, 0);
+      });
     });
 
     describe('After', () => {
@@ -348,6 +372,16 @@ describe('Suites', () => {
         assert.equal(api.description, 'Suite / Hook');
         assert.equal(api.suite.name, 'Suite');
         assert.ok(!api.suite.skip);
+      });
+
+      it('should skip after hooks when there are no tests', async () => {
+        const executed = [];
+        const hook = new Hook('Hook', (h) => executed.push(h.name));
+        const suite = new Suite('Suite').after(hook)._finalise();
+
+        await suite.run(reporter);
+
+        assert.equal(executed.length, 0);
       });
 
       it('should run after hooks after a successful test', async () => {
