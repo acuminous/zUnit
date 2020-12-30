@@ -35,7 +35,7 @@ describe('Hook', () => {
 
       assert.stats(report.stats, { tests: 1, skipped: 1 });
       assert.equal(report.resolve(0).reason, 'Because');
-    }, { skip: true, reason: 'Because skipping a suite does not update the test reason and therefore breaks the rule of least astonishment' });
+    });
 
     it('should run before hooks before all tests', async () => {
       const executed = [];
