@@ -1,4 +1,12 @@
-const { Test } = require('../..');
+const { Harness, Test, GraphReporter } = require('../..');
+
+
+async function run(testable, options) {
+  const harness = new Harness(testable);
+  const reporter = new GraphReporter();
+  await harness.run(reporter, options);
+  return reporter.toGraph();
+}
 
 function pass(params = {}) {
   const delay = params.delay || 1;
@@ -13,6 +21,10 @@ function fail(params = {}) {
 
 function skip(params = {}) {
   return (t) => t.skip(params.reason);
+}
+
+function timeout() {
+  return () => new Promise(() => {});
 }
 
 function passingTest(name = 'Test', options) {
@@ -32,9 +44,11 @@ function exclusiveTest(name) {
 }
 
 module.exports = {
+  run,
   pass,
   fail,
   skip,
+  timeout,
   passingTest,
   failingTest,
   skippedTest,

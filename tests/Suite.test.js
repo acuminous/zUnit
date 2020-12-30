@@ -1,521 +1,352 @@
 const assert = require('assert');
-const { fail, passingTest, failingTest, skippedTest, exclusiveTest } = require('./support/helpers');
-const { GraphReporter, NullReporter, Suite, Test, Hook, TestableOutcomes } = require('..');
+const { run, fail, pass, passingTest, failingTest, skippedTest, exclusiveTest } = require('./support/helpers');
+const { NullReporter, Suite, Test } = require('..');
 
-describe('Suites', () => {
+describe('Suite', () => {
 
   const reporter = new NullReporter();
 
-  it('should report successful tests', async () => {
-    const test1 = passingTest();
-    const test2 = passingTest();
-    const suite = new Suite('Test Suite').add(test1, test2);
+  describe('Normal', () => {
 
-    await suite.run(reporter);
+    it('should report successful tests', async () => {
+      const test1 = passingTest();
+      const test2 = passingTest();
+      const suite = new Suite('Suite').add(test1, test2);
 
-    assert.equal(suite.passed, true);
-    assert.equal(test1.passed, true);
-    assert.equal(test2.passed, true);
-  });
+      const report = await run(suite);
 
-  it('should report failing tests', async () => {
-    const test1 = passingTest();
-    const test2 = failingTest();
-    const suite = new Suite('Test Suite').add(test1, test2);
-
-    await suite.run(reporter);
-
-    assert.equal(suite.failed, true);
-    assert.equal(test1.passed, true);
-    assert.equal(test2.failed, true);
-  });
-
-  it('should skip tests (run configuration)', async () => {
-    const test1 = passingTest();
-    const test2 = failingTest();
-    const suite = new Suite('Test Suite').add(test1, test2);
-
-    await suite.run(reporter, { skip: true });
-
-    assert.equal(suite.skipped, true);
-    assert.equal(test1.skipped, true);
-    assert.equal(test2.skipped, true);
-  });
-
-  it('should skip tests (suite configuration)', async () => {
-    const test1 = passingTest();
-    const test2 = failingTest();
-    const suite = new Suite('Test Suite', { skip: true }).add(test1, test2);
-
-    await suite.run(reporter);
-
-    assert.equal(suite.skipped, true);
-    assert.equal(test1.skipped, true);
-    assert.equal(test2.skipped, true);
-  });
-
-  it('should skip tests (test configuration)', async () => {
-    const test1 = passingTest();
-    const test2 = skippedTest();
-    const suite = new Suite('Test Suite').add(test1, test2);
-
-    await suite.run(reporter);
-
-    assert.equal(suite.passed, true);
-    assert.equal(test1.passed, true);
-    assert.equal(test2.skipped, true);
-  });
-
-  it('should pass a suite with only skipped tests', async () => {
-    const test1 = skippedTest();
-    const test2 = skippedTest();
-    const suite = new Suite('Test Suite').add(test1, test2);
-
-    await suite.run(reporter);
-
-    assert.equal(suite.passed, true);
-    assert.equal(test1.skipped, true);
-    assert.equal(test2.skipped, true);
-  });
-
-  it('should abort early (run configuration)', async () => {
-    const test1 = failingTest();
-    const test2 = passingTest();
-    const suite = new Suite('Test Suite').add(test1, test2);
-
-    await suite.run(reporter, { abort: true });
-
-    assert.equal(suite.failed, true);
-    assert.equal(test1.failed, true);
-    assert.equal(test2.skipped, true);
-  });
-
-  it('should aborting early (suite configuration)', async () => {
-    const test1 = failingTest();
-    const test2 = passingTest();
-    const suite = new Suite('Test Suite', { abort: true }).add(test1, test2);
-
-    await suite.run(reporter);
-
-    assert.equal(suite.failed, true);
-    assert.equal(test1.failed, true);
-    assert.equal(test2.skipped, true);
-  });
-
-  it('should only run exclusive tests (test configuration)', async () => {
-    const test1 = passingTest();
-    const test2 = exclusiveTest();
-    const suite = new Suite('Test Suite').add(test1, test2);
-
-    await suite.run(reporter, {}, {}, false);
-
-    assert.equal(suite.stats.passed, 1);
-    assert.equal(suite.stats.failed, 0);
-    assert.equal(suite.stats.skipped, 0);
-  });
-
-  it('should only run exclusive tests (suite configuration)', async () => {
-    const test1 = passingTest();
-    const test2 = passingTest();
-    const test3 = passingTest();
-    const child1 = new Suite('Child 1', { exclusive: true }).add(test1, test2);
-    const child2 = new Suite('Child 2').add(test3);
-    const parent = new Suite('Parent').add(child1, child2);
-
-    await parent.run(reporter, {}, {}, false);
-
-    assert.equal(parent.stats.passed, 2);
-    assert.equal(parent.stats.failed, 0);
-    assert.equal(parent.stats.skipped, 0);
-  });
-
-  it('should only run exclusive tests (suite and test configuration)', async () => {
-    const test1 = passingTest();
-    const test2 = exclusiveTest();
-    const test3 = passingTest();
-    const child1 = new Suite('Child 1', { exclusive: true }).add(test1, test2);
-    const child2 = new Suite('Child 2').add(test3);
-    const parent = new Suite('Parent').add(child1, child2);
-
-    await parent.run(reporter, {}, {}, false);
-
-    assert.equal(parent.stats.passed, 1);
-    assert.equal(parent.stats.failed, 0);
-    assert.equal(parent.stats.skipped, 0);
-  });
-
-  it('should skip the exclusive test (suite configuration)', async () => {
-    const test = failingTest();
-    const suite = new Suite('Test Suite', { skip: true, exclusive: true }).add(test);
-
-    await suite.run(reporter);
-
-    assert.equal(suite.skipped, true);
-    assert.equal(test.skipped, true);
-  });
-
-  it('should skip exclusive tests (test configuration)', async () => {
-    const test = new Test('Test', fail(), { skip: true, exclusive: true });
-    const suite = new Suite('Test Suite').add(test);
-
-    await suite.run(reporter);
-    assert.equal(suite.passed, true);
-    assert.equal(test.skipped, true);
-  });
-
-  it('should support nesting', async () => {
-    const test1 = passingTest('Test 1');
-    const test2 = failingTest('Test 2');
-    const test3 = passingTest('Test 3');
-    const child1 = new Suite('Child 1').add(test1, test2);
-    const child2 = new Suite('Child 2').add(test3);
-    const parent = new Suite('Parent').add(child1, child2);
-
-    await parent.run(reporter);
-
-    assert.equal(parent.passed, false);
-    assert.equal(parent.name, 'Parent');
-    assert.equal(parent.stats.passed, 2);
-    assert.equal(parent.stats.failed, 1);
-    assert.equal(parent.stats.skipped, 0);
-
-    assert.equal(child1.name, 'Child 1');
-    assert.equal(child1.passed, false);
-    assert.equal(child1.stats.passed, 1);
-    assert.equal(child1.stats.failed, 1);
-    assert.equal(child1.stats.skipped, 0);
-
-    assert.equal(child2.name, 'Child 2');
-    assert.equal(child2.passed, true);
-    assert.equal(child2.stats.passed, 1);
-    assert.equal(child2.stats.failed, 0);
-    assert.equal(child2.stats.skipped, 0);
-
-    assert.equal(test1.name, 'Test 1');
-    assert.equal(test1.passed, true);
-    assert.equal(test2.name, 'Test 2');
-    assert.equal(test2.failed, true);
-    assert.equal(test3.name, 'Test 3');
-    assert.equal(test3.passed, true);
-  });
-
-  it('should finalise a suite of tests', async () => {
-    const test1 = passingTest('Test 1');
-    const test2 = passingTest('Test 2');
-    const test3 = passingTest('Test 3');
-    const child1 = new Suite('Child 1').add(test1, test2);
-    const child2 = new Suite('Child 2').add(test3);
-    const parent = new Suite('Parent').add(child1, child2);
-
-    const reporter = new GraphReporter();
-    const finalised = parent._finalise();
-    await finalised.run(reporter);
-
-    const graph = reporter.toGraph();
-    assert.equal(graph.name, 'Parent');
-    assert.equal(graph.result, TestableOutcomes.PASSED);
-    assert.equal(graph.resolve(0, 0).name, 'Test 1');
-    assert.equal(graph.resolve(0, 0).point, 1);
-    assert.equal(graph.resolve(0, 1).result, TestableOutcomes.PASSED);
-    assert.equal(graph.resolve(0, 1).name, 'Test 2');
-    assert.equal(graph.resolve(0, 1).point, 2);
-    assert.equal(graph.resolve(0, 0).result, TestableOutcomes.PASSED);
-    assert.equal(graph.resolve(1, 0).name, 'Test 3');
-    assert.equal(graph.resolve(1, 0).point, 3);
-    assert.equal(graph.resolve(1, 0).result, TestableOutcomes.PASSED);
-  });
-
-  describe('Lifecycle Hooks', () => {
-
-    describe('Before', () => {
-
-      it('should inject hook api', async () => {
-        let api;
-        const hook = new Hook('Hook', (h) => {
-          api = h;
-        });
-
-        const suite = new Suite('Suite').before(hook).add(passingTest())._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(api.name, 'Hook');
-        assert.equal(api.description, 'Suite / Hook');
-        assert.equal(api.suite.name, 'Suite');
-        assert.ok(api.suite.skip);
-      });
-
-      it('should run before hooks before all tests', async () => {
-        const executed = [];
-        const hook1 = new Hook('Hook 1', (h) => executed.push(h.name));
-        const hook2 = new Hook('Hook 2', (h) => executed.push(h.name));
-        const test1 = new Test('Test 1', (t) => executed.push(t.name));
-        const test2 = new Test('Test 2', (t) => executed.push(t.name));
-        const suite = new Suite('Suite').before(hook1, hook2).add(test1, test2)._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(executed.length, 4);
-        assert.equal(executed[0], 'Hook 1');
-        assert.equal(executed[1], 'Hook 2');
-        assert.equal(executed[2], 'Test 1');
-        assert.equal(executed[2], 'Test 1');
-      });
-
-      it('should skip before hooks when there are no tests', async () => {
-        const executed = [];
-        const hook = new Hook('Hook', (h) => executed.push(h.name));
-        const suite = new Suite('Suite').before(hook)._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(executed.length, 0);
-      });
-
-      it('should skip before hooks before a skipped suite (runtime configuration)', async () => {
-        const executed = [];
-        const hook = new Hook('Hook', () => executed.push('Before'));
-        const test = new Test('Test', () => executed.push('Test'));
-        const suite = new Suite('Suite').before(hook).add(test)._finalise();
-
-        await suite.run(reporter, { skip: true });
-
-        assert.equal(executed.length, 0);
-      });
-
-      it('should skip before hooks before a skipped suite (inherited configuration)', async () => {
-        const executed = [];
-        const hook = new Hook('Hook', () => executed.push('Before'));
-        const test = new Test('Test', () => executed.push('Test'));
-        const suite = new Suite('Suite').before(hook).add(test)._finalise();
-
-        await suite.run(reporter, {}, { skip: true });
-
-        assert.equal(executed.length, 0);
-      });
-
-      it('should skip before hooks before a skipped suite (suite configuration)', async () => {
-        const executed = [];
-        const hook = new Hook('Hook', () => executed.push('Before'));
-        const test = new Test('Test', () => executed.push('Test'));
-        const suite = new Suite('Suite', { skip: true }).before(hook).add(test)._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(executed.length, 0);
-      });
-
-      it('should skip remaining before hooks and test following a skipped suite (programmatic)', async () => {
-        const executed = [];
-        const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
-        const hook2 = new Hook('Hook 2', (h) => { h.suite.skip('Whatever'); });
-        const hook3 = new Hook('Hook 3', () => executed.push('Before 3'));
-        const test = new Test('Test', () => executed.push('Test'));
-        const suite = new Suite('Suite').before(hook1, hook2, hook3).add(test)._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(executed.length, 1);
-        assert.equal(executed[0], 'Before 1');
-      });
-
-      it('should skip remaining before hooks following a failure', async () => {
-        const executed = [];
-        const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
-        const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
-        const hook3 = new Hook('Hook 3', () => executed.push('Before 3'));
-        const test = new Test('Test', () => executed.push('Test'));
-        const suite = new Suite('Suite').before(hook1, hook2, hook3).add(test)._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(executed.length, 1);
-      });
-
-      it('should fail the suite if a before hook fails', async () => {
-        const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
-        const suite = new Suite('Suite').before(hook).add(passingTest())._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(suite.failed, true);
-      });
-
-      it('should fail all tests following a failure', async () => {
-        const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
-        const test1 = passingTest();
-        const test2 = skippedTest();
-        const test3 = failingTest();
-        const suite = new Suite('Suite').before(hook).add(test1, test2, test3)._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(suite.numberOfFailures, 3);
-        assert.equal(suite.numberOfPasses, 0);
-        assert.equal(suite.numberOfSkipped, 0);
-      });
+      assert.stats(report.stats, { tested: 2, passed: 2 });
     });
 
-    describe('After', () => {
+    it('should report failing tests', async () => {
+      const test1 = passingTest();
+      const test2 = failingTest();
+      const suite = new Suite('Suite').add(test1, test2);
 
-      it('should inject hook api', async () => {
-        let api;
-        const hook = new Hook('Hook', (h) => {
-          api = h;
-        });
+      const report = await run(suite);
 
-        const suite = new Suite('Suite').after(hook).add(passingTest())._finalise();
+      assert.stats(report.stats, { tested: 2, passed: 1, failed: 1 });
+    });
 
-        await suite.run(reporter);
+    it('should report failing tests in nested suites', async () => {
+      const test1 = passingTest();
+      const test2 = failingTest();
+      const test3 = passingTest();
+      const suite1 = new Suite('Suite 1').add(test1, test2);
+      const suite2 = new Suite('Suite 2').add(test3);
+      const suite3 = new Suite('Suite 3').add(suite1, suite2);
 
-        assert.equal(api.name, 'Hook');
-        assert.equal(api.description, 'Suite / Hook');
-        assert.equal(api.suite.name, 'Suite');
-        assert.ok(!api.suite.skip);
-      });
+      const report = await run(suite3);
 
-      it('should skip after hooks when there are no tests', async () => {
-        const executed = [];
-        const hook = new Hook('Hook', (h) => executed.push(h.name));
-        const suite = new Suite('Suite').after(hook)._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(executed.length, 0);
-      });
-
-      it('should run after hooks after a successful test', async () => {
-        const executed = [];
-        const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
-        const hook2 = new Hook('Hook 2', () => executed.push('After 2'));
-        const test = new Test('Test', () => executed.push('Test'));
-        const suite = new Suite('Suite').after(hook1, hook2).add(test)._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(executed.length, 3);
-        assert.equal(executed[0], 'Test');
-        assert.equal(executed[1], 'After 1');
-        assert.equal(executed[2], 'After 2');
-      });
-
-      it('should run after hooks after a failing test', async () => {
-        const executed = [];
-        const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
-        const hook2 = new Hook('Hook 2', () => executed.push('After 2'));
-        const suite = new Suite('Suite').after(hook1, hook2).add(failingTest())._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(executed.length, 2);
-        assert.equal(executed[0], 'After 1');
-        assert.equal(executed[1], 'After 2');
-      });
-
-      it('should skip after hooks after a skipped suite (suite configuration)', async () => {
-        const executed = [];
-        const hook = new Hook('Hook', () => executed.push('After'));
-        const suite = new Suite('Suite', { skip: true }).after(hook).add(passingTest())._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(executed.length, 0);
-      });
-
-      it('should skip after hooks after a skipped suite (runtime configuration)', async () => {
-        const executed = [];
-        const hook = new Hook('Hook', () => executed.push('After'));
-        const suite = new Suite('Suite').after(hook).add(passingTest())._finalise();
-
-        await suite.run(reporter, { skip: true });
-
-        assert.equal(executed.length, 0);
-      });
-
-      it('should skip after hooks after a skipped suite (inherited configuration)', async () => {
-        const executed = [];
-        const hook = new Hook('Hook', () => executed.push('After'));
-        const suite = new Suite('Suite').after(hook).add(passingTest())._finalise();
-
-        await suite.run(reporter, {}, { skip: true });
-
-        assert.equal(executed.length, 0);
-      });
-
-      it('should run after hooks after a skipped suite (programmatic)', async () => {
-        const executed = [];
-        const hook1 = new Hook('Before', (h) => h.suite.skip('whatever'));
-        const hook2 = new Hook('After', () => executed.push('After'));
-        const suite = new Suite('Suite').before(hook1).after(hook2).add(passingTest())._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(executed.length, 1);
-        assert.equal(executed[0], 'After');
-      });
-
-      it('should fail the suite if an after hook fails', async () => {
-        const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
-        const suite = new Suite('Suite').after(hook).add(passingTest())._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(suite.failed, true);
-      });
-
-      it('should skip remaining after hooks following a failure', async () => {
-        const executed = [];
-        const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
-        const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
-        const hook3 = new Hook('Hook 3', () => executed.push('After 3'));
-        const suite = new Suite('Suite').after(hook1, hook2, hook3).add(passingTest())._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(executed.length, 1);
-        assert.equal(executed[0], 'After 1');
-      });
-
-      it('should fail all non skipped tests following a failure', async () => {
-        const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
-        const test1 = passingTest();
-        const test2 = skippedTest();
-        const test3 = failingTest();
-        const suite = new Suite('Suite').after(hook).add(test1, test2, test3)._finalise();
-
-        await suite.run(reporter);
-
-        assert.equal(suite.numberOfFailures, 2);
-        assert.equal(suite.numberOfPasses, 0);
-        assert.equal(suite.numberOfSkipped, 1);
-      });
-
-      it('should skip after hooks associated with skipped before hooks', async () => {
-        const executedBefore = [];
-        const before1 = new Hook('Before 1', () => executedBefore.push('Before 1'));
-        const before2 = new Hook('Before 2', () => { throw new Error('Oh Noes!'); });
-        const before3 = new Hook('Before 3', () => executedBefore.push('Before 3'));
-
-        const executedAfter = [];
-        const after1 = new Hook('After 1', () => executedAfter.push('After 1'));
-        const after2 = new Hook('After 2', () => executedAfter.push('After 2'));
-        const after3 = new Hook('After 3', () => executedAfter.push('After 3'));
-
-        const suite3 = new Suite('Suite 3').before(before3).after(after3).add(passingTest());
-        const suite2 = new Suite('Suite 2').before(before2).after(after2).add(suite3);
-        const suite1 = new Suite('Suite 1').before(before1).after(after1).add(suite2)._finalise();
-
-        await suite1.run(reporter);
-
-        assert.equal(executedBefore.length, 1);
-        assert.equal(executedBefore[0], 'Before 1');
-
-        assert.equal(executedAfter.length, 2);
-        assert.equal(executedAfter[0], 'After 2');
-        assert.equal(executedAfter[1], 'After 1');
-      });
+      assert.stats(report.stats, { tested: 3, passed: 2, failed: 1 });
     });
   });
+
+  describe('Timeout', () => {
+
+    it('should timeout slow tests (suite configuration)', async () => {
+      const test = new Test('Test', pass({ delay: 200 }));
+      const suite = new Suite('Suite', { timeout: 100 }).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tested: 1, failed: 1 });
+      assert.equal(report.resolve(0).error.message, 'Timed out after 100ms');
+    });
+  });
+
+  describe('Skip', () => {
+
+    it('should skip tests (run configuration)', async () => {
+      const test1 = passingTest();
+      const test2 = failingTest();
+      const test3 = passingTest();
+      const suite = new Suite('Suite').add(test1, test2, test3);
+
+      const report = await run(suite, { skip: true });
+
+      assert.stats(report.stats, { tested: 3, skipped: 3 });
+    });
+
+    it('should skip tests (suite configuration)', async () => {
+      const test1 = passingTest();
+      const test2 = failingTest();
+      const test3 = passingTest();
+      const suite = new Suite('Suite', { skip: true }).add(test1, test2, test3);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tested: 3, skipped: 3 });
+    });
+
+    it('should run subsequent tests after skip (test configuration)', async () => {
+      const test1 = passingTest();
+      const test2 = skippedTest();
+      const test3 = passingTest();
+      const suite = new Suite('Suite').add(test1, test2, test3);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tested: 3, passed: 2, skipped: 1 });
+    });
+
+    it('should run subsequent tests after skip (suite configuration)', async () => {
+      const test1 = passingTest();
+      const test2 = passingTest();
+      const test3 = passingTest();
+      const suite1 = new Suite('Suite 1', { skip: true }).add(test1, test2);
+      const suite2 = new Suite('Suite 2').add(test3);
+      const suite3 = new Suite('Suite 3').add(suite1, suite2);
+
+      const report = await run(suite3);
+
+      assert.stats(report.stats, { tested: 3, passed: 1, skipped: 2 });
+    });
+
+    it('should skip nested suites', async () => {
+      const test1 = passingTest();
+      const test2 = skippedTest();
+      const test3 = passingTest();
+      const suite1 = new Suite('Suite 1').add(test1, test2);
+      const suite2 = new Suite('Suite 2').add(test3);
+      const suite3 = new Suite('Suite 3', { skip: true }).add(suite1, suite2);
+
+      const report = await run(suite3);
+
+      assert.stats(report.stats, { tested: 3, skipped: 3 });
+    });
+
+    it('should skip nested children', async () => {
+      const test1 = passingTest();
+      const test2 = skippedTest();
+      const test3 = passingTest();
+      const suite1 = new Suite('Suite 1', { skip: true }).add(test1, test2);
+      const suite2 = new Suite('Suite 2').add(test3);
+      const suite3 = new Suite('Suite 3').add(suite1, suite2);
+
+      const report = await run(suite3);
+
+      assert.stats(report.stats, { tested: 3, passed: 1, skipped: 2 });
+    });
+  });
+
+  describe('Abort', () => {
+
+    it('should abort early (run configuration)', async () => {
+      const test1 = failingTest();
+      const test2 = passingTest();
+      const suite = new Suite('Suite').add(test1, test2);
+
+      const report = await run(suite, { abort: true });
+
+      assert.stats(report.stats, { tested: 2, skipped: 1, failed: 1 });
+    });
+
+    it('should aborting early (suite configuration)', async () => {
+      const test1 = failingTest();
+      const test2 = passingTest();
+      const suite = new Suite('Suite', { abort: true }).add(test1, test2);
+
+      await suite.run(reporter);
+
+      const report = await run(suite, { abort: true });
+
+      assert.stats(report.stats, { tested: 2, skipped: 1, failed: 1 });
+    });
+  });
+
+  describe('Exclusive', () => {
+
+    it('should only run exclusive tests (test configuration)', async () => {
+      const test1 = passingTest();
+      const test2 = exclusiveTest();
+      const suite = new Suite('Suite').add(test1, test2);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tested: 2, passed: 1 });
+    });
+
+    it('should only run exclusive tests (suite configuration)', async () => {
+      const test1 = passingTest();
+      const test2 = passingTest();
+      const test3 = passingTest();
+      const suite1 = new Suite('Suite 1', { exclusive: true }).add(test1, test2);
+      const suite2 = new Suite('Suite 2').add(test3);
+      const suite3 = new Suite('Suite 3').add(suite1, suite2);
+
+      const report = await run(suite3);
+
+      assert.stats(report.stats, { tested: 3, passed: 2 });
+    });
+
+    it('should only run exclusive tests (suite and test configuration)', async () => {
+      const test1 = passingTest();
+      const test2 = exclusiveTest();
+      const test3 = passingTest();
+      const suite1 = new Suite('Suite 1', { exclusive: true }).add(test1, test2);
+      const suite2 = new Suite('Suite 2').add(test3);
+      const suite3 = new Suite('Suite 3').add(suite1, suite2);
+
+      const report = await run(suite3);
+
+      assert.stats(report.stats, { tested: 3, passed: 1 });
+    });
+
+    it('should only run exclusive tests (separate suite and test configuration)', async () => {
+      const test1 = passingTest();
+      const test2 = passingTest();
+      const test3 = exclusiveTest();
+      const suite1 = new Suite('Suite 1', { exclusive: true }).add(test1);
+      const suite2 = new Suite('Suite 2').add(test2, test3);
+      const suite3 = new Suite('Suite 3').add(suite1, suite2);
+
+      const report = await run(suite3);
+
+      assert.stats(report.stats, { tested: 3, passed: 2 });
+    });
+
+    it('should bypass skipped, exclusive tests (suite configuration)', async () => {
+      const test = passingTest();
+      const suite = new Suite('Suite', { skip: true, exclusive: true }).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tested: 1, skipped: 1 });
+    });
+
+    it('should bypass skipped, exclusive tests (test configuration)', async () => {
+      const test = new Test('Test', fail(), { skip: true, exclusive: true });
+      const suite = new Suite('Suite').add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tested: 1, skipped: 1 });
+    });
+
+    it('should skip the exclusive test with a skipped suite', async () => {
+      const test = exclusiveTest();
+      const suite = new Suite('Suite', { skip: true }).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tested: 1, skipped: 1 });
+    });
+
+    it('should bypass a skipped test within an exclusive suite', async () => {
+      const test = skippedTest();
+      const suite = new Suite('Suite', { exclusive: true }).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tested: 1, skipped: 1 });
+    });
+
+  });
+
+  describe('Nesting', () => {
+
+    it('should support nesting', async () => {
+      const test1 = passingTest('Test 1');
+      const test2 = failingTest('Test 2');
+      const test3 = passingTest('Test 3');
+      const suite1 = new Suite('Suite 1').add(test1, test2);
+      const suite2 = new Suite('Suite 2').add(test3);
+      const suite3 = new Suite('Suite 3').add(suite1, suite2);
+
+      await suite3.run(reporter);
+
+      assert.equal(suite3.passed, false);
+      assert.equal(suite3.name, 'Suite 3');
+      assert.equal(suite3.stats.passed, 2);
+      assert.equal(suite3.stats.failed, 1);
+      assert.equal(suite3.stats.skipped, 0);
+
+      assert.equal(suite1.name, 'Suite 1');
+      assert.equal(suite1.passed, false);
+      assert.equal(suite1.stats.passed, 1);
+      assert.equal(suite1.stats.failed, 1);
+      assert.equal(suite1.stats.skipped, 0);
+
+      assert.equal(suite2.name, 'Suite 2');
+      assert.equal(suite2.passed, true);
+      assert.equal(suite2.stats.passed, 1);
+      assert.equal(suite2.stats.failed, 0);
+      assert.equal(suite2.stats.skipped, 0);
+
+      assert.equal(test1.name, 'Test 1');
+      assert.equal(test1.passed, true);
+      assert.equal(test2.name, 'Test 2');
+      assert.equal(test2.failed, true);
+      assert.equal(test3.name, 'Test 3');
+      assert.equal(test3.passed, true);
+    });
+  });
+
+  describe('Points', () => {
+
+    it('should assign test points to tests in a suite', async () => {
+      const test1 = new Test('Test 1', pass());
+      const test2 = new Test('Test 2', pass());
+      const suite = new Suite('Suite').add(test1, test2);
+
+      const report = await run(suite);
+
+      assert.equal(report.resolve(0).name, 'Test 1');
+      assert.equal(report.resolve(0).point, 1);
+
+      assert.equal(report.children[1].name, 'Test 2');
+      assert.equal(report.children[1].point, 2);
+    });
+
+    it('should assign test points in the order tests are added to a suite', async () => {
+      const test1 = new Test('Test 1', pass());
+      const test2 = new Test('Test 2', pass());
+      const suite = new Suite('Suite').add(test2, test1);
+
+      const report = await run(suite);
+
+      assert.equal(report.resolve(0).name, 'Test 2');
+      assert.equal(report.resolve(0).point, 1);
+
+      assert.equal(report.children[1].name, 'Test 1');
+      assert.equal(report.children[1].point, 2);
+    });
+
+    it('should assign test points to tests in a nested suite', async () => {
+      const test1 = new Test('Test 1', pass());
+      const test2 = new Test('Test 2', pass());
+      const test3 = new Test('Test 3', pass());
+      const suite1 = new Suite('Suite 1').add(test1, test2);
+      const suite2 = new Suite('Suite 2').add(test3);
+      const suite3 = new Suite('Suite 3').add(suite1, suite2);
+
+      const report = await run(suite3);
+
+      assert.equal(report.resolve(0, 0).name, 'Test 1');
+      assert.equal(report.resolve(0, 0).point, 1);
+
+      assert.equal(report.resolve(0, 1).name, 'Test 2');
+      assert.equal(report.resolve(0, 1).point, 2);
+
+      assert.equal(report.resolve(1, 0).name, 'Test 3');
+      assert.equal(report.resolve(1, 0).point, 3);
+    });
+
+    it('should assign different test points to the same test', async () => {
+      const test = new Test('Test', pass());
+      const suite = new Suite('Suite').add(test, test);
+
+      const report = await run(suite);
+
+      assert.equal(report.resolve(0).name, 'Test');
+      assert.equal(report.resolve(0).point, 1);
+
+      assert.equal(report.children[1].name, 'Test');
+      assert.equal(report.children[1].point, 2);
+    });
+  });
+
 });
 
 
