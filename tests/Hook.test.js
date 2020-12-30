@@ -33,7 +33,7 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
       assert.equal(report.resolve(0).reason, 'Because');
     }, { skip: true, reason: 'Because skipping a suite does not update the test reason and therefore breaks the rule of least astonishment' });
 
@@ -134,7 +134,7 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 3, failed: 3 });
+      assert.stats(report.stats, { tests: 3, failed: 3 });
     });
   });
 
@@ -260,7 +260,7 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 1, failed: 1 });
     }, { skip: true, reason: 'I\'m not sure what should happen when after fails' });
 
     it('should fail all non skipped tests following a failure', async () => {
@@ -272,7 +272,7 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 3, failed: 2, skipped: 1 });
+      assert.stats(report.stats, { tests: 3, failed: 2, skipped: 1 });
     }, { skip: true, reason: 'I\'m not sure what should happen when after fails' });
 
     it('should bypass remaining after hooks following a failure', async () => {
@@ -344,7 +344,7 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
       assert.equal(report.resolve(0).reason, 'Because');
     });
 
@@ -452,7 +452,7 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 1, failed: 1 });
     });
   });
 
@@ -557,7 +557,7 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 1, failed: 1 });
     });
 
     it('should bypass remaining after hooks following a failure', async () => {

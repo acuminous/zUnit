@@ -3,9 +3,7 @@ const { Harness, Test, GraphReporter } = require('../..');
 
 async function run(testable, options) {
   const harness = new Harness(testable);
-  const reporter = new GraphReporter();
-  await harness.run(reporter, options);
-  return reporter.toGraph();
+  return harness.run(undefined, options);
 }
 
 function pass(params = {}) {

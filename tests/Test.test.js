@@ -11,8 +11,7 @@ describe('Test', () => {
 
       const report = await run(test);
 
-      assert.stats(report.stats, { tested: 1, passed: 1 });
-      assert.ok(report.duration >= 100);
+      assert.stats(report.stats, { tests: 1, passed: 1, duration: 100 });
     });
 
     it('should execute failing function', async () => {
@@ -20,9 +19,8 @@ describe('Test', () => {
 
       const report = await run(test);
 
-      assert.stats(report.stats, { tested: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 1, failed: 1, duration: 100 });
       assert.equal(report.error.message, 'Oh Noes!');
-      assert.ok(report.duration >= 100);
     });
   });
 
@@ -33,7 +31,7 @@ describe('Test', () => {
 
       const report = await run(test, { timeout: 100 });
 
-      assert.stats(report.stats, { tested: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 1, failed: 1 });
       assert.equal(report.error.message, 'Timed out after 100ms');
     });
 
@@ -45,7 +43,7 @@ describe('Test', () => {
       await harness.run(reporter);
 
       const report = reporter.toGraph();
-      assert.stats(report.stats, { tested: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 1, failed: 1 });
       assert.equal(report.error.message, 'Timed out after 100ms');
     });
 
@@ -54,7 +52,7 @@ describe('Test', () => {
 
       const report = await run(test);
 
-      assert.stats(report.stats, { tested: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 1, failed: 1 });
       assert.equal(report.error.message, 'Timed out after 100ms');
     });
   });
@@ -65,7 +63,7 @@ describe('Test', () => {
 
       const report = await run(test, { skip: true });
 
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
     });
 
     it('should bypass skipped tests (harness configuration)', async () => {
@@ -76,7 +74,7 @@ describe('Test', () => {
       await harness.run(reporter);
 
       const report = reporter.toGraph();
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
     });
 
     it('should bypass skipped tests (test configuration)', async () => {
@@ -84,7 +82,7 @@ describe('Test', () => {
 
       const report = await run(test);
 
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
     });
 
     it('should bypass skipped tests (programmatic)', async () => {
@@ -92,7 +90,7 @@ describe('Test', () => {
 
       const report = await run(test);
 
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
       assert.equal(report.reason, undefined);
     });
 
@@ -101,7 +99,7 @@ describe('Test', () => {
 
       const report = await run(test);
 
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
       assert.equal(report.reason, 'because');
     });
 
@@ -110,7 +108,7 @@ describe('Test', () => {
 
       const report = await run(test);
 
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
       assert.equal(report.reason, 'Pending');
     });
   });
@@ -122,7 +120,7 @@ describe('Test', () => {
 
       const report = await run(test);
 
-      assert.stats(report.stats, { tested: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 1, failed: 1 });
       assert.equal(report.error.message, 'Timed out after 200ms');
     });
 

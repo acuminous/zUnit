@@ -326,7 +326,7 @@ Each node in the graph has the following properties
 | isTest   | Function() : Boolean            | Indicates whether the node is a test   |
 | isSuite  | Function() : Boolean            | Indicates whether the node is a suite  |
 | point    | Number                          | The test point number (undefined for suites) |
-| result   | String                          | One of TestableOutcomes                |
+| result   | String                          | One of Outcomes                |
 | passed   | Boolean                         | Indicates wither the node passed       |
 | failed   | Boolean                         | Indicates wither the node failed       |
 | skipped  | Boolean                         | Indicates wither the node skipped      |

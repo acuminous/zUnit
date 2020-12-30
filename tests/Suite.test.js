@@ -15,7 +15,7 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 2, passed: 2 });
+      assert.stats(report.stats, { tests: 2, passed: 2 });
     });
 
     it('should report failing tests', async () => {
@@ -25,7 +25,7 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 2, passed: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 2, passed: 1, failed: 1 });
     });
 
     it('should report failing tests in nested suites', async () => {
@@ -38,7 +38,7 @@ describe('Suite', () => {
 
       const report = await run(suite3);
 
-      assert.stats(report.stats, { tested: 3, passed: 2, failed: 1 });
+      assert.stats(report.stats, { tests: 3, passed: 2, failed: 1 });
     });
   });
 
@@ -50,7 +50,7 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 1, failed: 1 });
       assert.equal(report.resolve(0).error.message, 'Timed out after 100ms');
     });
   });
@@ -65,7 +65,7 @@ describe('Suite', () => {
 
       const report = await run(suite, { skip: true });
 
-      assert.stats(report.stats, { tested: 3, skipped: 3 });
+      assert.stats(report.stats, { tests: 3, skipped: 3 });
     });
 
     it('should skip tests (suite configuration)', async () => {
@@ -76,7 +76,7 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 3, skipped: 3 });
+      assert.stats(report.stats, { tests: 3, skipped: 3 });
     });
 
     it('should run subsequent tests after skip (test configuration)', async () => {
@@ -87,7 +87,7 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 3, passed: 2, skipped: 1 });
+      assert.stats(report.stats, { tests: 3, passed: 2, skipped: 1 });
     });
 
     it('should run subsequent tests after skip (suite configuration)', async () => {
@@ -100,10 +100,10 @@ describe('Suite', () => {
 
       const report = await run(suite3);
 
-      assert.stats(report.stats, { tested: 3, passed: 1, skipped: 2 });
+      assert.stats(report.stats, { tests: 3, passed: 1, skipped: 2 });
     });
 
-    it('should skip nested suites', async () => {
+    it('should skip parent suites', async () => {
       const test1 = passingTest();
       const test2 = skippedTest();
       const test3 = passingTest();
@@ -113,10 +113,10 @@ describe('Suite', () => {
 
       const report = await run(suite3);
 
-      assert.stats(report.stats, { tested: 3, skipped: 3 });
+      assert.stats(report.stats, { tests: 3, skipped: 3 });
     });
 
-    it('should skip nested children', async () => {
+    it('should skip nested suites', async () => {
       const test1 = passingTest();
       const test2 = skippedTest();
       const test3 = passingTest();
@@ -126,7 +126,20 @@ describe('Suite', () => {
 
       const report = await run(suite3);
 
-      assert.stats(report.stats, { tested: 3, passed: 1, skipped: 2 });
+      assert.stats(report.stats, { tests: 3, passed: 1, skipped: 2 });
+    });
+
+    it('should skip nested tests', async () => {
+      const test1 = passingTest();
+      const test2 = skippedTest();
+      const test3 = passingTest();
+      const suite1 = new Suite('Suite 1').add(test1, test2);
+      const suite2 = new Suite('Suite 2').add(test3);
+      const suite3 = new Suite('Suite 3').add(suite1, suite2);
+
+      const report = await run(suite3);
+
+      assert.stats(report.stats, { tests: 3, passed: 2, skipped: 1 });
     });
   });
 
@@ -139,7 +152,7 @@ describe('Suite', () => {
 
       const report = await run(suite, { abort: true });
 
-      assert.stats(report.stats, { tested: 2, skipped: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 2, skipped: 1, failed: 1 });
     });
 
     it('should aborting early (suite configuration)', async () => {
@@ -151,7 +164,7 @@ describe('Suite', () => {
 
       const report = await run(suite, { abort: true });
 
-      assert.stats(report.stats, { tested: 2, skipped: 1, failed: 1 });
+      assert.stats(report.stats, { tests: 2, skipped: 1, failed: 1 });
     });
   });
 
@@ -164,7 +177,7 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 2, passed: 1 });
+      assert.stats(report.stats, { tests: 2, passed: 1 });
     });
 
     it('should only run exclusive tests (suite configuration)', async () => {
@@ -177,7 +190,7 @@ describe('Suite', () => {
 
       const report = await run(suite3);
 
-      assert.stats(report.stats, { tested: 3, passed: 2 });
+      assert.stats(report.stats, { tests: 3, passed: 2 });
     });
 
     it('should only run exclusive tests (suite and test configuration)', async () => {
@@ -190,7 +203,7 @@ describe('Suite', () => {
 
       const report = await run(suite3);
 
-      assert.stats(report.stats, { tested: 3, passed: 1 });
+      assert.stats(report.stats, { tests: 3, passed: 1 });
     });
 
     it('should only run exclusive tests (separate suite and test configuration)', async () => {
@@ -203,7 +216,7 @@ describe('Suite', () => {
 
       const report = await run(suite3);
 
-      assert.stats(report.stats, { tested: 3, passed: 2 });
+      assert.stats(report.stats, { tests: 3, passed: 2 });
     });
 
     it('should bypass skipped, exclusive tests (suite configuration)', async () => {
@@ -212,7 +225,7 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
     });
 
     it('should bypass skipped, exclusive tests (test configuration)', async () => {
@@ -221,7 +234,7 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
     });
 
     it('should skip the exclusive test with a skipped suite', async () => {
@@ -230,7 +243,7 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
     });
 
     it('should bypass a skipped test within an exclusive suite', async () => {
@@ -239,7 +252,7 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tested: 1, skipped: 1 });
+      assert.stats(report.stats, { tests: 1, skipped: 1 });
     });
 
   });
