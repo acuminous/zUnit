@@ -1,5 +1,4 @@
-const { Harness, Test, GraphReporter } = require('../..');
-
+const { Harness, Test } = require('../..');
 
 async function run(testable, options) {
   const harness = new Harness(testable);
