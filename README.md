@@ -27,7 +27,7 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
     ```js
     const { Harness, Suite, SpecReporter } = require('zunit');
 
-    const suite = new Suite('zUnit').discover();
+    const suite = new Suite('zUnit').discover({ directory: __dirname });
     const harness = new Harness(suite);
 
     const interactive = String(process.env.CI).toLowerCase() !== 'true';
