@@ -170,11 +170,12 @@ You can define pending tests / skip tests in the following ways...
     ```js
     const { describe, it, beforeEach } = require('zunit');
 
-    beforeEach(async (hook) => {
-      return hook.test.skip('Optional Reason')
-    });
-
     describe('My Suite', () => {
+
+      beforeEach(async (hook) => {
+        return hook.test.skip('Optional Reason')
+      });
+
       it('should do something wonderful', async (test) => {
         // ...
       });
@@ -185,11 +186,12 @@ You can define pending tests / skip tests in the following ways...
     ```js
     const { describe, it, before } = require('zunit');
 
-    before(async (hook) => {
-      return hook.suite.skip('Optional Reason')
-    });
-
     describe('My Suite', () => {
+
+      before(async (hook) => {
+        return hook.suite.skip('Optional Reason')
+      });
+
       it('should do something wonderful', async (test) => {
         // ...
       });
