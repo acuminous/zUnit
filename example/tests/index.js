@@ -1,11 +1,9 @@
-const path = require('path');
 const { EOL } = require('os');
-const { Harness, SpecReporter, syntax } = require('../..');
+const { Harness, Suite, SpecReporter, syntax } = require('../..');
 
 Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
 
-const filename = path.resolve(__dirname, process.argv[2]);
-const suite = require(filename);
+const suite = new Suite('Example').discover();
 const harness = new Harness(suite);
 
 const interactive = String(process.env.CI).toLowerCase() !== 'true';

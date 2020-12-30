@@ -11,7 +11,7 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
 ## About
 zUnit is a zero dependency, non-polluting<sup>[1](#1-non-polluting)</sup>, low magic<sup>[2](#2-low-magic)</sup>, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning.
 
-Completely reimplementing mocha without dependencies would undoubtedly introduce even more issues. Consequently, zUnit lacks some advanced features, e.g. it does not support concurrent tests, retries or test discovery, but most of the other day-to-day features are present. Since writing zUnit I've begun to wonder whether these features were necessary in the first place. Many test suites are too small to benefit from parallel testing, and others may need to verify persistence and therefore require effort to isolate. Concurrent testing also has drawbacks - the test harness and reporters become more complex and the output must be buffered, delaying feedback. I'm also unconvinced about automaticaly retrying tests, I think it better to fix any that are flakey, and take a [statistical approach](https://www.npmjs.com/package/fast-stats) when results are naturally unpredictable.
+Completely reimplementing mocha without dependencies would undoubtedly introduce even more issues. Consequently, zUnit lacks some advanced features, e.g. it does not support concurrent tests,  retries or advanced test discovery, but most of the other day-to-day features are present. Since writing zUnit I've begun to wonder whether these features were necessary in the first place. Many test suites are too small to benefit from parallel testing, and others may need to verify persistence and therefore require effort to isolate. Concurrent testing also has drawbacks - the test harness and reporters become more complex and the output must be buffered, delaying feedback. I'm also unconvinced about automaticaly retrying tests, I think it better to fix any that are flakey, and take a [statistical approach](https://www.npmjs.com/package/fast-stats) when results are naturally unpredictable.
 
 ##### 1 non-polluting
 You can add test functions (describe, it, etc) to the global namespace if you so wish...
@@ -23,14 +23,11 @@ Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
 The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports suites without using `module.exports` by inspecting the call stack.
 
 ## Usage
-
 1. Create a runner, e.g. `tests/index.js`
     ```js
-    const path = require('path');
-    const { Harness, SpecReporter } = require('zunit');
+    const { Harness, Suite, SpecReporter } = require('zunit');
 
-    const filename = path.resolve(__dirname, process.argv[2]);
-    const suite = require(filename);
+    const suite = new Suite('zUnit').discover();
     const harness = new Harness(suite);
 
     const interactive = String(process.env.CI).toLowerCase() !== 'true';
@@ -38,7 +35,7 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
 
     harness.run(reporter).then(() => {
       if (harness.failed) process.exit(1);
-      if (harness.hasExclusiveTests()) {
+      if (harness.exclusive) {
         console.log(`Found one or more exclusive tests!`);
         process.exit(2);
       }
@@ -77,7 +74,7 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
 
 1. Run the tests
     ```bash
-    node tests user-db.test.js
+    node tests
 
     User DB
       List Users
@@ -87,12 +84,12 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
         - SKIPPED (0ms)
 
     Summary
-      Passed: 1, Skipped: 1, Failed: 0, Duration: 2ms
+      Tests: 2, Passed: 1, Skipped: 1, Failed: 0, Duration: 2ms
 
     ```
 
-## Composing Test Suites
-Because zUnit doesn't walk the filesystem to discover tests suites, you need to define them explicitly. This easiest way of doing this is by creating a main suite and including others from it. e.g.
+## Composing Test Suites Explicitly
+This easiest way of doing this is by creating a main suite and including others from it. e.g.
 
 ```js
 const { describe, include } = require('zunit');
@@ -113,17 +110,40 @@ You can define pending tests / skip tests in the following ways...
 
     describe('My Suite', () => {
       xit('should do something wonderful', async () => {
+        // ...
       });
     });
     ```
+1. Passing an option to `it`
+    ```js
+    const { describe, it } = require('zunit');
+
+    describe('My Suite', () => {
+      it('should do something wonderful', async () => {
+        // ...
+      }, { skip: true, reason: 'Optional Reason' });
+    });
+    ```
+
 1. Using `xdescribe`
     ```js
     const { xdescribe, it } = require('zunit');
 
     xdescribe('My Suite', () => {
       it('should do something wonderful', async () => {
+        // ...
       });
     });
+    ```
+1. Passing an option to `describe`
+    ```js
+    const { describe, it } = require('zunit');
+
+    describe('My Suite', () => {
+      it('should do something wonderful', async () => {
+        // ...
+      });
+    }, { skip: true, reason: 'Optional Reason' });
     ```
 
 1. Defining a test without a test function
@@ -141,7 +161,37 @@ You can define pending tests / skip tests in the following ways...
 
     describe('My Suite', () => {
       it('should do something wonderful', async (test) => {
-        return test.skip();
+        return test.skip('Optional Reason');
+      });
+    });
+    ```
+
+1. In a beforeEach hook
+    ```js
+    const { describe, it, beforeEach } = require('zunit');
+
+    beforeEach(async (hook) => {
+      return hook.test.skip('Optional Reason')
+    });
+
+    describe('My Suite', () => {
+      it('should do something wonderful', async (test) => {
+        // ...
+      });
+    });
+    ```
+
+1. In a before hook
+    ```js
+    const { describe, it, before } = require('zunit');
+
+    before(async (hook) => {
+      return hook.suite.skip('Optional Reason')
+    });
+
+    describe('My Suite', () => {
+      it('should do something wonderful', async (test) => {
+        // ...
       });
     });
     ```
@@ -167,6 +217,7 @@ You can selectively run tests or suites as follows...
 
     describe('My Suite', () => {
       it('should do something wonderful', async () => {
+        // ...
       }, { exclusive: true });
     });
     ```
@@ -177,6 +228,7 @@ You can selectively run tests or suites as follows...
 
     describe('My Suite', () => {
       it('should do something wonderful', async () => {
+        // ...
       });
     }, { exclusive: true });
     ```
@@ -197,6 +249,7 @@ Tests default to timing out after 5 seconds. You can override this as follows...
 
     describe('My Suite', () => {
       it('should do something wonderful', async () => {
+        // ...
       }, { timeout: 10000 });
     });
     ```
@@ -207,6 +260,7 @@ Tests default to timing out after 5 seconds. You can override this as follows...
 
     describe('My Suite', () => {
       it('should do something wonderful', async () => {
+        // ...
       });
     }, { timeout: 10000 });
     ```
@@ -229,6 +283,7 @@ Test suites continue running tests after failure by default. You can override th
 
     describe('My Suite', () => {
       it('should do something wonderful', async () => {
+        // ...
       });
     }, { abort: true });
     ```
@@ -296,7 +351,7 @@ describe('Suite', () => {
 })
 ```
 
-You can explicitly name hooks by passing a string as the first parameter, e.g. `beforeEach('Reset', async (h) => { ... })` and skip a test from a before hook by calling `h.test.skip()`;
+You can explicitly name hooks by passing a string as the first parameter, e.g. `beforeEach('Reset', async (h) => { ... })` and skip a test from a before hook by calling `hook.suite.skip('optional reason)` and from a beforeEach hook by calling `hook.test.skip('optional reason')`;
 
 ## Reporters
 zUnit ships with the following reporters
@@ -326,7 +381,7 @@ Each node in the graph has the following properties
 | isTest   | Function() : Boolean            | Indicates whether the node is a test   |
 | isSuite  | Function() : Boolean            | Indicates whether the node is a suite  |
 | point    | Number                          | The test point number (undefined for suites) |
-| result   | String                          | One of Outcomes                |
+| result   | String                          | One of Outcomes                        |
 | passed   | Boolean                         | Indicates wither the node passed       |
 | failed   | Boolean                         | Indicates wither the node failed       |
 | skipped  | Boolean                         | Indicates wither the node skipped      |
@@ -400,7 +455,7 @@ zUnit
      - PASSED (2ms)
 
 Summary
-  Passed: 2, Failed: 0, Skipped: 0, Duration: 6ms
+  Tests: 2, Passed: 2, Failed: 0, Skipped: 0, Duration: 6ms
 ```
 
 #### Options
