@@ -11,7 +11,7 @@ describe('Test', () => {
 
       const report = await run(test);
 
-      assert.stats(report.stats, { tests: 1, passed: 1, duration: 100 });
+      assert.stats(report.stats, { tests: 1, passed: 1, duration: 99 });
     });
 
     it('should execute failing function', async () => {
@@ -19,7 +19,7 @@ describe('Test', () => {
 
       const report = await run(test);
 
-      assert.stats(report.stats, { tests: 1, failed: 1, duration: 100 });
+      assert.stats(report.stats, { tests: 1, failed: 1, duration: 99 });
       assert.equal(report.error.message, 'Oh Noes!');
     });
   });
