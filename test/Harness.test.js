@@ -1,6 +1,5 @@
 const assert = require('assert');
-const { run, pass, fail, skip, timeout } = require('./support/helpers');
-const { Harness, Test, GraphReporter } = require('..');
+const { Harness } = require('..');
 
 describe('Harness', () => {
 
