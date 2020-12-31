@@ -14,4 +14,4 @@ describe('Example', () => {
     assert.stats(report.stats, { tests: 28, passed: 11, failed: 1, skipped: 16 });
   });
 
-})
+});
