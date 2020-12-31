@@ -137,6 +137,20 @@ harness.run(reporter).then(() => {
 });
 ```
 
+## Callbacks
+Sometimes the code under test uses callbacks, making it easier if the test is callback based too. If you define your test functions to take two arguments, the second argument will be passed a callback which you should invoke to signify that the test is done. e.g.
+
+```js
+  it('should do something wonderful', (test, done) => {
+    callbackApi((err, items) => {
+      if (err) return done(err);
+      assert.equal(items.length, 0);
+      done();
+    });
+  })
+```
+Unlike with mocha, you can make the test function asynchronous, allowing you to use `await` when you have a mixture of callback and promise based code in your test.
+
 ## Pending / Skipping Tests
 You can define pending tests / skip tests in the following ways...
 

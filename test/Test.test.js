@@ -4,9 +4,135 @@ const { Harness, Test, GraphReporter } = require('..');
 
 describe('Test', () => {
 
-  describe('Normal', () => {
+  describe('Async', () => {
 
-    it('should executing passing function', async () => {
+    it('should execute a passing async function', async () => {
+      const test = new Test('Test', pass());
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, passed: 1 });
+    });
+
+    it('should execute a failing async function', async () => {
+      const test = new Test('Test', fail());
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.equal(report.error.message, 'Oh Noes!');
+    });
+
+  });
+
+  describe('Sync', () => {
+
+    it('should execute a passing sync function', async () => {
+      const test = new Test('Test', () => {
+        assert.ok(true);
+      });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, passed: 1 });
+    });
+
+    it('should execute a failing sync function (throws)', async () => {
+      const test = new Test('Test', () => {
+        assert.ok(false);
+      });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.error.message, /The expression evaluated to a falsy value/);
+    });
+  });
+
+  describe('Callbacks', () => {
+
+    it('should execute passing sync function (done)', async () => {
+      const test = new Test('Test', (t, done) => {
+        done();
+      });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, passed: 1 });
+    });
+
+    it('should execute failing sync function (done)', async () => {
+      const test = new Test('Test', (t, done) => {
+        done(new Error('Oh Noes!'));
+      });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.error.message, /Oh Noes!/);
+    });
+
+    it('should execute failing sync function (throws)', async () => {
+      const test = new Test('Test', async (t, done) => {
+        assert.ok(false);
+        done();
+      });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.error.message, /The expression evaluated to a falsy value/);
+    });
+
+    it('should execute passing async function (done)', async () => {
+      const test = new Test('Test', async (t, done) => {
+        done();
+      });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, passed: 1 });
+    });
+
+    it('should execute failing async function (done)', async () => {
+      const test = new Test('Test', async (t, done) => {
+        done(new Error('Oh Noes!'));
+      });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.error.message, /Oh Noes!/);
+    });
+
+    it('should execute failing async function (throws)', async () => {
+      const test = new Test('Test', async (t, done) => {
+        assert.ok(false);
+        done();
+      });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.error.message, /The expression evaluated to a falsy value/);
+    });
+
+    it('should error if done is called twice', async () => {
+      const test = new Test('Test', async (t, done) => {
+        done();
+        done();
+      });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.error.message, /done already called/);
+    });
+  });
+
+  describe('Duration', () => {
+
+    it('should calculate the duration for passing tests', async () => {
       const test = new Test('Test', pass({ delay: 100 }));
 
       const report = await run(test);
@@ -14,13 +140,12 @@ describe('Test', () => {
       assert.stats(report.stats, { tests: 1, passed: 1, duration: 99 });
     });
 
-    it('should execute failing function', async () => {
+    it('should calculate the duration for failing tests', async () => {
       const test = new Test('Test', fail({ delay: 100 }));
 
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1, duration: 99 });
-      assert.equal(report.error.message, 'Oh Noes!');
     });
   });
 
@@ -113,7 +238,7 @@ describe('Test', () => {
     });
   });
 
-  describe('Unresolved Promises', () => {
+  describe('Incomplete Tests', () => {
 
     it('should timeout unresolved promises', async () => {
       const test = new Test('Test', timeout(), { timeout: 200 });
@@ -122,6 +247,17 @@ describe('Test', () => {
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
       assert.equal(report.error.message, 'Timed out after 200ms');
+    });
+
+    it('should timeout unused done', async () => {
+      // eslint-disable-next-line no-unused-vars
+      const test = new Test('Test', async (t, done) => {
+      }, { timeout: 100 });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.equal(report.error.message, 'Timed out after 100ms');
     });
 
   });
