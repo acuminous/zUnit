@@ -11,7 +11,7 @@ describe('Harness', () => {
       const messagePattern = /The harness must be initialised with a suite or test/;
       await assert.rejects(async () => harness.run(), messagePattern);
       await assert.rejects(async () => harness.run({}), messagePattern);
-    }, { exclusive: true });
+    });
   });
 
 });
