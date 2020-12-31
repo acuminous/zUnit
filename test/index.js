@@ -6,7 +6,7 @@ const { Harness, Suite, SpecReporter, syntax } = require('..');
 
 Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
 
-const suite = new Suite('zUnit').discover({ directory: __dirname });
+const suite = new Suite('zUnit').discover();
 const harness = new Harness(suite);
 
 const interactive = String(process.env.CI).toLowerCase() !== 'true';

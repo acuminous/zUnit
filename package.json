@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "lint": "eslint .",
-    "test": "node tests",
+    "test": "node test",
     "coverage": "nyc --report html --reporter lcov --reporter text-summary npm test",
     "example": "pushd example; npm t; popd"
   },

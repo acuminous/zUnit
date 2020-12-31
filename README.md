@@ -11,7 +11,7 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
 ## About
 zUnit is a zero dependency, non-polluting<sup>[1](#1-non-polluting)</sup>, low magic<sup>[2](#2-low-magic)</sup>, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning.
 
-Completely reimplementing mocha without dependencies would undoubtedly introduce even more issues. Consequently, zUnit lacks some advanced features, e.g. it does not support concurrent tests,  retries or advanced test discovery, but most of the other day-to-day features are present. Since writing zUnit I've begun to wonder whether these features were necessary in the first place. Many test suites are too small to benefit from parallel testing, and others may need to verify persistence and therefore require effort to isolate. Concurrent testing also has drawbacks - the test harness and reporters become more complex and the output must be buffered, delaying feedback. I'm also unconvinced about automaticaly retrying tests, I think it better to fix any that are flakey, and take a [statistical approach](https://www.npmjs.com/package/fast-stats) when results are naturally unpredictable.
+Completely reimplementing mocha without dependencies would undoubtedly introduce even more issues. Consequently, zUnit lacks some advanced features, e.g. it does not support concurrent tests, retries or true file globbing, but most of the other day-to-day features are present. Since writing zUnit I've begun to wonder whether these features were necessary in the first place. Many test suites are too small to benefit from parallel testing, and others may need to verify persistence and therefore require effort to isolate. Concurrent testing also has drawbacks - the test harness and reporters become more complex and the output must be buffered, delaying feedback. I'm also unconvinced about automaticaly retrying tests, I think it better to fix any that are flakey, and take a [statistical approach](https://www.npmjs.com/package/fast-stats) when results are naturally unpredictable.
 
 ##### 1 non-polluting
 You can add test functions (describe, it, etc) to the global namespace if you so wish...
@@ -23,11 +23,11 @@ Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
 The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports suites without using `module.exports` by inspecting the call stack.
 
 ## Usage
-1. Create a runner, e.g. `tests/index.js`
+1. Create a runner, e.g. `test/index.js`
     ```js
     const { Harness, Suite, SpecReporter } = require('zunit');
 
-    const suite = new Suite('zUnit').discover({ directory: __dirname });
+    const suite = new Suite('zUnit').discover();
     const harness = new Harness(suite);
 
     const interactive = String(process.env.CI).toLowerCase() !== 'true';
@@ -42,7 +42,7 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
     });
     ```
 
-1. Create a test suite, e.g. `tests/user-db.test.js`
+1. Create a test suite, e.g. `test/user-db.test.js`
     ```js
     const { describe, it, beforeEach } = require('zunit');
     const assert = require('assert');
@@ -88,9 +88,24 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
 
     ```
 
-## Composing Test Suites Explicitly
-This easiest way of doing this is by creating a main suite and including others from it. e.g.
+## Discovering Test Suites
+zUnit Suites can automatically discover child test suites by invoking their `discover` function. e.g.
 
+```js
+  const suite = new Suite('zUnit').discover();
+  const harness = new Harness(suite);
+```
+
+By default, the discover function will recursively descended into the `test` directory looking files which end in `.test.js`. You can override this behaviour through the following options.
+
+| Name      | Type                            | Notes                                      |
+|-----------|---------------------------------|--------------------------------------------|
+| directory | String                          | The initial directory to recurse. Defaults to `path.join(process.cwd(), 'test')` |
+| pattern   | Regular Expression              | The pattern to use for matching test files. Defaults to `/^[\w-]+\.test\.js$/` |
+| filter    | Function() : Boolean            | Indicates whether a directory should be recursed or a file should be included. Override this if you have directories you want to ignore |
+
+## Composing Test Suites Explicitly
+Instead of automatically discovering test suites, you can compose them explicitly as follows...
 ```js
 const { describe, include } = require('zunit');
 const userDbTests = require('./userDbTests');
@@ -99,6 +114,27 @@ const productDbTests = require('./productDbTests');
 describe('All Tests', () => {
   include(userDbTests, productDbTests)
 })
+```
+
+You may then wish to change your test runner to be something like this...
+```js
+const path = require('path');
+const { Harness, SpecReporter } = require('zunit');
+
+const filename = path.resolve(__dirname, process.argv[2]);
+const suite = require(filename);
+const harness = new Harness(suite);
+
+const interactive = String(process.env.CI).toLowerCase() !== 'true';
+const reporter = new SpecReporter({ colours: interactive });
+
+harness.run(reporter).then(() => {
+  if (harness.failed) process.exit(1);
+  if (harness.exclusive) {
+    console.log(`Found one or more exclusive tests!`);
+    process.exit(2);
+  }
+});
 ```
 
 ## Pending / Skipping Tests
