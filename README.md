@@ -299,7 +299,7 @@ Tests default to timing out after 5 seconds. You can override this as follows...
     ```js
     runnable.run(reporter, { timeout: 10000 }).then(() => {
       if (runnable.failed) process.exit(1);
-    })
+    });
     ```
 
 1. Passing a timeout option to `it`
@@ -324,7 +324,7 @@ Tests default to timing out after 5 seconds. You can override this as follows...
     }, { timeout: 10000 });
     ```
 
-The timeout includes the duration of all [lifecycle hooks](#lifecycle-hooks).
+The timeout includes the duration of beforeEach/afterEach [lifecycle hooks](#lifecycle-hooks), although these may also have their own timeouts.
 
 ## Bailing Out / Failing Fast / Aborting Early
 Test suites continue running tests after failure by default. You can override this in the following ways...
@@ -333,7 +333,7 @@ Test suites continue running tests after failure by default. You can override th
     ```js
     runnable.run(reporter, { abort: true }).then(() => {
       if (runnable.failed) process.exit(1);
-    })
+    });
     ```
 
 1. Passing an option to `describe`
@@ -362,55 +362,75 @@ describe('Suite', () => {
 
   before(async (hook) => {
     console.log(hook.name)
-  })
+  });
 
   beforeEach(async (hook) => {
     console.log(hook.name)
-  })
+  });
 
   after(async (hook) => {
     console.log(hook.name)
-  })
+  });
 
   afterEach(async (hook) => {
     console.log(hook.name)
-  })
+  });
 
   it('Test 1', async () => {
-  })
+  });
 
   it('Test 2', async () => {
-  })
+  });
 
   describe('Nested Suite', () => {
 
     before(async (hook) => {
       console.log(hook.name)
-    })
+    });
 
     beforeEach(async (hook) => {
       console.log(hook.name)
-    })
+    });
 
     after(async (hook) => {
       console.log(hook.name)
-    })
+    });
 
     afterEach(async (hook) => {
       console.log(hook.name)
-    })
+    });
 
     it('Nested Test 1', async () => {
-    })
+    });
 
     it('Nested Test 2', async () => {
     })
   });
 
-})
+});
 ```
 
 You can explicitly name hooks by passing a string as the first parameter, e.g. `beforeEach('Reset', async (h) => { ... })` and skip a test from a before hook by calling `hook.suite.skip('optional reason)` and from a beforeEach hook by calling `hook.test.skip('optional reason')`;
+
+As with tests you can enable callback mode by adding a second paramter to any lifecycle's hook function, e.g.
+```js
+before((hook, done) => {
+  callbackApi((err) => {
+    if (err) return done(err);
+    done();
+  });
+});
+```
+The function may still be `async` if you need to mix and match promises and callbacks.
+
+Finally you can specify a timeout for any lifecycle hook af follows...
+```js
+before(async (hook) => {
+  // ...
+}, { timeout: 1000 });
+```
+
+Timeouts for before/after hooks are independent of test timeouts, but timeouts for beforeEach/afterEach operate within the test's timeout and so must be shorter if they are to be of any use.
 
 ## Reporters
 zUnit ships with the following reporters

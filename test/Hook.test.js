@@ -37,6 +37,48 @@ describe('Hook', () => {
       assert.equal(report.resolve(0).reason, 'Because');
     });
 
+    it('should support callbacks', async () => {
+      const hook = new Hook('Hook', (h, done) => {
+        done();
+      });
+
+      const test = passingTest();
+      const suite = new Suite('Suite').before(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, passed: 1 });
+    });
+
+    it('should timeout if callback is not invoked', async () => {
+      // eslint-disable-next-line no-unused-vars
+      const hook = new Hook('Hook', (h, done) => {
+      }, { timeout: 100 });
+
+      const test = passingTest();
+      const suite = new Suite('Suite', { timeout: 100 }).before(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.error.message, /Timed out after 100ms/);
+    });
+
+    it('should timeout if promise is unresolved', async () => {
+      // eslint-disable-next-line no-unused-vars
+      const hook = new Hook('Hook', (h) => {
+        return new Promise(() => {});
+      }, { timeout: 100 });
+
+      const test = passingTest();
+      const suite = new Suite('Suite').before(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.error.message, /Timed out after 100ms/);
+    });
+
     it('should run before hooks before all tests', async () => {
       const executed = [];
       const hook1 = new Hook('Hook 1', (h) => executed.push(h.name));
@@ -154,6 +196,48 @@ describe('Hook', () => {
       assert.equal(api.description, 'Suite / Hook');
       assert.equal(api.suite.name, 'Suite');
       assert.ok(!api.suite.skip);
+    });
+
+    it('should support callbacks', async () => {
+      const hook = new Hook('Hook', (h, done) => {
+        done();
+      });
+
+      const test = passingTest();
+      const suite = new Suite('Suite').after(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, passed: 1 });
+    });
+
+    it('should timeout if callback is not invoked', async () => {
+      // eslint-disable-next-line no-unused-vars
+      const hook = new Hook('Hook', (h, done) => {
+      }, { timeout: 100 });
+
+      const test = passingTest();
+      const suite = new Suite('Suite', { timeout: 100 }).after(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.error.message, /Timed out after 100ms/);
+    });
+
+    it('should timeout if promise is unresolved', async () => {
+      // eslint-disable-next-line no-unused-vars
+      const hook = new Hook('Hook', (h) => {
+        return new Promise(() => {});
+      }, { timeout: 100 });
+
+      const test = passingTest();
+      const suite = new Suite('Suite').after(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.error.message, /Timed out after 100ms/);
     });
 
     it('should bypass after hooks when there are no tests', async () => {
@@ -348,6 +432,48 @@ describe('Hook', () => {
       assert.equal(report.resolve(0).reason, 'Because');
     });
 
+    it('should support callbacks', async () => {
+      const hook = new Hook('Hook', (h, done) => {
+        done();
+      });
+
+      const test = passingTest();
+      const suite = new Suite('Suite').beforeEach(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, passed: 1 });
+    });
+
+    it('should timeout if callback is not invoked', async () => {
+      // eslint-disable-next-line no-unused-vars
+      const hook = new Hook('Hook', (h, done) => {
+      }, { timeout: 100 });
+
+      const test = passingTest();
+      const suite = new Suite('Suite').beforeEach(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.resolve(0).error.message, /Timed out after 100ms/);
+    });
+
+    it('should timeout if promise is unresolved', async () => {
+      // eslint-disable-next-line no-unused-vars
+      const hook = new Hook('Hook', (h) => {
+        return new Promise(() => {});
+      }, { timeout: 100 });
+
+      const test = passingTest();
+      const suite = new Suite('Suite').beforeEach(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.resolve(0).error.message, /Timed out after 100ms/);
+    });
+
     it('should run before hooks before the test', async () => {
       const executed = [];
       const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
@@ -473,6 +599,48 @@ describe('Hook', () => {
       assert.equal(api.description, 'Suite / Test / Hook');
       assert.equal(api.test.name, 'Test');
       assert.ok(!api.test.skip);
+    });
+
+    it('should support callbacks', async () => {
+      const hook = new Hook('Hook', (h, done) => {
+        done();
+      });
+
+      const test = passingTest();
+      const suite = new Suite('Suite').afterEach(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, passed: 1 });
+    });
+
+    it('should timeout if callback is not invoked', async () => {
+      // eslint-disable-next-line no-unused-vars
+      const hook = new Hook('Hook', (h, done) => {
+      }, { timeout: 100 });
+
+      const test = passingTest();
+      const suite = new Suite('Suite').afterEach(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.resolve(0).error.message, /Timed out after 100ms/);
+    });
+
+    it('should timeout if promise is unresolved', async () => {
+      // eslint-disable-next-line no-unused-vars
+      const hook = new Hook('Hook', (h) => {
+        return new Promise(() => {});
+      }, { timeout: 100 });
+
+      const test = passingTest();
+      const suite = new Suite('Suite').afterEach(hook).add(test);
+
+      const report = await run(suite);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.resolve(0).error.message, /Timed out after 100ms/);
     });
 
     it('should run after hooks after a successful test', async () => {
