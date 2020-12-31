@@ -104,6 +104,13 @@ By default, the discover function will recursively descended into the `test` dir
 | pattern   | Regular Expression              | The pattern to use for matching test files. Defaults to `/^[\w-]+\.test\.js$/` |
 | filter    | Function() : Boolean            | Indicates whether a directory should be recursed or a file should be included. Override this if you have directories you want to ignore |
 
+For example:
+
+```js
+  const suite = new Suite('zUnit').discover({ directory: __dirname, pattern: /^.+\.test.(?:js|jsx)$/ });
+  const harness = new Harness(suite);
+```
+
 ## Composing Test Suites Explicitly
 Instead of automatically discovering test suites, you can compose them explicitly as follows...
 ```js
