@@ -1,6 +1,6 @@
 {
   "name": "zunit",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "A zero dependency, non-polluting, low magic, test harness for Node.js",
   "engines": {
     "node": ">=10"
