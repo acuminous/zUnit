@@ -1,10 +1,8 @@
 const assert = require('assert');
 const { run, fail, pass, passingTest, failingTest, skippedTest, exclusiveTest } = require('./support/helpers');
-const { NullReporter, Suite, Test } = require('..');
+const { Suite, Test } = require('..');
 
 describe('Suite', () => {
-
-  const reporter = new NullReporter();
 
   describe('Normal', () => {
 
@@ -160,8 +158,6 @@ describe('Suite', () => {
       const test2 = passingTest();
       const suite = new Suite('Suite', { abort: true }).add(test1, test2);
 
-      await suite.run(reporter);
-
       const report = await run(suite, { abort: true });
 
       assert.stats(report.stats, { tests: 2, skipped: 1, failed: 1 });
@@ -267,32 +263,32 @@ describe('Suite', () => {
       const suite2 = new Suite('Suite 2').add(test3);
       const suite3 = new Suite('Suite 3').add(suite1, suite2);
 
-      await suite3.run(reporter);
+      const report = await run(suite3);
 
-      assert.equal(suite3.passed, false);
-      assert.equal(suite3.name, 'Suite 3');
-      assert.equal(suite3.stats.passed, 2);
-      assert.equal(suite3.stats.failed, 1);
-      assert.equal(suite3.stats.skipped, 0);
+      assert.equal(report.passed, false);
+      assert.equal(report.name, 'Suite 3');
+      assert.equal(report.stats.passed, 2);
+      assert.equal(report.stats.failed, 1);
+      assert.equal(report.stats.skipped, 0);
 
-      assert.equal(suite1.name, 'Suite 1');
-      assert.equal(suite1.passed, false);
-      assert.equal(suite1.stats.passed, 1);
-      assert.equal(suite1.stats.failed, 1);
-      assert.equal(suite1.stats.skipped, 0);
+      assert.equal(report.resolve(0).name, 'Suite 1');
+      assert.equal(report.resolve(0).passed, false);
+      assert.equal(report.resolve(0).stats.passed, 1);
+      assert.equal(report.resolve(0).stats.failed, 1);
+      assert.equal(report.resolve(0).stats.skipped, 0);
 
-      assert.equal(suite2.name, 'Suite 2');
-      assert.equal(suite2.passed, true);
-      assert.equal(suite2.stats.passed, 1);
-      assert.equal(suite2.stats.failed, 0);
-      assert.equal(suite2.stats.skipped, 0);
+      assert.equal(report.resolve(1).name, 'Suite 2');
+      assert.equal(report.resolve(1).passed, true);
+      assert.equal(report.resolve(1).stats.passed, 1);
+      assert.equal(report.resolve(1).stats.failed, 0);
+      assert.equal(report.resolve(1).stats.skipped, 0);
 
-      assert.equal(test1.name, 'Test 1');
-      assert.equal(test1.passed, true);
-      assert.equal(test2.name, 'Test 2');
-      assert.equal(test2.failed, true);
-      assert.equal(test3.name, 'Test 3');
-      assert.equal(test3.passed, true);
+      assert.equal(report.resolve(0, 0).name, 'Test 1');
+      assert.equal(report.resolve(0, 0).passed, true);
+      assert.equal(report.resolve(0, 1).name, 'Test 2');
+      assert.equal(report.resolve(0, 1).failed, true);
+      assert.equal(report.resolve(1, 0).name, 'Test 3');
+      assert.equal(report.resolve(1, 0).passed, true);
     });
   });
 
