@@ -96,7 +96,7 @@ zUnit Suites can automatically discover child test suites by invoking their `dis
   const harness = new Harness(suite);
 ```
 
-By default, the discover function will recursively descended into the `test` directory looking files which end in `.test.js`. You can override this behaviour through the following options.
+By default, the discover function will recursively descended into the 'test' directory looking files which end in '.test.js'. You can override this behaviour through the following options.
 
 | Name      | Type                            | Notes                                      |
 |-----------|---------------------------------|--------------------------------------------|
@@ -270,6 +270,17 @@ You can selectively run tests or suites as follows...
     });
     ```
 
+1. Using `oit`
+    ```js
+    const { describe, oit } = require('zunit');
+
+    describe('My Suite', () => {
+      oit('should do something wonderful', async () => {
+        // ...
+      });
+    });
+    ```
+
 1. Passing an option to `it`
     ```js
     const { describe, it } = require('zunit');
@@ -278,6 +289,17 @@ You can selectively run tests or suites as follows...
       it('should do something wonderful', async () => {
         // ...
       }, { exclusive: true });
+    });
+    ```
+
+1. Using `odescribe`
+    ```js
+    const { odescribe, it } = require('zunit');
+
+    odescribe('My Suite', () => {
+      it('should do something wonderful', async () => {
+        // ...
+      });
     });
     ```
 
@@ -601,7 +623,7 @@ It can be annoying to repeatedly add and remove syntax related imports in your t
   "rules": {
     "no-unused-vars": [
       "error", {
-        "varsIgnorePattern": "xit|xdescribe|before|beforeEach|after|afterEach|include"
+        "varsIgnorePattern": "it|xit|oit|describe|xdescribe|odescribe|before|beforeEach|after|afterEach|include"
       }
     ]
   }
@@ -613,8 +635,10 @@ Alternatively, if you are [using globals](#1-non-polluting) then you should tell
   "globals": {
     "describe": "readonly",
     "xdescribe": "readonly",
+    "odescribe": "readonly",
     "it": "readonly",
     "xit": "readonly",
+    "oit": "readonly",
     "before": "readonly",
     "beforeEach": "readonly",
     "after": "readonly",
