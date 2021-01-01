@@ -19,4 +19,3 @@ harness.run(reporter).then((report) => {
     process.exit(2);
   }
 });
-

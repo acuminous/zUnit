@@ -20,9 +20,8 @@ describe('Test', () => {
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.equal(report.error.message, 'Oh Noes!');
+      assert.equal(report.errors[0].message, 'Oh Noes!');
     });
-
   });
 
   describe('Sync', () => {
@@ -45,7 +44,7 @@ describe('Test', () => {
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.match(report.error.message, /The expression evaluated to a falsy value/);
+      assert.match(report.errors[0].message, /The expression evaluated to a falsy value/);
     });
   });
 
@@ -69,7 +68,7 @@ describe('Test', () => {
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.match(report.error.message, /Oh Noes!/);
+      assert.match(report.errors[0].message, /Oh Noes!/);
     });
 
     it('should execute failing sync function (throws)', async () => {
@@ -81,7 +80,7 @@ describe('Test', () => {
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.match(report.error.message, /The expression evaluated to a falsy value/);
+      assert.match(report.errors[0].message, /The expression evaluated to a falsy value/);
     });
 
     it('should execute passing async function (done)', async () => {
@@ -102,7 +101,7 @@ describe('Test', () => {
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.match(report.error.message, /Oh Noes!/);
+      assert.match(report.errors[0].message, /Oh Noes!/);
     });
 
     it('should execute failing async function (throws)', async () => {
@@ -114,7 +113,7 @@ describe('Test', () => {
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.match(report.error.message, /The expression evaluated to a falsy value/);
+      assert.match(report.errors[0].message, /The expression evaluated to a falsy value/);
     });
 
     it('should error if done is called twice', async () => {
@@ -126,7 +125,7 @@ describe('Test', () => {
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.match(report.error.message, /done already called/);
+      assert.match(report.errors[0].message, /done already called/);
     });
   });
 
@@ -157,7 +156,7 @@ describe('Test', () => {
       const report = await run(test, { timeout: 100 });
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.equal(report.error.message, 'Timed out after 100ms');
+      assert.equal(report.errors[0].message, 'Timed out after 100ms');
     });
 
     it('should timeout slow tests (harness configuration)', async () => {
@@ -169,7 +168,7 @@ describe('Test', () => {
 
       const report = reporter.toGraph();
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.equal(report.error.message, 'Timed out after 100ms');
+      assert.equal(report.errors[0].message, 'Timed out after 100ms');
     });
 
     it('should timeout slow tests (test configuration)', async () => {
@@ -178,7 +177,7 @@ describe('Test', () => {
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.equal(report.error.message, 'Timed out after 100ms');
+      assert.equal(report.errors[0].message, 'Timed out after 100ms');
     });
   });
 
@@ -246,7 +245,7 @@ describe('Test', () => {
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.equal(report.error.message, 'Timed out after 200ms');
+      assert.equal(report.errors[0].message, 'Timed out after 200ms');
     });
 
     it('should timeout unused done', async () => {
@@ -257,7 +256,7 @@ describe('Test', () => {
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.equal(report.error.message, 'Timed out after 100ms');
+      assert.equal(report.errors[0].message, 'Timed out after 100ms');
     });
 
   });
@@ -275,4 +274,3 @@ describe('Test', () => {
   });
 
 });
-

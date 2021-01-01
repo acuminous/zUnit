@@ -63,7 +63,7 @@ describe('Hook', () => {
       assert.ok(report.failed);
       assert.ok(report.incomplete);
       assert.stats(report.stats, { tests: 1 });
-      assert.match(report.error.message, /Timed out after 100ms/);
+      assert.match(report.errors[0].message, /Timed out after 100ms/);
     });
 
     it('should timeout if promise is unresolved', async () => {
@@ -80,7 +80,7 @@ describe('Hook', () => {
       assert.ok(report.failed);
       assert.ok(report.incomplete);
       assert.stats(report.stats, { tests: 1 });
-      assert.match(report.error.message, /Timed out after 100ms/);
+      assert.match(report.errors[0].message, /Timed out after 100ms/);
     });
 
     it('should run before hooks before all tests', async () => {
@@ -182,7 +182,7 @@ describe('Hook', () => {
 
       assert.ok(report.failed);
       assert.ok(report.incomplete);
-      assert.match(report.error.message, /Oh Noes!/);
+      assert.match(report.errors[0].message, /Oh Noes!/);
       assert.stats(report.stats, { tests: 3, failed: 0 });
     });
 
@@ -198,7 +198,7 @@ describe('Hook', () => {
 
       assert.ok(report.failed);
       assert.ok(report.incomplete);
-      assert.match(report.resolve(0).error.message, /Oh Noes!/);
+      assert.match(report.resolve(0).errors[0].message, /Oh Noes!/);
       assert.stats(report.stats, { tests: 3, failed: 0 });
     });
   });
@@ -246,7 +246,7 @@ describe('Hook', () => {
 
       assert.ok(report.failed);
       assert.stats(report.stats, { tests: 1, passed: 1 });
-      assert.match(report.error.message, /Timed out after 100ms/);
+      assert.match(report.errors[0].message, /Timed out after 100ms/);
     });
 
     it('should timeout if promise is unresolved', async () => {
@@ -262,7 +262,7 @@ describe('Hook', () => {
 
       assert.ok(report.failed);
       assert.stats(report.stats, { tests: 1, passed: 1 });
-      assert.match(report.error.message, /Timed out after 100ms/);
+      assert.match(report.errors[0].message, /Timed out after 100ms/);
     });
 
     it('should bypass after hooks when there are no tests', async () => {
@@ -495,7 +495,7 @@ describe('Hook', () => {
       const report = await run(suite);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.match(report.resolve(0).error.message, /Timed out after 100ms/);
+      assert.match(report.resolve(0).errors[0].message, /Timed out after 100ms/);
     });
 
     it('should timeout if promise is unresolved', async () => {
@@ -510,7 +510,7 @@ describe('Hook', () => {
       const report = await run(suite);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.match(report.resolve(0).error.message, /Timed out after 100ms/);
+      assert.match(report.resolve(0).errors[0].message, /Timed out after 100ms/);
     });
 
     it('should run before hooks before the test', async () => {
@@ -664,7 +664,7 @@ describe('Hook', () => {
       const report = await run(suite);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.match(report.resolve(0).error.message, /Timed out after 100ms/);
+      assert.match(report.resolve(0).errors[0].message, /Timed out after 100ms/);
     });
 
     it('should timeout if promise is unresolved', async () => {
@@ -679,7 +679,7 @@ describe('Hook', () => {
       const report = await run(suite);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.match(report.resolve(0).error.message, /Timed out after 100ms/);
+      assert.match(report.resolve(0).errors[0].message, /Timed out after 100ms/);
     });
 
     it('should run after hooks after a successful test', async () => {
@@ -816,4 +816,3 @@ describe('Hook', () => {
   }
 
 });
-

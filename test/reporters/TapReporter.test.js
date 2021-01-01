@@ -91,10 +91,8 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[2], 'not ok 1 - Suite / Test 1');
-    assert.equal(lines[3], '# Error: Oh Noes!');
-    assert.match(lines[4], /^# {5}at fail \(.*\)/);
-    assert.match(lines[5], /^# {5}at failingTest \(.*\)/);
+
+    assert.equal(lines[lines.length - 2], 'not ok 3 - Suite / Test 3');
   });
 
   it('should prefix each error messages line with a # ', async () => {
@@ -107,9 +105,8 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[2], 'not ok 1 - Suite / Test');
-    assert.equal(lines[3], '# Error: Oh');
-    assert.equal(lines[4], '# Noes!');
+    assert.equal(lines[2], '# Error: Oh');
+    assert.equal(lines[3], '# Noes!');
   });
 
   it('should output skipped tests', async () => {
@@ -162,5 +159,55 @@ describe('Tap Reporter', () => {
     assert.equal(lines[2], '# Error: Oh Noes!');
   });
 
-});
+  it('should output after hook errors', async () => {
+    const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+    const test1 = passingTest('Test 1');
+    const test2 = passingTest('Test 2');
+    const test3 = passingTest('Test 3');
+    const suite = new Suite('Suite').after(hook).add(test1, test2, test3);
+    const harness = new Harness(suite);
+    const stream = new TestOutputStream();
 
+    const reporter = new TapReporter({ stream });
+    await harness.run(reporter);
+
+    const lines = stream.lines;
+    assert.equal(lines[5], '# Error: Oh Noes!');
+  });
+
+  it('should output multiple suite errors', async () => {
+    const hook1 = new Hook('Hook', () => { throw new Error('Before!'); });
+    const hook2 = new Hook('Hook', () => { throw new Error('After!'); });
+    const test1 = passingTest('Test 1');
+    const test2 = passingTest('Test 2');
+    const test3 = passingTest('Test 3');
+    const suite = new Suite('Suite').before(hook1).after(hook2).add(test1, test2, test3);
+    const harness = new Harness(suite);
+    const stream = new TestOutputStream();
+
+    const reporter = new TapReporter({ stream });
+    await harness.run(reporter);
+
+    const lines = stream.lines.filter(l => /# Error:/.test(l));
+    assert.equal(lines[0], '# Error: Before!');
+    assert.equal(lines[1], '# Error: After!');
+  });
+
+  it('should output multiple test errors', async () => {
+    const hook1 = new Hook('Hook', () => { throw new Error('Before!'); });
+    const hook2 = new Hook('Hook', () => { throw new Error('After!'); });
+    const test = passingTest();
+    const suite = new Suite('Suite').beforeEach(hook1).afterEach(hook2).add(test);
+    const harness = new Harness(suite);
+    const stream = new TestOutputStream();
+
+    const reporter = new TapReporter({ stream });
+    await harness.run(reporter);
+
+    const lines = stream.lines;
+
+    assert.equal(lines[2], '# Error: Before!');
+    assert.equal(lines[13], '# Error: After!');
+  });
+
+});

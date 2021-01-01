@@ -1,7 +1,7 @@
 const assert = require('assert');
 const TestOutputStream = require('../support/TestOutputStream');
 const { passingTest, failingTest, skippedTest } = require('../support/helpers');
-const { SurefireReporter, Harness, Suite, Test } = require('../..');
+const { SurefireReporter, Harness, Suite, Test, Hook } = require('../..');
 
 describe('Surefire Reporter', () => {
 
@@ -104,6 +104,26 @@ describe('Surefire Reporter', () => {
     assert.match(lines[lines.length - 2], /<\/testsuite>/);
   });
 
+  it('should report a failing testsuite with multiple errors', async () => {
+    const test = new Test('Test 1', () => {
+      assert.ok(false);
+    });
+    const hook = new Hook('Hook', () => {
+      throw new Error('Hook Error');
+    });
+    const suite = new Suite('Suite').afterEach(hook).add(test);
+    const harness = new Harness(suite);
+    const stream = new TestOutputStream();
+
+    const reporter = new SurefireReporter({ stream });
+    await harness.run(reporter);
+
+    const lines = stream.lines.filter(l => /<failure message/.test(l));
+
+    assert.match(lines[0], /^ {4}<failure message="The expression evaluated to a falsy value: assert.ok\(false\)" type="AssertionError">/);
+    assert.match(lines[1], /^ {4}<failure message="Hook Error" type="Error">/);
+  });
+
   it('should report a skipped testcase', async () => {
     const test = skippedTest('Test 1');
     const suite = new Suite('Suite').add(test);
@@ -169,7 +189,4 @@ describe('Surefire Reporter', () => {
     assert.match(lines[5], /^ {2}<\/testcase>/);
     assert.match(lines[6], /^ {2}<testcase name="Suite &lt;&lt;&quot;&quot;&amp;&amp;&gt;&gt; \/ Test 2 &lt;&lt;&quot;&quot;&amp;&amp;&gt;&gt;" time="(?:\d+|\d+\.\d+)">/);
   });
-
-
 });
-

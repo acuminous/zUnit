@@ -29,4 +29,3 @@ module.exports = {
     users.length = 0;
   }
 };
-

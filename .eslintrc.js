@@ -18,6 +18,10 @@ module.exports = {
       'error',
       'unix',
     ],
+    'no-multiple-empty-lines': [
+      'error',
+      { 'max': 1, 'maxEOF': 0 }
+    ],
     'quotes': [
       'error',
       'single',

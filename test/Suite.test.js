@@ -49,7 +49,7 @@ describe('Suite', () => {
       const report = await run(suite);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.equal(report.resolve(0).error.message, 'Timed out after 100ms');
+      assert.equal(report.resolve(0).errors[0].message, 'Timed out after 100ms');
     });
   });
 
@@ -357,5 +357,3 @@ describe('Suite', () => {
   });
 
 });
-
-
