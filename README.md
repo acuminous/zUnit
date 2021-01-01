@@ -433,7 +433,7 @@ describe('Suite', () => {
 ```
 
 ### Reporting Before/After Hook Failures
-When a Before hook fails, the tests are not run, and therefore denied opportunity to pass or fail. This means there will be a discrepancy in the stats (i.e. tests != passed + failed + skipped),  the harness report will be marked as incomplete and failed.
+When a Before hook fails, the tests are not run, and therefore denied opportunity to pass or fail. This means there will be a discrepancy in the stats (i.e. tests != passed + failed + skipped). In this case the harness report will be marked as incomplete and failed.
 
 When an After hook fails, the tests have run, so there will be no discrepancy in the test stats, and the harness report will not be marked as incomplete, but will still be failed.
 
@@ -452,7 +452,17 @@ harness.run(reporter).then((report) => {
 ```
 
 ### Advanced Usage
-You can explicitly name hooks by passing a string as the first parameter, e.g. `beforeEach('Reset', async (h) => { ... })` and skip a test from a before hook by calling `hook.suite.skip('optional reason)` and from a beforeEach hook by calling `hook.test.skip('optional reason')`;
+You can explicitly name hooks by passing a string as the first parameter. You can also skip a suite from a before hook, and a test from a beforeEach hook. e.g.
+
+```js
+before('Suite Setup', (hook) => {
+  hook.suite.skip('optional reason');
+});
+
+beforeEach('Test Setup', (hook) => {
+  hook.test.skip('optional reason');
+});
+```
 
 As with tests you can enable callback mode by adding a second paramter to any lifecycle's hook function, e.g.
 ```js
