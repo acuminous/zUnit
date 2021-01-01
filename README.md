@@ -33,10 +33,10 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
     const interactive = String(process.env.CI).toLowerCase() !== 'true';
     const reporter = new SpecReporter({ colours: interactive });
 
-    harness.run(reporter).then(() => {
-      if (harness.failed) process.exit(1);
-      if (harness.exclusive) {
-        console.log(`Found one or more exclusive tests!`);
+    harness.run(reporter).then((report) => {
+      if (report.failed) process.exit(1);
+      if (report.incomplete) {
+        console.log(`One or more tests were not run!${EOL}`);
         process.exit(2);
       }
     });

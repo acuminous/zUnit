@@ -10,9 +10,9 @@ const interactive = String(process.env.CI).toLowerCase() !== 'true';
 const reporter = new SpecReporter({ colours: interactive });
 
 harness.run(reporter).then((report) => {
-  if (report.stats.failed > 0) process.exit(1);
-  if (report.stats.tested !== report.stats.passed) {
-    console.log(`Found one or more exclusive tests!${EOL}`);
+  if (report.failed) process.exit(1);
+  if (report.incomplete) {
+    console.log(`One or more tests were not run!${EOL}`);
     process.exit(2);
   }
 });

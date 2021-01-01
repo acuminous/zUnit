@@ -14,8 +14,8 @@ const reporter = new SpecReporter({ colours: interactive });
 
 harness.run(reporter).then((report) => {
   if (report.failed) process.exit(1);
-  if (report.exclusive) {
-    console.log(`There were one or more exclusive tests!${EOL}`);
+  if (report.incomplete) {
+    console.log(`One or more tests were not run!${EOL}`);
     process.exit(2);
   }
 });

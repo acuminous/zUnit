@@ -60,7 +60,9 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.ok(report.failed);
+      assert.ok(report.incomplete);
+      assert.stats(report.stats, { tests: 1 });
       assert.match(report.error.message, /Timed out after 100ms/);
     });
 
@@ -75,7 +77,9 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.ok(report.failed);
+      assert.ok(report.incomplete);
+      assert.stats(report.stats, { tests: 1 });
       assert.match(report.error.message, /Timed out after 100ms/);
     });
 
@@ -167,7 +171,7 @@ describe('Hook', () => {
       assert.equal(executed.length, 1);
     });
 
-    it('should fail all tests following a failure', async () => {
+    it('should report a failure', async () => {
       const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
       const test1 = passingTest();
       const test2 = skippedTest();
@@ -176,7 +180,26 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tests: 3, failed: 3 });
+      assert.ok(report.failed);
+      assert.ok(report.incomplete);
+      assert.match(report.error.message, /Oh Noes!/);
+      assert.stats(report.stats, { tests: 3, failed: 0 });
+    });
+
+    it('should a failure in a nested suite', async () => {
+      const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+      const test1 = passingTest();
+      const test2 = skippedTest();
+      const test3 = failingTest();
+      const suite1 = new Suite('Suite 1').before(hook).add(test1, test2, test3);
+      const suite2 = new Suite('Suite 2').add(suite1);
+
+      const report = await run(suite2);
+
+      assert.ok(report.failed);
+      assert.ok(report.incomplete);
+      assert.match(report.resolve(0).error.message, /Oh Noes!/);
+      assert.stats(report.stats, { tests: 3, failed: 0 });
     });
   });
 
@@ -221,7 +244,8 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.ok(report.failed);
+      assert.stats(report.stats, { tests: 1, passed: 1 });
       assert.match(report.error.message, /Timed out after 100ms/);
     });
 
@@ -236,7 +260,8 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.ok(report.failed);
+      assert.stats(report.stats, { tests: 1, passed: 1 });
       assert.match(report.error.message, /Timed out after 100ms/);
     });
 
@@ -344,20 +369,34 @@ describe('Hook', () => {
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tests: 1, failed: 1 });
-    }, { skip: true, reason: 'I\'m not sure what should happen when after fails' });
+      assert.ok(report.failed);
+      assert.stats(report.stats, { tests: 1, passed: 1 });
+    });
 
-    it('should fail all non skipped tests following a failure', async () => {
+    it('should report a failure', async () => {
       const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
       const test1 = passingTest();
       const test2 = skippedTest();
-      const test3 = failingTest();
-      const suite = new Suite('Suite').after(hook).add(test1, test2, test3);
+      const suite = new Suite('Suite').after(hook).add(test1, test2);
 
       const report = await run(suite);
 
-      assert.stats(report.stats, { tests: 3, failed: 2, skipped: 1 });
-    }, { skip: true, reason: 'I\'m not sure what should happen when after fails' });
+      assert.ok(report.failed);
+      assert.stats(report.stats, { tests: 2, passed: 1, skipped: 1 });
+    });
+
+    it('should report a failure in a nested suite', async () => {
+      const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+      const test1 = passingTest();
+      const test2 = skippedTest();
+      const suite1 = new Suite('Suite 1').after(hook).add(test1, test2);
+      const suite2 = new Suite('Suite 2').add(suite1);
+
+      const report = await run(suite2);
+
+      assert.ok(report.failed);
+      assert.stats(report.stats, { tests: 2, passed: 1, skipped: 1 });
+    });
 
     it('should bypass remaining after hooks following a failure', async () => {
       const executed = [];
