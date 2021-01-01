@@ -437,10 +437,10 @@ When a Before hook fails, the tests are not run, and therefore denied opportunit
 
 When an After hook fails, the tests have run, so there will be no discrepancy in the test stats, and the harness report will not be marked as incomplete, but will still be failed.
 
-Some report specifications such as [TAP](https://testanything.org/tap-version-13-specification.html) and [JUnit](https://llg.cubic.org/docs/junit/), have no concept of hooks, and therefore do not have a sensible mechanism for reporting their failure. It is therefore important to always check the result of the harness report, i.e.
+Some report specifications such as [TAP](https://testanything.org/tap-version-13-specification.html) and [Surefire](https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd) have no concept of hooks, and therefore do not have a sensible mechanism for reporting their failure. It is therefore important to always check the result of the harness report, i.e.
 
 ```js
-const reporter = new SpecReporter({ colours: interactive });
+const reporter = new TapReporter();
 
 harness.run(reporter).then((report) => {
   if (report.failed) process.exit(1);
@@ -478,7 +478,7 @@ Timeouts for before/after hooks are independent of test timeouts, but timeouts f
 zUnit ships with the following reporters
 
 * [GraphReporter](#graphreporter)
-* [JUnitReporter](#junitreporter)
+* [SurefireReporter](#surefirereporter)
 * [MultiReporter](#multireporter)
 * [SpecReporter](#specreporter)
 * [TapReporter](#tapreporter)
@@ -515,11 +515,11 @@ Each node in the graph has the following properties
 | parent   | GraphNode                       | Parent node                            |
 | resolve  | Function(...Number) : GraphNode | Resolves the specified child, e.g. `.resolve(1, 2, 3)` |
 
-### JUnitReporter
-A [JUnit](https://llg.cubic.org/docs/junit/) Reporter
+### SurefireReporter
+A [Surefire](https://maven.apache.org/surefire/maven-surefire-plugin/index.html) reporter which is compatible with the [Jenkins xUnit plugin](https://plugins.jenkins.io/xunit/)
 
 ```js
-const reporter = new JunitReporter();
+const reporter = new SurefireReporter();
 await harness.run(reporter);
 ```
 
@@ -531,20 +531,33 @@ await harness.run(reporter);
 #### Sample Output
 ```bash
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="zUnit" tests="45" failures="0" time="0.714">
-  <testsuite name="Harnesses" tests="7" failures="0" skipped="0" time="0.023">
-    <testcase name="should run a test suite" time="0.005">
-    </testcase>
-    <testcase name="should run an individual test" time="0.002">
-    </testcase>
-  </testsuite>
-</testsuites>
+<testsuite name="Suite" tests="2" failures="1" errors="0" skipped="0" time="10.023">
+  <testcase name="Suite / should pass" time="5">
+  </testcase>
+  <testcase name="Suite / should fail" time="0.023">
+    <failure message="Oh Noes!" type="AssertionError">
+<!\[CDATA\[/
+AssertionError [ERR_ASSERTION]: 1 == 2
+    at Test._fn (/Users/example/zunit/test/Test.test.js:273:14)
+    at async Promise.all (index 0)
+    at async Test._runAll (/Users/example/zunit/lib/Test.js:80:7)
+    at async Test.run (/Users/example/zunit/lib/Test.js:64:7)
+    at async Suite._runTestable (/Users/example/zunit/lib/Suite.js:136:5)
+    at async Suite._runAll (/Users/example/zunit/lib/Suite.js:127:9)
+    at async Suite.run (/Users/example/zunit/lib/Suite.js:114:7)
+    at async Suite._runTestable (/Users/example/zunit/lib/Suite.js:136:5)
+    at async Suite._runAll (/Users/example/zunit/lib/Suite.js:127:9)
+    at async Suite.run (/Users/example/zunit/lib/Suite.js:114:7)
+]]>
+    </failure>
+  </testcase>
+</testsuite>
 ```
-It is necessary to take some liberties with the JUnit format since:
+It is necessary to take some liberties with the Surefire format since:
 
-- it was designed for Java and expects package / class names rather than suite / test names
+- it does not support nested test suites
+- it has no concept of Before/After hooks
 - it differentiates between assertion failures and errors
-- it does not support deep nesting
 
 ### MultiReporter
 Pipes test events to multiple reporters
