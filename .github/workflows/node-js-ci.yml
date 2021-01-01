@@ -11,22 +11,20 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm install -g eslint
     - run: npm run lint
     - run: npm test
-      env:
-        CI: true
 
   code-climate:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
+      uses: actions/setup-node@v2
       with:
         node-version: '14.x'
     - run: npm ci
@@ -38,5 +36,4 @@ jobs:
     - run: ./cc-test-reporter format-coverage -t lcov coverage/lcov.info
     - run: ./cc-test-reporter upload-coverage
       env:
-        CI: true
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
