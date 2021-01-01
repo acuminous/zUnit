@@ -544,7 +544,7 @@ await harness.run(reporter);
 <testsuite name="Suite" tests="2" failures="1" errors="0" skipped="0" time="10.023">
   <testcase name="Suite / should pass" time="5">
   </testcase>
-  <testcase name="Suite / should fail" time="0.023">
+  <testcase name="Suite / should fail" time="5.023">
     <failure message="Oh Noes!" type="AssertionError">
 <!\[CDATA\[/
 AssertionError [ERR_ASSERTION]: 1 == 2
