@@ -44,7 +44,7 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
 
 1. Create a test suite, e.g. `test/user-db.test.js`
     ```js
-    const { describe, it, xit, beforeEach } = require('zunit');
+    const { describe, it, xit, beforeEach } = require('zunit'); // Can be made global
     const assert = require('assert');
     const userDb = require('../lib/user-db');
 
