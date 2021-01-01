@@ -437,7 +437,19 @@ When a Before hook fails, the tests are not run, and therefore denied opportunit
 
 When an After hook fails, the tests have run, so there will be no discrepancy in the test stats, and the harness report will not be marked as incomplete, but will still be failed.
 
-Some report specifications such as [TAP](https://testanything.org/tap-version-13-specification.html) and [JUnit](https://llg.cubic.org/docs/junit/), have no concept of hooks, and therefore do not have a sensible mechanism for reporting their failure. It is therefore important to always check the result of the harness report.
+Some report specifications such as [TAP](https://testanything.org/tap-version-13-specification.html) and [JUnit](https://llg.cubic.org/docs/junit/), have no concept of hooks, and therefore do not have a sensible mechanism for reporting their failure. It is therefore important to always check the result of the harness report, i.e.
+
+```js
+const reporter = new SpecReporter({ colours: interactive });
+
+harness.run(reporter).then((report) => {
+  if (report.failed) process.exit(1);
+  if (report.incomplete) {
+    console.log(`One or more tests were not run!${EOL}`);
+    process.exit(2);
+  }
+});
+```
 
 ### Advanced Usage
 You can explicitly name hooks by passing a string as the first parameter, e.g. `beforeEach('Reset', async (h) => { ... })` and skip a test from a before hook by calling `hook.suite.skip('optional reason)` and from a beforeEach hook by calling `hook.test.skip('optional reason')`;
