@@ -749,7 +749,7 @@ describe('foo', () => {
 ```
 
 #### Global functions (describe, it, etc)
-
+zUnit
 ```js
 const { syntax } = require('..');
 Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
@@ -776,6 +776,7 @@ describe('foo', () => {
 ```
 
 #### --exit
+zUnit
 ```js
 harness.run(reporter).then((report) => {
   if (report.failed) process.exit(1);
