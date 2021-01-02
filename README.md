@@ -534,6 +534,7 @@ await harness.run(reporter);
 ```
 
 #### Options
+
 | Option  | Type            | Default | Notes           |
 |---------|-----------------|---------|-----------------|
 | stream  | stream.Writable | stdout  | Override to redirect output |
@@ -603,6 +604,7 @@ Summary
 ```
 
 #### Options
+
 | Option  | Type            | Default | Notes                       |
 |---------|-----------------|---------|-----------------------------|
 | stream  | stream.Writable | stdout  | Override to redirect output |
@@ -618,6 +620,7 @@ await harness.run(reporter);
 ```
 
 #### Options
+
 | Option  | Type            | Default | Notes           |
 |---------|-----------------|---------|-----------------|
 | stream  | stream.Writable | stdout  | Override to redirect output |
