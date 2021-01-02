@@ -8,6 +8,19 @@
 ## TL;DR
 zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](https://www.npmjs.com/package/mocha)) - dependencies;
 
+## Index
+- [About](#about)
+- [Usage](#usage)
+- [Discovering Test Suites](#discovering-test-suites)
+- [Composing Test Suites Explicitly](#composing-test-suites-explicitly)
+- [Callbacks](#callbacks)
+- [Pending / Skipping Tests](#pending--skipping-tests)
+- [Exclusive Tests](#exclusive-tests)
+- [Bailing Out / Failing Fast / Aborting Early](#bailing-out--failing-fast--aborting-early)
+- [Lifecycle Hooks](#lifecycle-hooks)
+- [Reporters](#reporters)
+- [Tips](#tips)
+
 ## About
 zUnit is a zero dependency, non-polluting<sup>[1](#1-non-polluting)</sup>, low magic<sup>[2](#2-low-magic)</sup>, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning.
 
@@ -692,5 +705,85 @@ Alternatively, if you are [using globals](#1-non-polluting) then you should tell
     "include": "readonly"
   }
 }
+```
+
+### Migrating from Mocha
+Migrating from Mocha can be extremely quick, depending on the features and api style you use.
+
+#### Callbacks
+Mocha
+```js
+describe('foo', () => {
+  it('bar', done => {  
+  }); 
+});
+```
+
+zUnit
+```js
+describe('foo', () => {
+  it('bar', (test, done) => {
+  });
+});
+```
+
+#### this
+Mocha
+```js
+describe('foo', () => {
+  it('bar', function() {
+    this.timeout(1000);
+    this.slow(500); // No zUnit equivalent
+    this.skip();
+  });
+});
+```
+
+zUnit
+```js
+describe('foo', () => {
+  it('bar', t => {
+    t.skip('optional reason');
+  }, { timeout: 1000 });
+});
+```
+
+#### Global functions (describe, it, etc)
+
+```js
+const { syntax } = require('..');
+Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
+```
+
+#### it.skip / it.only
+Mocha
+```js
+describe('foo', () => {
+  it.only('bar', () => {
+  })
+  it.skip('baz', () => {
+  });
+});
+```
+zUnit
+```js
+describe('foo', () => {
+  oit('bar', () => {
+  });
+  xit('baz', () => {
+  });
+});
+```
+
+#### --exit
+```js
+harness.run(reporter).then((report) => {
+  if (report.failed) process.exit(1);
+  if (report.incomplete) {
+    console.log(`One or more tests were not run!${EOL}`);
+    process.exit(2);
+  }
+  process.exit(0); // Instead of --exit
+});
 ```
 
