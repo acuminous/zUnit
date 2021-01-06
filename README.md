@@ -86,7 +86,7 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
     });
     ```
 
-1. Run the tests
+1. Run the test
     ```bash
     node tests
 
