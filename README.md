@@ -103,7 +103,7 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
     ```
 
 ## Discovering Test Suites
-zUnit Suites can automatically discover child test suites by invoking their `discover` function. e.g.
+zUnit suites can automatically discover child test suites by invoking their `discover` function. e.g.
 
 ```js
   const suite = new Suite('zUnit').discover();
