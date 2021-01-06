@@ -22,7 +22,7 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
 - [Tips](#tips)
 
 ## About
-zUnit is a zero dependency, non-polluting<sup>[1](#1-non-polluting)</sup>, low magic<sup>[2](#2-low-magic)</sup>, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning. While zUnit does lack some of the advanced features<sup>[3](#3-advanced-features) of Mocha, such as concurrent tests, automatic retries and true file globbing, most of the day-to-day features are present.
+zUnit is a zero dependency, non-polluting<sup>[1](#1-non-polluting)</sup>, low magic<sup>[2](#2-low-magic)</sup>, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning. While zUnit does lack some of the advanced features<sup>[3](#3-advanced-features)</sup> of Mocha, such as concurrent tests, automatic retries and true file globbing, most of the day-to-day features are present.
 
 ##### 1 non-polluting
 You can add test functions (describe, it, etc) to the global namespace if you so wish...
@@ -34,7 +34,7 @@ Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
 The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports suites without using `module.exports` by inspecting the call stack.
 
 ##### 3 advanced-features
-Since writing zUnit I've begun to wonder whether some of Mocha's advanced features are beneficial. Many test suites are too small to warrant concurrency, and others may need to verify persistence behaviour and therefore require a great deal of effort to isolate. Concurrent testing also has drawbacks - the test harness and reporters become more complex and the output must be buffered, delaying feedback. I'm also unconvinced about automaticaly retrying tests, I think it better to fix any that are flakey, and take a [statistical approach](https://www.npmjs.com/package/fast-stats) when results are naturally unpredictable.
+Since writing zUnit I've begun to wonder whether some of Mocha's advanced features are universally beneficial. Many test suites are too small to warrant concurrency, and others (e.g. persistence tests) may require a great deal of effort to isolate. Concurrent testing also has drawbacks - the test harness and reporters become more complex and the output must be buffered, delaying feedback. I'm also unconvinced about automaticaly retrying tests, I think it better to fix any that are flakey, and take a [statistical approach](https://www.npmjs.com/package/fast-stats) when results are naturally unpredictable.
 
 ## Usage
 1. Create a runner, e.g. `test/index.js`
