@@ -447,7 +447,7 @@ describe('Suite', () => {
 ```
 
 ### Reporting Before/After Hook Failures
-When a Before hook fails, the tests are not run, and therefore denied opportunity to pass or fail. This means there will be a discrepancy in the stats (i.e. tests != passed + failed + skipped). In this case the harness report will be marked as incomplete and failed.
+When a Before hook fails, the tests are not run, and therefore denied opportunity to pass or fail. This means there will be a discrepancy in the stats (i.e. tests != passed + failed). In this case the harness report will be marked as incomplete and failed.
 
 When an After hook fails, the tests have run, so there will be no discrepancy in the test stats, and the harness report will not be marked as incomplete, but will still be failed.
 
@@ -715,8 +715,8 @@ Migrating from Mocha can be extremely quick, depending on the features and api s
 Mocha
 ```js
 describe('foo', () => {
-  it('bar', done => {  
-  }); 
+  it('bar', done => {
+  });
 });
 ```
 
