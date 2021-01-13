@@ -752,7 +752,7 @@ describe('foo', () => {
 #### Global functions (describe, it, etc)
 zUnit
 ```js
-const { syntax } = require('..');
+const { syntax } = require('zunit');
 Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
 ```
 
