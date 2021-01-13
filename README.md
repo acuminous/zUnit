@@ -50,7 +50,7 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
     harness.run(reporter).then((report) => {
       if (report.failed) process.exit(1);
       if (report.incomplete) {
-        console.log(`One or more tests were not run!${EOL}`);
+        console.log('One or more tests were not run!');
         process.exit(2);
       }
     });
@@ -459,7 +459,7 @@ const reporter = new TapReporter();
 harness.run(reporter).then((report) => {
   if (report.failed) process.exit(1);
   if (report.incomplete) {
-    console.log(`One or more tests were not run!${EOL}`);
+    console.log('One or more tests were not run!');
     process.exit(2);
   }
 });
@@ -782,7 +782,7 @@ zUnit
 harness.run(reporter).then((report) => {
   if (report.failed) process.exit(1);
   if (report.incomplete) {
-    console.log(`One or more tests were not run!${EOL}`);
+    console.log('One or more tests were not run!');
     process.exit(2);
   }
   process.exit(0); // Instead of --exit
