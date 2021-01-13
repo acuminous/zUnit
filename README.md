@@ -554,7 +554,7 @@ await harness.run(reporter);
 | stream  | stream.Writable | stdout  | Override to redirect output |
 
 #### Sample Output
-```bash
+```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <testsuite name="Suite" tests="2" failures="1" errors="0" skipped="0" time="10.023">
   <testcase name="Suite / should pass" time="5">
