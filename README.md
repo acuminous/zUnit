@@ -561,7 +561,7 @@ await harness.run(reporter);
   </testcase>
   <testcase name="Suite / should fail" time="5.023">
     <failure message="Oh Noes!" type="AssertionError">
-<!\[CDATA\[/
+<![CDATA[
 AssertionError [ERR_ASSERTION]: 1 == 2
     at Test._fn (/Users/example/zunit/test/Test.test.js:273:14)
     at async Promise.all (index 0)
