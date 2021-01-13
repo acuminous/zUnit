@@ -87,7 +87,7 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
     ```
 
 1. Run the test
-    ```bash
+    ```
     node tests
 
     User DB
@@ -605,7 +605,7 @@ await harness.run(reporter);
 ```
 
 #### Sample Output
-```bash
+```
 zUnit
   Harnesses
     should run a test suite
@@ -640,7 +640,7 @@ await harness.run(reporter);
 | stream  | stream.Writable | stdout  | Override to redirect output |
 
 #### Sample Output
-```bash
+```
 TAP version 13
 1..2
 ok 1 - Harnesses / should run a test suite
