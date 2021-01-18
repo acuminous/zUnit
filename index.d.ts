@@ -9,11 +9,19 @@ type EventsType = {
   FINISHED: 'finished';
 }
 
+type zUnitReporter = Partial<{
+  withHarness(harness: Harness): Harness;
+  withSuite(suite: Suite): Suite;
+  withTest(test: Test): Test;
+}>
+
 type zUnitOptions = Partial<{
-  defaults: unknown;
-  initial: unknown;
-  runtime: unknown;
-  bequeathed: unknown;
+  timeout: number;
+  exclusive: boolean;
+  skip: boolean;
+  reason: string;
+  pattern: RegExp;
+  directory: string;
 }>;
 
 declare class Runnable extends EventEmitter.EventEmitter {
@@ -44,30 +52,82 @@ type OutcomesType = {
   SKIPPED: 'skipped';
 }
 
+declare class GraphNode {
+  type: 'string' | 'test';
+  name: string;
+  description: string;
+  point: number;
+  parent: GraphNode | null;
+  children: GraphNode[];
+  result: 'PASSED' | 'FAILED' | 'SKIPPED';
+  errors: Error[];
+  reason: string;
+  stats: {
+    tests: number;
+    passed: number;
+    failed: number;
+    skipped: number;
+    duration: number;
+  }
+  incomplete: boolean;
+
+  constructor(type: 'string' | 'test', name: string, description: string,
+  point: number, parent?: GraphNode);
+
+  isSuite(): boolean;
+
+  isTest(): boolean;
+
+  passed: boolean;
+
+  failed: boolean;
+
+  skipped: boolean;
+
+  resolve(...indexes: number[]): GraphNode;
+
+  add(...additions: GraphNode[]): this;
+
+  finish({ result, errors, reason, stats }: {
+    result: 'PASSED' | 'FAILED' | 'SKIPPED';
+    errors: Error[];
+    reason: string;
+    stats: {
+      tests: number;
+      passed: number;
+      failed: number;
+      skipped: number;
+      duration: number;
+    }
+  }): void;
+
+  private _orphan(): GraphNode;
+}
+
 export const Events: EventsType;
 
 export class Harness extends EventEmitter.EventEmitter {
-  constructor(testable: Testable, initial?: zUnitOptions);
+  constructor(testable: Testable, initial?: Pick<zUnitOptions, 'timeout'>);
 
   numberOfTests: number;
 
-  report: unknown;
+  report: GraphNode;
 
-  run(reporter: unknown, runtime?: zUnitOptions): Promise<unknown>;
+  run(reporter: zUnitReporter, runtime?: Pick<zUnitOptions, 'timeout'>): Promise<unknown>;
 }
 
 export class Hook extends Runnable {
-  constructor(name: string, fn: Function, initial?: zUnitOptions);
+  constructor(name: string, fn: Function, initial?: Pick<zUnitOptions, 'timeout'>);
 
   name: string;
 
-  run(propogatedOptions: zUnitOptions): Promise<void>;
+  run(propagatedOptions: Pick<zUnitOptions, 'timeout'>): Promise<void>;
 }
 
 export class HookSet {
-  addBefores(...additions: unknown[]): this;
+  addBefores(...additions: Hook[]): this;
 
-  addAfters(...additions: unknown[]): this;
+  addAfters(...additions: Hook[]): this;
 
   runBefores(options: zUnitOptions): Promise<void>;
 
@@ -85,7 +145,7 @@ export class Options {
 
   bequeathed: unknown;
 
-  get(name: string): unknown;
+  get<T extends keyof zUnitOptions, U extends zUnitOptions[T]>(name: T): U;
 
   export(): zUnitOptions;
 
@@ -112,7 +172,7 @@ export class Suite extends Testable {
   discover(runtime?: Partial<{
     directory: string;
     pattern: RegExp;
-    filter: () => boolean;
+    filter: (str: string) => boolean;
   }>): Testable;
 
   hasExclusiveTests(): boolean;
@@ -129,13 +189,13 @@ export class Suite extends Testable {
 
   add(...additions: unknown[]): this;
 
-  run(reporter: unknown, propagatedOptions: zUnitOptions, force?: boolean): Promise<void>;
+  run(reporter: zUnitReporter, propagatedOptions: zUnitOptions, force?: boolean): Promise<void>;
 }
 
 export class Test extends Testable {
-  constructor(name: string, fn: Function, initial?: zUnitOptions)
+  constructor(name: string, fn: Function, initial?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>);
 
-  point: unknown;
+  point: number;
 
   numberOfTests: number;
 
@@ -149,7 +209,7 @@ export class Test extends Testable {
 
   hasExclusiveTests(): boolean;
 
-  run(reporter: unknown, propagatedOptions: zUnitOptions): Promise<void>;
+  run(reporter: zUnitReporter, propagatedOptions: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): Promise<void>;
 }
 
 export class Testable extends Runnable {
