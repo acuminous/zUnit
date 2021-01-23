@@ -506,6 +506,7 @@ zUnit ships with the following reporters
 * [MultiReporter](#multireporter)
 * [SpecReporter](#specreporter)
 * [TapReporter](#tapreporter)
+* [RickReporter](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 ### GraphReporter
 This reporter builds up a graph of test results for subsequent interogation.
