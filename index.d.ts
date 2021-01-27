@@ -9,11 +9,11 @@ type EventsType = {
   FINISHED: 'finished';
 }
 
-type zUnitReporter = Partial<{
+type zUnitReporter = {
   withHarness(harness: Harness): Harness;
   withSuite(suite: Suite): Suite;
   withTest(test: Test): Test;
-}>
+}
 
 type zUnitOptions = Partial<{
   timeout: number;
@@ -53,7 +53,7 @@ type OutcomesType = {
 }
 
 declare class GraphNode {
-  type: 'string' | 'test';
+  type: 'suite' | 'test';
   name: string;
   description: string;
   point: number;
@@ -71,8 +71,7 @@ declare class GraphNode {
   }
   incomplete: boolean;
 
-  constructor(type: 'string' | 'test', name: string, description: string,
-  point: number, parent?: GraphNode);
+  constructor(type: 'suite' | 'test', name: string, description: string, point: number, parent?: GraphNode);
 
   isSuite(): boolean;
 
@@ -87,6 +86,8 @@ declare class GraphNode {
   resolve(...indexes: number[]): GraphNode;
 
   add(...additions: GraphNode[]): this;
+
+  add(additions: GraphNode[]): this;
 
   finish({ result, errors, reason, stats }: {
     result: 'PASSED' | 'FAILED' | 'SKIPPED';
@@ -127,7 +128,11 @@ export class Hook extends Runnable {
 export class HookSet {
   addBefores(...additions: Hook[]): this;
 
+  addBefores(additions: Hook[]): this;
+
   addAfters(...additions: Hook[]): this;
+
+  addAfters(additions: Hook[]): this;
 
   runBefores(options: zUnitOptions): Promise<void>;
 
@@ -137,13 +142,13 @@ export class HookSet {
 export class Options {
   constructor(options?: zUnitOptions);
 
-  defaults: unknown;
+  defaults: zUnitOptions;
 
-  initial: unknown;
+  initial: zUnitOptions;
 
-  runtime: unknown;
+  runtime: zUnitOptions;
 
-  bequeathed: unknown;
+  bequeathed: zUnitOptions;
 
   get<T extends keyof zUnitOptions, U extends zUnitOptions[T]>(name: T): U;
 
@@ -179,15 +184,25 @@ export class Suite extends Testable {
 
   hasFailures(): boolean;
 
-  before(...additions: unknown[]): this;
+  before(...additions: Hook[]): this;
 
-  beforeEach(...additions: unknown[]): this;
+  before(additions: Hook[]): this;
 
-  after(...additions: unknown[]): this;
+  beforeEach(...additions: Hook[]): this;
 
-  afterEach(...additions: unknown[]): this;
+  beforeEach(additions: Hook[]): this;
 
-  add(...additions: unknown[]): this;
+  after(...additions: Hook[]): this;
+
+  after(additions: Hook[]): this;
+
+  afterEach(...additions: Hook[]): this;
+
+  afterEach(additions: Hook[]): this;
+
+  add(...additions: Testable[]): this;
+
+  add(additions: Testable[]): this;
 
   run(reporter: zUnitReporter, propagatedOptions: zUnitOptions, force?: boolean): Promise<void>;
 }
@@ -236,48 +251,55 @@ export class Testable extends Runnable {
 
 export const syntax: zUnitSyntax;
 
-export function describe(name: string, fn: Function, options?: unknown): void;
-export function xdescribe(name: string, fn: Function, options?: unknown): void;
-export function odescribe(name: string, fn: Function, options?: unknown): void;
-export function it(name: string, fn: Function, options?: unknown): void;
-export function xit(name: string, fn: Function, options?: unknown): void;
-export function oit(name: string, fn: Function, options?: unknown): void;
-export function before(...args: unknown[]): void;
-export function beforeEach(...args: unknown[]): void;
-export function after(...args: unknown[]): void;
-export function afterEach(...args: unknown[]): void;
+export function describe(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): Suite;
+export function xdescribe(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): Suite;
+export function odescribe(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): Suite;
+export function it(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): void;
+export function xit(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): void;
+export function oit(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): void;
+export function before(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function before(fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function beforeEach(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function beforeEach(fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function after(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function after(fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function afterEach(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function afterEach(fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
 export function include(...testables: Testable[]): void;
+export function include(testables: Testable[]): void;
 
-export class GraphReporter {
+export class GraphReporter implements zUnitReporter {
   constructor(name?: string);
 
-  withHarness(): this;
+  withHarness(harness: Harness): Harness;
 
-  withSuite(suite: Suite): this;
+  withSuite(suite: Suite): Suite;
 
-  withTest(test: Test): this;
+  withTest(test: Test): Test;
 
   toGraph(): unknown;
 }
 
-export class MultiReporter {
+export class MultiReporter implements zUnitReporter {
   constructor(level?: number);
 
-  add(...additions: unknown[]): this;
+  withHarness(harness: Harness): Harness;
 
-  withHarness(harness: Harness): this;
+  withSuite(suite: Suite): Suite;
 
-  withSuite(suite: Suite): this;
+  withTest(test: Test): Test;
 
-  withTest(test: Test): this;
+  add(...additions: Reporter[]): this;
+
+  add(additions: Reporter[]): this;
 }
 
-export class NullReporter {
-  withHarness(): this;
+export class NullReporter implements zUnitReporter {
+  withHarness(harness: Harness): Harness;
 
-  withSuite(): this;
+  withSuite(suite: Suite): Suite;
 
-  withTest(): this;
+  withTest(test: Test): Test;
 }
 
 export class SpecReporter extends StreamReporter {
@@ -287,14 +309,14 @@ export class SpecReporter extends StreamReporter {
     colors: boolean;
   }>, level?: number);
 
-  withHarness(harness: Harness): void;
+  withHarness(harness: Harness): Harness;
 
-  withSuite(suite: Suite): this;
+  withSuite(suite: Suite): Suite;
 
-  withTest(test: Test): this;
+  withTest(test: Test): Test;
 }
 
-export class StreamReporter {
+export class StreamReporter implements zUnitReporter {
   constructor(options?: unknown);
 
   stream: PassThrough;
@@ -307,11 +329,11 @@ export class SurefireReporter extends StreamReporter {
     stream: Writable;
   }>);
 
-  withHarness(harness: Harness): this;
+  withHarness(harness: Harness): Harness;
 
-  withSuite(): this;
+  withSuite(suite: Suite): Suite;
 
-  withTest(): this;
+  withTest(test: Test): Test;
 }
 
 export class TapReporter extends StreamReporter {
@@ -319,9 +341,9 @@ export class TapReporter extends StreamReporter {
     stream: Writable;
   }>);
 
-  withHarness(harness: Harness): this;
+  withHarness(harness: Harness): Harness;
 
-  withSuite(suite: Suite): this;
+  withSuite(suite: Suite): Suite;
 
-  withTest(test: Test): this;
+  withTest(test: Test): Test;
 }
