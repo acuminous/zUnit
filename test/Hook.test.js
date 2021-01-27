@@ -56,7 +56,7 @@ describe('Hook', () => {
       }, { timeout: 100 });
 
       const test = passingTest();
-      const suite = new Suite('Suite', { timeout: 100 }).before(hook).add(test);
+      const suite = new Suite('Suite').before(hook).add(test);
 
       const report = await run(suite);
 
