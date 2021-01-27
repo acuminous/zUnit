@@ -138,9 +138,9 @@ const exclusiveSuite = new Suite('Exclusive')
     const report = await harness.run();
     assert.ok(report.incomplete);
     assert.stats(report.stats, { tests: 2, passed: 1 });
-  }))
+  }));
 
-  const skippedSuite = new Suite('Skipped')
+const skippedSuite = new Suite('Skipped')
   .add(new Test('should configure skipped suites', async () => {
     const suite = describe('Suite 1', () => {
       describe('Suite 2', () => {
@@ -169,6 +169,6 @@ const exclusiveSuite = new Suite('Exclusive')
     const report = await harness.run();
     assert.ok(report.incomplete);
     assert.stats(report.stats, { tests: 2, passed: 1, skipped: 1 });
-  }))
+  }));
 
 module.exports = new Suite('Syntax').add(hooksSuite, exclusiveSuite, skippedSuite);
