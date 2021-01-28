@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { Harness, Suite, Test, before, beforeEach, describe, it } = require('..');
+const { Harness, Suite, Test, before, beforeEach, describe, odescribe, xdescribe, it, oit, xit } = require('..');
 
 const hooksSuite = new Suite('Hooks')
   .add(new Test('should name a hooks', async () => {
@@ -110,7 +110,7 @@ const hooksSuite = new Suite('Hooks')
   }));
 
 const exclusiveSuite = new Suite('Exclusive')
-  .add(new Test('should configure exclusive suites', async () => {
+  .add(new Test('should configure exclusive suites (configuration)', async () => {
     const suite = describe('Suite 1', () => {
       describe('Suite 2', () => {
         it('Test 1', () => {});
@@ -127,9 +127,38 @@ const exclusiveSuite = new Suite('Exclusive')
     assert.ok(report.incomplete);
     assert.stats(report.stats, { tests: 2, passed: 1 });
   }))
-  .add(new Test('should configure exclusive tests', async () => {
+  .add(new Test('should configure exclusive suites (syntax)', async () => {
+    const suite = describe('Suite 1', () => {
+      odescribe('Suite 2', () => {
+        it('Test 1', () => {});
+      });
+
+      describe('Suite 3', () => {
+        it('Test 2', () => {});
+      });
+    });
+
+    const harness = new Harness(suite);
+
+    const report = await harness.run();
+    assert.ok(report.incomplete);
+    assert.stats(report.stats, { tests: 2, passed: 1 });
+  }))
+  .add(new Test('should configure exclusive tests (configuration)', async () => {
     const suite = describe('Suite', () => {
       it('Test 1', () => {}, { exclusive: true });
+      it('Test 2', () => {});
+    });
+
+    const harness = new Harness(suite);
+
+    const report = await harness.run();
+    assert.ok(report.incomplete);
+    assert.stats(report.stats, { tests: 2, passed: 1 });
+  }))
+  .add(new Test('should configure exclusive tests (syntax)', async () => {
+    const suite = describe('Suite', () => {
+      oit('Test 1', () => {});
       it('Test 2', () => {});
     });
 
@@ -141,7 +170,7 @@ const exclusiveSuite = new Suite('Exclusive')
   }));
 
 const skippedSuite = new Suite('Skipped')
-  .add(new Test('should configure skipped suites', async () => {
+  .add(new Test('should configure skipped suites (configuration)', async () => {
     const suite = describe('Suite 1', () => {
       describe('Suite 2', () => {
         it('Test 1', () => {});
@@ -158,9 +187,38 @@ const skippedSuite = new Suite('Skipped')
     assert.ok(report.incomplete);
     assert.stats(report.stats, { tests: 2, passed: 1, skipped: 1 });
   }))
-  .add(new Test('should configure skipped tests', async () => {
+  .add(new Test('should configure skipped suites (syntax)', async () => {
+    const suite = describe('Suite 1', () => {
+      xdescribe('Suite 2', () => {
+        it('Test 1', () => {});
+      });
+
+      describe('Suite 3', () => {
+        it('Test 2', () => {});
+      });
+    });
+
+    const harness = new Harness(suite);
+
+    const report = await harness.run();
+    assert.ok(report.incomplete);
+    assert.stats(report.stats, { tests: 2, passed: 1, skipped: 1 });
+  }))
+  .add(new Test('should configure skipped tests (configuration)', async () => {
     const suite = describe('Suite', () => {
       it('Test 1', () => {}, { skip: true });
+      it('Test 2', () => {});
+    });
+
+    const harness = new Harness(suite);
+
+    const report = await harness.run();
+    assert.ok(report.incomplete);
+    assert.stats(report.stats, { tests: 2, passed: 1, skipped: 1 });
+  }))
+  .add(new Test('should configure skipped tests (syntax)', async () => {
+    const suite = describe('Suite', () => {
+      xit('Test 1', () => {});
       it('Test 2', () => {});
     });
 
