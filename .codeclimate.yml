@@ -5,3 +5,4 @@ plugins:
 exclude_patterns:
 - "example/"
 - "test/"
+- "index.d.ts"
