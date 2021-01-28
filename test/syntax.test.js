@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { Harness, Suite, Test, before, beforeEach, describe, odescribe, xdescribe, it, oit, xit } = require('..');
+const { Harness, Suite, Test, before, beforeEach, describe, odescribe, xdescribe, it, oit, xit, include } = require('..');
 
 const hooksSuite = new Suite('Hooks')
   .add(new Test('should name a hooks', async () => {
@@ -229,4 +229,20 @@ const skippedSuite = new Suite('Skipped')
     assert.stats(report.stats, { tests: 2, passed: 1, skipped: 1 });
   }));
 
-module.exports = new Suite('Syntax').add(hooksSuite, exclusiveSuite, skippedSuite);
+const compositionSuite = new Suite('Composition')
+  .add(new Test('should compose nested suites', async () => {
+    const suite1 = describe('Suite 1', () => {
+      it('Test 1', () => {});
+    });
+
+    const suite2 = describe('Suite 2', () => {
+      include(suite1);
+    });
+
+    const harness = new Harness(suite2);
+
+    const report = await harness.run();
+    assert.stats(report.stats, { tests: 1, passed: 1 });
+  }))
+
+module.exports = new Suite('Syntax').add(hooksSuite, exclusiveSuite, skippedSuite, compositionSuite);
