@@ -9,8 +9,8 @@ describe('Suite', () => {
     it('should report missing directory', async() => {
       const suite = new Suite('Suite', { directory: '' });
       assert.throws(() => suite.discover(), /Error: directory is a required option/);
-    })
-  })
+    });
+  });
 
   describe('Normal', () => {
 

@@ -243,6 +243,6 @@ const compositionSuite = new Suite('Composition')
 
     const report = await harness.run();
     assert.stats(report.stats, { tests: 1, passed: 1 });
-  }))
+  }));
 
 module.exports = new Suite('Syntax').add(hooksSuite, exclusiveSuite, skippedSuite, compositionSuite);
