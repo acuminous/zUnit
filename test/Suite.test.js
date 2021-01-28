@@ -1,8 +1,16 @@
 const assert = require('assert');
 const { run, fail, pass, passingTest, failingTest, skippedTest, exclusiveTest } = require('./support/helpers');
-const { Suite, Test } = require('..');
+const { Suite, Test, describe, it } = require('..');
 
 describe('Suite', () => {
+
+  describe('Discover', () => {
+
+    it('should report missing directory', async() => {
+      const suite = new Suite('Suite', { directory: '' });
+      assert.throws(() => suite.discover(), /Error: directory is a required option/);
+    })
+  })
 
   describe('Normal', () => {
 
