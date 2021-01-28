@@ -19,7 +19,8 @@
     "dependencies",
     "light",
     "lightweight",
-    "simple"
+    "simple",
+    "typescript"
   ],
   "scripts": {
     "lint": "eslint .",
