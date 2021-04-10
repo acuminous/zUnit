@@ -2,8 +2,11 @@
 
 ## [Unreleased]
 
-## [3.0.5]
+## [3.0.6]
+### Added
+- Launch script (work in progress)
 
+## [3.0.5]
 ### Fixed
 - Throwing a non-error from tests breaks various reporters
 - Replaced deprecated assert.equal with assert.strictEqual
