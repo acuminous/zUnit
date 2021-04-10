@@ -36,64 +36,62 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
 
 ## Usage
 1. Install zUnit
-  ```
-  npm i zunit
-  ```
-
+   ```
+   npm i zunit
+   ```
 1. Add the zUnit script to package.json
-  ```
-  {
-    "scripts": {
-      "test": "zUnit"
-    }
-  }
-  ```
-
+   ```
+   {
+     "scripts": {
+       "test": "zUnit"
+     }
+   }
+   ```
 1. Create a test suite, e.g. `test/user-db.test.js`
-    ```js
-    const { describe, it, xit, beforeEach } = require('zunit'); // Can be made global
-    const assert = require('assert');
-    const userDb = require('../lib/user-db');
+   ```js
+   const { describe, it, xit, beforeEach } = require('zunit'); // Can be made global
+   const assert = require('assert');
+   const userDb = require('../lib/user-db');
 
-    describe('User DB', () => {
+   describe('User DB', () => {
 
-      beforeEach(async () => {
-        await userDb.flush();
-      })
+     beforeEach(async () => {
+       await userDb.flush();
+     });
 
-      describe('List Users', () => {
+     describe('List Users', () => {
 
-        it('should list all users', async () => {
-          await userDb.create({ name: 'John' });
-          await userDb.create({ name: 'Julie' });
+       it('should list all users', async () => {
+         await userDb.create({ name: 'John' });
+         await userDb.create({ name: 'Julie' });
 
-          const users = await userDb.list();
-          assert.strictEqual(users.length, 2);
-          assert.strictEqual(users[0].name, 'John');
-          assert.strictEqual(users[1].name, 'Julie');
-        });
+         const users = await userDb.list();
+         assert.strictEqual(users.length, 2);
+         assert.strictEqual(users[0].name, 'John');
+         assert.strictEqual(users[1].name, 'Julie');
+       });
 
-        xit('should list matching users', async () => {
-        });
-      })
-    });
-    ```
+       xit('should list matching users', async () => {
+       });
+     })
+   });
+   ```
 
 1. Run the tests
-    ```
-    npm test
+   ```
+   npm test
 
-    User DB
-      List Users
-        should list all users
+   User DB
+     List Users
+       should list all users
         - PASSED (2ms)
-        should list matching use
+       should list matching use
         - SKIPPED (0ms)
 
-    Summary
-      Tests: 2, Passed: 1, Skipped: 1, Failed: 0, Duration: 2ms
+   Summary
+     Tests: 2, Passed: 1, Skipped: 1, Failed: 0, Duration: 2ms
 
-    ```
+   ```
 
 ## Configuration
 You can configure zUnit's launch script by:
