@@ -57,7 +57,7 @@ describe('Suite', () => {
       const report = await run(suite);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
-      assert.equal(report.resolve(0).errors[0].message, 'Timed out after 100ms');
+      assert.strictEqual(report.resolve(0).errors[0].message, 'Timed out after 100ms');
     });
   });
 
@@ -273,30 +273,30 @@ describe('Suite', () => {
 
       const report = await run(suite3);
 
-      assert.equal(report.passed, false);
-      assert.equal(report.name, 'Suite 3');
-      assert.equal(report.stats.passed, 2);
-      assert.equal(report.stats.failed, 1);
-      assert.equal(report.stats.skipped, 0);
+      assert.strictEqual(report.passed, false);
+      assert.strictEqual(report.name, 'Suite 3');
+      assert.strictEqual(report.stats.passed, 2);
+      assert.strictEqual(report.stats.failed, 1);
+      assert.strictEqual(report.stats.skipped, 0);
 
-      assert.equal(report.resolve(0).name, 'Suite 1');
-      assert.equal(report.resolve(0).passed, false);
-      assert.equal(report.resolve(0).stats.passed, 1);
-      assert.equal(report.resolve(0).stats.failed, 1);
-      assert.equal(report.resolve(0).stats.skipped, 0);
+      assert.strictEqual(report.resolve(0).name, 'Suite 1');
+      assert.strictEqual(report.resolve(0).passed, false);
+      assert.strictEqual(report.resolve(0).stats.passed, 1);
+      assert.strictEqual(report.resolve(0).stats.failed, 1);
+      assert.strictEqual(report.resolve(0).stats.skipped, 0);
 
-      assert.equal(report.resolve(1).name, 'Suite 2');
-      assert.equal(report.resolve(1).passed, true);
-      assert.equal(report.resolve(1).stats.passed, 1);
-      assert.equal(report.resolve(1).stats.failed, 0);
-      assert.equal(report.resolve(1).stats.skipped, 0);
+      assert.strictEqual(report.resolve(1).name, 'Suite 2');
+      assert.strictEqual(report.resolve(1).passed, true);
+      assert.strictEqual(report.resolve(1).stats.passed, 1);
+      assert.strictEqual(report.resolve(1).stats.failed, 0);
+      assert.strictEqual(report.resolve(1).stats.skipped, 0);
 
-      assert.equal(report.resolve(0, 0).name, 'Test 1');
-      assert.equal(report.resolve(0, 0).passed, true);
-      assert.equal(report.resolve(0, 1).name, 'Test 2');
-      assert.equal(report.resolve(0, 1).failed, true);
-      assert.equal(report.resolve(1, 0).name, 'Test 3');
-      assert.equal(report.resolve(1, 0).passed, true);
+      assert.strictEqual(report.resolve(0, 0).name, 'Test 1');
+      assert.strictEqual(report.resolve(0, 0).passed, true);
+      assert.strictEqual(report.resolve(0, 1).name, 'Test 2');
+      assert.strictEqual(report.resolve(0, 1).failed, true);
+      assert.strictEqual(report.resolve(1, 0).name, 'Test 3');
+      assert.strictEqual(report.resolve(1, 0).passed, true);
     });
   });
 
@@ -309,11 +309,11 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.equal(report.resolve(0).name, 'Test 1');
-      assert.equal(report.resolve(0).point, 1);
+      assert.strictEqual(report.resolve(0).name, 'Test 1');
+      assert.strictEqual(report.resolve(0).point, 1);
 
-      assert.equal(report.children[1].name, 'Test 2');
-      assert.equal(report.children[1].point, 2);
+      assert.strictEqual(report.children[1].name, 'Test 2');
+      assert.strictEqual(report.children[1].point, 2);
     });
 
     it('should assign test points in the order tests are added to a suite', async () => {
@@ -323,11 +323,11 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.equal(report.resolve(0).name, 'Test 2');
-      assert.equal(report.resolve(0).point, 1);
+      assert.strictEqual(report.resolve(0).name, 'Test 2');
+      assert.strictEqual(report.resolve(0).point, 1);
 
-      assert.equal(report.children[1].name, 'Test 1');
-      assert.equal(report.children[1].point, 2);
+      assert.strictEqual(report.children[1].name, 'Test 1');
+      assert.strictEqual(report.children[1].point, 2);
     });
 
     it('should assign test points to tests in a nested suite', async () => {
@@ -340,14 +340,14 @@ describe('Suite', () => {
 
       const report = await run(suite3);
 
-      assert.equal(report.resolve(0, 0).name, 'Test 1');
-      assert.equal(report.resolve(0, 0).point, 1);
+      assert.strictEqual(report.resolve(0, 0).name, 'Test 1');
+      assert.strictEqual(report.resolve(0, 0).point, 1);
 
-      assert.equal(report.resolve(0, 1).name, 'Test 2');
-      assert.equal(report.resolve(0, 1).point, 2);
+      assert.strictEqual(report.resolve(0, 1).name, 'Test 2');
+      assert.strictEqual(report.resolve(0, 1).point, 2);
 
-      assert.equal(report.resolve(1, 0).name, 'Test 3');
-      assert.equal(report.resolve(1, 0).point, 3);
+      assert.strictEqual(report.resolve(1, 0).name, 'Test 3');
+      assert.strictEqual(report.resolve(1, 0).point, 3);
     });
 
     it('should assign different test points to the same test', async () => {
@@ -356,11 +356,11 @@ describe('Suite', () => {
 
       const report = await run(suite);
 
-      assert.equal(report.resolve(0).name, 'Test');
-      assert.equal(report.resolve(0).point, 1);
+      assert.strictEqual(report.resolve(0).name, 'Test');
+      assert.strictEqual(report.resolve(0).point, 1);
 
-      assert.equal(report.children[1].name, 'Test');
-      assert.equal(report.children[1].point, 2);
+      assert.strictEqual(report.children[1].name, 'Test');
+      assert.strictEqual(report.children[1].point, 2);
     });
   });
 

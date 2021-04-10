@@ -20,7 +20,7 @@ describe('Harness', () => {
 
       const report = await harness.run();
 
-      assert.equal(report.incomplete, true);
+      assert.strictEqual(report.incomplete, true);
     });
   });
 

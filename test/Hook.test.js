@@ -17,9 +17,9 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(api.name, 'Hook');
-      assert.equal(api.description, 'Suite / Hook');
-      assert.equal(api.suite.name, 'Suite');
+      assert.strictEqual(api.name, 'Hook');
+      assert.strictEqual(api.description, 'Suite / Hook');
+      assert.strictEqual(api.suite.name, 'Suite');
       assert.ok(api.suite.skip);
     });
 
@@ -34,7 +34,7 @@ describe('Hook', () => {
       const report = await run(suite);
 
       assert.stats(report.stats, { tests: 1, skipped: 1 });
-      assert.equal(report.resolve(0).reason, 'Because');
+      assert.strictEqual(report.resolve(0).reason, 'Because');
     });
 
     it('should support callbacks', async () => {
@@ -93,11 +93,11 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 4);
-      assert.equal(executed[0], 'Hook 1');
-      assert.equal(executed[1], 'Hook 2');
-      assert.equal(executed[2], 'Test 1');
-      assert.equal(executed[2], 'Test 1');
+      assert.strictEqual(executed.length, 4);
+      assert.strictEqual(executed[0], 'Hook 1');
+      assert.strictEqual(executed[1], 'Hook 2');
+      assert.strictEqual(executed[2], 'Test 1');
+      assert.strictEqual(executed[2], 'Test 1');
     });
 
     it('should bypass before hooks when there are no tests', async () => {
@@ -107,7 +107,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass before hooks before a skipped suite (runtime configuration)', async () => {
@@ -118,7 +118,7 @@ describe('Hook', () => {
 
       await run(suite, { skip: true });
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass before hooks before a skipped suite (harness configuration)', async () => {
@@ -130,7 +130,7 @@ describe('Hook', () => {
 
       await harness.run(new NullReporter(), suite);
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass before hooks before a skipped suite (suite configuration)', async () => {
@@ -141,7 +141,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass remaining before hooks and test following a skipped suite (programmatic)', async () => {
@@ -154,8 +154,8 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 1);
-      assert.equal(executed[0], 'Before 1');
+      assert.strictEqual(executed.length, 1);
+      assert.strictEqual(executed[0], 'Before 1');
     });
 
     it('should bypass remaining before hooks following a failure', async () => {
@@ -168,7 +168,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 1);
+      assert.strictEqual(executed.length, 1);
     });
 
     it('should report a failure', async () => {
@@ -215,9 +215,9 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(api.name, 'Hook');
-      assert.equal(api.description, 'Suite / Hook');
-      assert.equal(api.suite.name, 'Suite');
+      assert.strictEqual(api.name, 'Hook');
+      assert.strictEqual(api.description, 'Suite / Hook');
+      assert.strictEqual(api.suite.name, 'Suite');
       assert.ok(!api.suite.skip);
     });
 
@@ -272,7 +272,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should run after hooks after a successful test', async () => {
@@ -284,10 +284,10 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 3);
-      assert.equal(executed[0], 'Test');
-      assert.equal(executed[1], 'After 1');
-      assert.equal(executed[2], 'After 2');
+      assert.strictEqual(executed.length, 3);
+      assert.strictEqual(executed[0], 'Test');
+      assert.strictEqual(executed[1], 'After 1');
+      assert.strictEqual(executed[2], 'After 2');
     });
 
     it('should run after hooks after a failing test', async () => {
@@ -299,9 +299,9 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 2);
-      assert.equal(executed[0], 'After 1');
-      assert.equal(executed[1], 'After 2');
+      assert.strictEqual(executed.length, 2);
+      assert.strictEqual(executed[0], 'After 1');
+      assert.strictEqual(executed[1], 'After 2');
     });
 
     it('should bypass after hooks after a skipped suite (suite configuration)', async () => {
@@ -312,7 +312,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass after hooks after a skipped suite (runtime configuration)', async () => {
@@ -323,7 +323,7 @@ describe('Hook', () => {
 
       await run(suite, { skip: true });
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass after hooks after a skipped suite (harness configuration)', async () => {
@@ -335,7 +335,7 @@ describe('Hook', () => {
 
       await harness.run(new NullReporter());
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass after hooks after a skipped suite (suite configuration)', async () => {
@@ -346,7 +346,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should run after hooks after a skipped suite (programmatic)', async () => {
@@ -358,8 +358,8 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 1);
-      assert.equal(executed[0], 'After');
+      assert.strictEqual(executed.length, 1);
+      assert.strictEqual(executed[0], 'After');
     });
 
     it('should fail the suite if an after hook fails', async () => {
@@ -408,8 +408,8 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 1);
-      assert.equal(executed[0], 'After 1');
+      assert.strictEqual(executed.length, 1);
+      assert.strictEqual(executed[0], 'After 1');
     });
 
     it('should bypass after hooks associated with skipped before hooks', async () => {
@@ -429,12 +429,12 @@ describe('Hook', () => {
 
       await run(suite1);
 
-      assert.equal(executedBefore.length, 1);
-      assert.equal(executedBefore[0], 'Before 1');
+      assert.strictEqual(executedBefore.length, 1);
+      assert.strictEqual(executedBefore[0], 'Before 1');
 
-      assert.equal(executedAfter.length, 2);
-      assert.equal(executedAfter[0], 'After 2');
-      assert.equal(executedAfter[1], 'After 1');
+      assert.strictEqual(executedAfter.length, 2);
+      assert.strictEqual(executedAfter[0], 'After 2');
+      assert.strictEqual(executedAfter[1], 'After 1');
     });
   });
 
@@ -451,9 +451,9 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(api.name, 'Hook');
-      assert.equal(api.description, 'Suite / Test / Hook');
-      assert.equal(api.test.name, 'Test');
+      assert.strictEqual(api.name, 'Hook');
+      assert.strictEqual(api.description, 'Suite / Test / Hook');
+      assert.strictEqual(api.test.name, 'Test');
       assert.ok(api.test.skip);
     });
 
@@ -468,7 +468,7 @@ describe('Hook', () => {
       const report = await run(suite);
 
       assert.stats(report.stats, { tests: 1, skipped: 1 });
-      assert.equal(report.resolve(0).reason, 'Because');
+      assert.strictEqual(report.resolve(0).reason, 'Because');
     });
 
     it('should support callbacks', async () => {
@@ -522,10 +522,10 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 3);
-      assert.equal(executed[0], 'Before 1');
-      assert.equal(executed[1], 'Before 2');
-      assert.equal(executed[2], 'Test');
+      assert.strictEqual(executed.length, 3);
+      assert.strictEqual(executed[0], 'Before 1');
+      assert.strictEqual(executed[1], 'Before 2');
+      assert.strictEqual(executed[2], 'Test');
     });
 
     it('should bypass before hooks before a skipped test (runtime configuration)', async () => {
@@ -536,7 +536,7 @@ describe('Hook', () => {
 
       await run(suite, { skip: true });
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass before hooks before a skipped test (harness configuration)', async () => {
@@ -548,7 +548,7 @@ describe('Hook', () => {
 
       await harness.run(new NullReporter());
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass before hooks before a skipped test (suite configuration)', async () => {
@@ -559,7 +559,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass before hooks before a skipped test (test configuration)', async () => {
@@ -570,7 +570,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass before hooks before a skipped test (pending)', async () => {
@@ -581,7 +581,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass remaining before hooks following a skipped test (programmatic)', async () => {
@@ -594,7 +594,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 1);
+      assert.strictEqual(executed.length, 1);
     });
 
     it('should bypass remaining before hooks following a failure', async () => {
@@ -607,7 +607,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 1);
+      assert.strictEqual(executed.length, 1);
     });
 
     it('should fail the test if a before hook fails', async () => {
@@ -634,9 +634,9 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(api.name, 'Hook');
-      assert.equal(api.description, 'Suite / Test / Hook');
-      assert.equal(api.test.name, 'Test');
+      assert.strictEqual(api.name, 'Hook');
+      assert.strictEqual(api.description, 'Suite / Test / Hook');
+      assert.strictEqual(api.test.name, 'Test');
       assert.ok(!api.test.skip);
     });
 
@@ -691,10 +691,10 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 3);
-      assert.equal(executed[0], 'Test');
-      assert.equal(executed[1], 'After 1');
-      assert.equal(executed[2], 'After 2');
+      assert.strictEqual(executed.length, 3);
+      assert.strictEqual(executed[0], 'Test');
+      assert.strictEqual(executed[1], 'After 1');
+      assert.strictEqual(executed[2], 'After 2');
     });
 
     it('should run after hooks after a failing test', async () => {
@@ -706,9 +706,9 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 2);
-      assert.equal(executed[0], 'After 1');
-      assert.equal(executed[1], 'After 2');
+      assert.strictEqual(executed.length, 2);
+      assert.strictEqual(executed[0], 'After 1');
+      assert.strictEqual(executed[1], 'After 2');
     });
 
     it('should bypass after hooks after a skipped test (test configuration)', async () => {
@@ -719,7 +719,7 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass after hooks after a skipped test (runtime configuration)', async () => {
@@ -730,7 +730,7 @@ describe('Hook', () => {
 
       await run(suite, { skip: true });
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should bypass after hooks after a skipped test (harness configuration)', async () => {
@@ -742,7 +742,7 @@ describe('Hook', () => {
 
       await harness.run(new NullReporter());
 
-      assert.equal(executed.length, 0);
+      assert.strictEqual(executed.length, 0);
     });
 
     it('should run after hooks after a skipped test (programmatic)', async () => {
@@ -753,8 +753,8 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 1);
-      assert.equal(executed[0], 'After');
+      assert.strictEqual(executed.length, 1);
+      assert.strictEqual(executed[0], 'After');
     });
 
     it('should fail the test if an after hook fails', async () => {
@@ -777,8 +777,8 @@ describe('Hook', () => {
 
       await run(suite);
 
-      assert.equal(executed.length, 1);
-      assert.equal(executed[0], 'After 1');
+      assert.strictEqual(executed.length, 1);
+      assert.strictEqual(executed[0], 'After 1');
     });
 
     it('should bypass after hooks associated with skipped before hooks', async () => {
@@ -799,12 +799,12 @@ describe('Hook', () => {
 
       await run(suite1);
 
-      assert.equal(executedBefore.length, 1);
-      assert.equal(executedBefore[0], 'Before 1');
+      assert.strictEqual(executedBefore.length, 1);
+      assert.strictEqual(executedBefore[0], 'Before 1');
 
-      assert.equal(executedAfter.length, 2);
-      assert.equal(executedAfter[0], 'After 2');
-      assert.equal(executedAfter[1], 'After 1');
+      assert.strictEqual(executedAfter.length, 2);
+      assert.strictEqual(executedAfter[0], 'After 2');
+      assert.strictEqual(executedAfter[1], 'After 1');
     });
   });
 

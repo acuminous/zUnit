@@ -77,9 +77,9 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
           await userDb.create({ name: 'Julie' });
 
           const users = await userDb.list();
-          assert.equal(users.length, 2);
-          assert.equal(users[0].name, 'John');
-          assert.equal(users[1].name, 'Julie');
+          assert.strictEqual(users.length, 2);
+          assert.strictEqual(users[0].name, 'John');
+          assert.strictEqual(users[1].name, 'Julie');
         });
 
         xit('should list matching users', async () => {
@@ -167,7 +167,7 @@ Sometimes the code under test uses callbacks, making it easier if the test is ca
   it('should do something wonderful', (test, done) => {
     callbackApi((err, items) => {
       if (err) return done(err);
-      assert.equal(items.length, 0);
+      assert.strictEqual(items.length, 0);
       done();
     });
   })
@@ -662,10 +662,10 @@ const reset = new Hook('Reset Environment', () => {
 
 const suite = new Suite('Test Suite').beforeEach(reset);
 const test1 = new Test('Test 1', async () => {
-  assert.equal(1, 2);
+  assert.strictEqual(1, 2);
 });
 const test2 = new Test('Test 2', async () => {
-  assert.equal(1, 2);
+  assert.strictEqual(1, 2);
 });
 suite.add(test1, test2);
 

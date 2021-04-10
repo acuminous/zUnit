@@ -15,12 +15,12 @@ describe('Product API Tests', () => {
       await productDb.create({ name: 'Flight of the Amazon Queen' });
 
       const response = await productApi.list();
-      assert.equal(response.status, 200);
-      assert.equal(response.body.length, 2);
-      assert.equal(response.body[0].productId, 1);
-      assert.equal(response.body[0].name, 'Broken Sword');
-      assert.equal(response.body[1].productId, 2);
-      assert.equal(response.body[1].name, 'Flight of the Amazon Queen');
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.body.length, 2);
+      assert.strictEqual(response.body[0].productId, 1);
+      assert.strictEqual(response.body[0].name, 'Broken Sword');
+      assert.strictEqual(response.body[1].productId, 2);
+      assert.strictEqual(response.body[1].name, 'Flight of the Amazon Queen');
     });
 
     xit('should list matching products', async () => {
@@ -34,14 +34,14 @@ describe('Product API Tests', () => {
       await productDb.create({ name: 'Broken Sword' });
 
       const response = await productApi.findById(1);
-      assert.equal(response.status, 200);
-      assert.equal(response.body.productId, 1);
-      assert.equal(response.body.name, 'Broken Sword');
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.body.productId, 1);
+      assert.strictEqual(response.body.name, 'Broken Sword');
     });
 
     it('should 404 when a product is not found', async () => {
       const response = await productApi.findById('/api/products/999');
-      assert.equal(response.status, 404);
+      assert.strictEqual(response.status, 404);
     });
   });
 
@@ -49,8 +49,8 @@ describe('Product API Tests', () => {
 
     it('should create a new product', async () => {
       const response = await productApi.create({ name: 'Full Throttle' });
-      assert.equal(response.status, 200);
-      assert.equal(response.body.productId, 1);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.body.productId, 1);
     });
   });
 
@@ -60,12 +60,12 @@ describe('Product API Tests', () => {
       await productDb.create({ name: 'Broken Sword' });
 
       const response = await productApi.update(1, { name: 'Beneath a Steel Sky' });
-      assert.equal(response.status, 204);
+      assert.strictEqual(response.status, 204);
     });
 
     it('should 404 when a product is not found', async () => {
       const response = await productApi.update(999, { name: 'Sam & Max: Hit the Road' });
-      assert.equal(response.status, 404);
+      assert.strictEqual(response.status, 404);
     });
   });
 

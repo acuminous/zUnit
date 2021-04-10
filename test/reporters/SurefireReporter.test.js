@@ -14,7 +14,7 @@ describe('Surefire Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[0], '<?xml version="1.0" encoding="UTF-8" ?>');
+    assert.strictEqual(lines[0], '<?xml version="1.0" encoding="UTF-8" ?>');
   });
 
   it('should report an empty test suite', async () => {

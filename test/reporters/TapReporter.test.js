@@ -15,7 +15,7 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[0], 'TAP version 13');
+    assert.strictEqual(lines[0], 'TAP version 13');
   });
 
   it('should report test plan when there are no tests', async () => {
@@ -27,7 +27,7 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[1], '1..0');
+    assert.strictEqual(lines[1], '1..0');
   });
 
   it('should report test plan when there are some tests', async () => {
@@ -40,7 +40,7 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[1], '1..1');
+    assert.strictEqual(lines[1], '1..1');
   });
 
   it('should report test plan when there is a nested suite', async () => {
@@ -57,9 +57,9 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[2], 'ok 1 - Suite 3 / Suite 1 / Test 1');
-    assert.equal(lines[3], 'ok 2 - Suite 3 / Suite 1 / Test 2');
-    assert.equal(lines[4], 'ok 3 - Suite 3 / Suite 2 / Test 3');
+    assert.strictEqual(lines[2], 'ok 1 - Suite 3 / Suite 1 / Test 1');
+    assert.strictEqual(lines[3], 'ok 2 - Suite 3 / Suite 1 / Test 2');
+    assert.strictEqual(lines[4], 'ok 3 - Suite 3 / Suite 2 / Test 3');
   });
 
   it('should report passing tests', async () => {
@@ -74,9 +74,9 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[2], 'ok 1 - Suite / Test 1');
-    assert.equal(lines[3], 'ok 2 - Suite / Test 2');
-    assert.equal(lines[4], 'ok 3 - Suite / Test 3');
+    assert.strictEqual(lines[2], 'ok 1 - Suite / Test 1');
+    assert.strictEqual(lines[3], 'ok 2 - Suite / Test 2');
+    assert.strictEqual(lines[4], 'ok 3 - Suite / Test 3');
   });
 
   it('should report failing tests', async () => {
@@ -92,7 +92,7 @@ describe('Tap Reporter', () => {
 
     const lines = stream.lines;
 
-    assert.equal(lines[lines.length - 2], 'not ok 3 - Suite / Test 3');
+    assert.strictEqual(lines[lines.length - 2], 'not ok 3 - Suite / Test 3');
   });
 
   it('should report failing tests (non errors)', async () => {
@@ -108,8 +108,8 @@ describe('Tap Reporter', () => {
 
     const lines = stream.lines;
 
-    assert.equal(lines[lines.length - 3], '# Oh Noes!');
-    assert.equal(lines[lines.length - 2], 'not ok 1 - Suite / Test');
+    assert.strictEqual(lines[lines.length - 3], '# Oh Noes!');
+    assert.strictEqual(lines[lines.length - 2], 'not ok 1 - Suite / Test');
   });
 
   it('should prefix each error messages line with a # ', async () => {
@@ -122,8 +122,8 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[2], '# Error: Oh');
-    assert.equal(lines[3], '# Noes!');
+    assert.strictEqual(lines[2], '# Error: Oh');
+    assert.strictEqual(lines[3], '# Noes!');
   });
 
   it('should output skipped tests', async () => {
@@ -138,9 +138,9 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[2], 'ok 1 - Suite / Test 1 # skip No reason given');
-    assert.equal(lines[3], 'ok 2 - Suite / Test 2 # skip A good reason');
-    assert.equal(lines[4], 'ok 3 - Suite / Test 3 # skip Meh');
+    assert.strictEqual(lines[2], 'ok 1 - Suite / Test 1 # skip No reason given');
+    assert.strictEqual(lines[3], 'ok 2 - Suite / Test 2 # skip A good reason');
+    assert.strictEqual(lines[4], 'ok 3 - Suite / Test 3 # skip Meh');
   });
 
   it('should output skipped suites', async () => {
@@ -155,9 +155,9 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[2], 'ok 1 - Suite / Test 1 # skip Whatever');
-    assert.equal(lines[3], 'ok 2 - Suite / Test 2 # skip Whatever');
-    assert.equal(lines[4], 'ok 3 - Suite / Test 3 # skip Whatever');
+    assert.strictEqual(lines[2], 'ok 1 - Suite / Test 1 # skip Whatever');
+    assert.strictEqual(lines[3], 'ok 2 - Suite / Test 2 # skip Whatever');
+    assert.strictEqual(lines[4], 'ok 3 - Suite / Test 3 # skip Whatever');
   });
 
   it('should output before hook errors', async () => {
@@ -173,7 +173,7 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[2], '# Error: Oh Noes!');
+    assert.strictEqual(lines[2], '# Error: Oh Noes!');
   });
 
   it('should output after hook errors', async () => {
@@ -189,7 +189,7 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines;
-    assert.equal(lines[5], '# Error: Oh Noes!');
+    assert.strictEqual(lines[5], '# Error: Oh Noes!');
   });
 
   it('should output multiple suite errors', async () => {
@@ -206,8 +206,8 @@ describe('Tap Reporter', () => {
     await harness.run(reporter);
 
     const lines = stream.lines.filter(l => /# Error:/.test(l));
-    assert.equal(lines[0], '# Error: Before!');
-    assert.equal(lines[1], '# Error: After!');
+    assert.strictEqual(lines[0], '# Error: Before!');
+    assert.strictEqual(lines[1], '# Error: After!');
   });
 
   it('should output multiple test errors', async () => {
@@ -223,8 +223,8 @@ describe('Tap Reporter', () => {
 
     const lines = stream.lines;
 
-    assert.equal(lines[2], '# Error: Before!');
-    assert.equal(lines[13], '# Error: After!');
+    assert.strictEqual(lines[2], '# Error: Before!');
+    assert.strictEqual(lines[13], '# Error: After!');
   });
 
 });

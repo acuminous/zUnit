@@ -14,9 +14,9 @@ xdescribe('User DB Tests', () => {
       await userDb.create({ name: 'Julie' });
 
       const users = await userDb.list();
-      assert.equal(users.length, 2);
-      assert.equal(users[0].name, 'John');
-      assert.equal(users[1].name, 'Julie');
+      assert.strictEqual(users.length, 2);
+      assert.strictEqual(users[0].name, 'John');
+      assert.strictEqual(users[1].name, 'Julie');
     });
 
     xit('should list matching users', async () => {
@@ -30,8 +30,8 @@ xdescribe('User DB Tests', () => {
       const { userId } = await userDb.create({ name: 'John' });
 
       const user = await userDb.findById(userId);
-      assert.equal(user.userId, userId);
-      assert.equal(user.name, 'John');
+      assert.strictEqual(user.userId, userId);
+      assert.strictEqual(user.name, 'John');
     });
 
     it('should error when a user is not found', async () => {
@@ -47,8 +47,8 @@ xdescribe('User DB Tests', () => {
       const userId = await userDb.create({ name: 'John' });
 
       const user = await userDb.findById(userId);
-      assert.equal(user.userId, userId);
-      assert.equal(user.name, 'John');
+      assert.strictEqual(user.userId, userId);
+      assert.strictEqual(user.name, 'John');
     });
 
   });
@@ -61,7 +61,7 @@ xdescribe('User DB Tests', () => {
       await userDb.update(userId, { name: 'Fred' });
 
       const user = await userDb.findById(userId);
-      assert.equal(user.name, 'Fred');
+      assert.strictEqual(user.name, 'Fred');
     });
 
     it('should error when a user is not found', async () => {

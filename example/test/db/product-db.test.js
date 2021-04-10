@@ -14,9 +14,9 @@ describe('Product DB Tests', () => {
       await productDb.create({ name: 'Flight of the Amazon Queen' });
 
       const products = await productDb.list();
-      assert.equal(products.length, 2);
-      assert.equal(products[0].name, 'Broken Sword');
-      assert.equal(products[1].name, 'Flight of the Amazon Queen');
+      assert.strictEqual(products.length, 2);
+      assert.strictEqual(products[0].name, 'Broken Sword');
+      assert.strictEqual(products[1].name, 'Flight of the Amazon Queen');
     });
 
     xit('should list matching products', async () => {
@@ -30,8 +30,8 @@ describe('Product DB Tests', () => {
       const { productId } = await productDb.create({ name: 'Broken Sword' });
 
       const product = await productDb.findById(productId);
-      assert.equal(product.productId, productId);
-      assert.equal(product.name, 'Broken Sword');
+      assert.strictEqual(product.productId, productId);
+      assert.strictEqual(product.name, 'Broken Sword');
     });
 
     it('should error when a product is not found', async () => {
@@ -47,8 +47,8 @@ describe('Product DB Tests', () => {
       const productId = await productDb.create({ name: 'Broken Sword' });
 
       const product = await productDb.findById(productId);
-      assert.equal(product.productId, productId);
-      assert.equal(product.name, 'Borked Sword');
+      assert.strictEqual(product.productId, productId);
+      assert.strictEqual(product.name, 'Borked Sword');
     });
 
   });
@@ -61,7 +61,7 @@ describe('Product DB Tests', () => {
       await productDb.update(productId, { name: 'Beneath a Steel Sky' });
 
       const product = await productDb.findById(productId);
-      assert.equal(product.name, 'Beneath a Steel Sky');
+      assert.strictEqual(product.name, 'Beneath a Steel Sky');
     });
 
     it('should error when a product is not found', async () => {

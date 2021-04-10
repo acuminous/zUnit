@@ -15,12 +15,12 @@ describe('User API Tests', () => {
       await userDb.create({ name: 'Julie' });
 
       const response = await userApi.list();
-      assert.equal(response.status, 200);
-      assert.equal(response.body.length, 2);
-      assert.equal(response.body[0].userId, 1);
-      assert.equal(response.body[0].name, 'John');
-      assert.equal(response.body[1].userId, 2);
-      assert.equal(response.body[1].name, 'Julie');
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.body.length, 2);
+      assert.strictEqual(response.body[0].userId, 1);
+      assert.strictEqual(response.body[0].name, 'John');
+      assert.strictEqual(response.body[1].userId, 2);
+      assert.strictEqual(response.body[1].name, 'Julie');
     });
 
     xit('should list matching users', async () => {
@@ -34,14 +34,14 @@ describe('User API Tests', () => {
       await userDb.create({ name: 'John' });
 
       const response = await userApi.findById(1);
-      assert.equal(response.status, 200);
-      assert.equal(response.body.userId, 1);
-      assert.equal(response.body.name, 'John');
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.body.userId, 1);
+      assert.strictEqual(response.body.name, 'John');
     });
 
     it('should 404 when a user is not found', async () => {
       const response = await userApi.findById('/api/users/999');
-      assert.equal(response.status, 404);
+      assert.strictEqual(response.status, 404);
     });
   });
 
@@ -49,8 +49,8 @@ describe('User API Tests', () => {
 
     it('should create a new user', async () => {
       const response = await userApi.create({ name: 'Steve' });
-      assert.equal(response.status, 200);
-      assert.equal(response.body.userId, 1);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.body.userId, 1);
     });
 
   });
@@ -61,12 +61,12 @@ describe('User API Tests', () => {
       await userDb.create({ name: 'John' });
 
       const response = await userApi.update(1, { name: 'Fred' });
-      assert.equal(response.status, 204);
+      assert.strictEqual(response.status, 204);
     });
 
     it('should 404 when a user is not found', async () => {
       const response = await userApi.update(999, { name: 'Fred' });
-      assert.equal(response.status, 404);
+      assert.strictEqual(response.status, 404);
     });
   });
 
