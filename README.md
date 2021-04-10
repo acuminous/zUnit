@@ -12,8 +12,7 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
 ## Index
 - [About](#about)
 - [Usage](#usage)
-- [Discovering Test Suites](#discovering-test-suites)
-- [Composing Test Suites Explicitly](#composing-test-suites-explicitly)
+- [Configuration](#configuration)
 - [Callbacks](#callbacks)
 - [Pending / Skipping Tests](#pending--skipping-tests)
 - [Exclusive Tests](#exclusive-tests)
@@ -159,7 +158,7 @@ For example:
   const harness = new Harness(suite);
 ```
 
-## Composing Test Suites Explicitly
+### Composing Test Suites Explicitly
 Instead of automatically discovering test suites, you can compose them explicitly as follows...
 ```js
 const { describe, include } = require('zunit');
