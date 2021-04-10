@@ -27,11 +27,8 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
 zUnit is a zero dependency, non-polluting<sup>[1](#1-non-polluting)</sup>, low magic<sup>[2](#2-low-magic)</sup>, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning. While zUnit does lack some of the advanced features, such as concurrent tests, automatic retries and true file globbing<sup>[3](#3-advanced-features)</sup>, most of the day-to-day features are present.
 
 ##### 1 non-polluting
-You can add test functions (describe, it, etc) to the global namespace if you so wish...
-```js
-const { syntax } = require('zunit');
-Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
-```
+You can add test functions (describe, it, etc) to the global namespace via the [pollute](#config) config option.
+
 ##### 2 low-magic
 The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports suites without using `module.exports` by inspecting the call stack.
 
@@ -39,24 +36,19 @@ The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports s
 Since writing zUnit I've begun to wonder whether some of Mocha's advanced features are universally beneficial. Many test suites are too small to warrant concurrency, and others (e.g. persistence tests) may require a great deal of effort to isolate. Concurrent testing also has drawbacks - the test harness and reporters become more complex and the output must be buffered, delaying feedback. I'm also unconvinced about automaticaly retrying tests, I think it better to fix any that are flakey, and take a [statistical approach](https://www.npmjs.com/package/fast-stats) when results are naturally unpredictable.
 
 ## Usage
-1. Create a runner, e.g. `test/index.js`
-    ```js
-    const { Harness, Suite, SpecReporter } = require('zunit');
+1. Install zUnit
+  ```
+  npm i zunit
+  ```
 
-    const suite = new Suite('zUnit').discover();
-    const harness = new Harness(suite);
-
-    const interactive = String(process.env.CI).toLowerCase() !== 'true';
-    const reporter = new SpecReporter({ colours: interactive });
-
-    harness.run(reporter).then((report) => {
-      if (report.failed) process.exit(1);
-      if (report.incomplete) {
-        console.log('One or more tests were not run!');
-        process.exit(2);
-      }
-    });
-    ```
+1. Add the zUnit script to package.json
+  ```
+  {
+    "scripts": {
+      "test": "zUnit"
+    }
+  }
+  ```
 
 1. Create a test suite, e.g. `test/user-db.test.js`
     ```js
@@ -88,9 +80,9 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
     });
     ```
 
-1. Run the test
+1. Run the tests
     ```
-    node tests
+    npm test
 
     User DB
       List Users
@@ -104,7 +96,47 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
 
     ```
 
-## Discovering Test Suites
+## Configuration
+You can configure zUnit's launch script by:
+
+1. Specifying a configuration file when invoking the script, e.g. `zUnit test/zUnit.json`,
+1. Adding a `zUnit` subdocument to package.json
+1. Creating a `.zUnit.json`, `.zUnit.js` file in the project root
+
+| Name      | Type                            | Default                | Notes                                      |
+|-----------|---------------------------------|------------------------|--------------------------------------------|
+| name      | String                          | `package.name`         | The top level suite name.                  |
+| directory | String                          | `path.resolve('test')` | The initial directory to recurse when requiring tests. |
+| pattern   | String or RegExp                | `/^[\w-]+\.test\.js$/` | The regular expression to use for matching test files. Omit the start and end slashes when using json |
+| require   | Array                           | `[]`                   | A list of modules to require before discovering tests. |
+| pollute   | Boolean                         | `false`                | Control whether to pollute the global namespace with test functions so you don't have to require them. |
+| exit      | Boolean                         | `false`                | For the node process to exit after tests are complete. |
+
+Alternatively you can create your own runner based on the [script](https://github.com/acuminous/cryptus/blob/master/bin/zUnit.js) bundled with zUnit e.g.
+
+```js
+const { EOL } = require('os');
+const { Harness, Suite, SpecReporter, syntax } = require('zunit');
+
+Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
+
+const suite = new Suite('zUnit').discover({ directory: 'tests', pattern: /(?:\w+)Test.js/ });
+const harness = new Harness(suite);
+
+const interactive = String(process.env.CI).toLowerCase() !== 'true';
+const reporter = new SpecReporter({ colours: interactive });
+
+harness.run(reporter).then((report) => {
+  if (report.failed) process.exit(1);
+  if (report.incomplete) {
+    console.log(`One or more tests were not run!${EOL}`);
+    process.exit(2);
+  }
+  process.exit();
+});
+```
+
+### Discovering Test Suites
 zUnit suites can automatically discover child test suites by invoking their `discover` function. e.g.
 
 ```js
@@ -114,11 +146,11 @@ zUnit suites can automatically discover child test suites by invoking their `dis
 
 By default, the discover function will recursively descended into the 'test' directory looking files which end in '.test.js'. You can override this behaviour through the following options.
 
-| Name      | Type                            | Notes                                      |
-|-----------|---------------------------------|--------------------------------------------|
-| directory | String                          | The initial directory to recurse. Defaults to `path.join(process.cwd(), 'test')` |
-| pattern   | Regular Expression              | The pattern to use for matching test files. Defaults to `/^[\w-]+\.test\.js$/` |
-| filter    | Function() : Boolean            | Indicates whether a directory should be recursed or a file should be included. Override this if you have directories you want to ignore |
+| Name      | Type                            | Default                | Notes                                                  |
+|-----------|---------------------------------|------------------------|--------------------------------------------------------|
+| directory | String                          | `path.resolve('test')` | The initial directory to recurse when requiring tests. |
+| pattern   | Regular Expression              | `/^[\w-]+\.test\.js$/` | The regular expression to use for matching test files. |
+| filter    | Function() : Boolean            |                        | Indicates whether a directory should be recursed or a file should be included. Override this if you have directories you want to ignore |
 
 For example:
 
@@ -779,18 +811,6 @@ describe('foo', () => {
 });
 ```
 
-#### --exit
-zUnit
-```js
-harness.run(reporter).then((report) => {
-  if (report.failed) process.exit(1);
-  if (report.incomplete) {
-    console.log('One or more tests were not run!');
-    process.exit(2);
-  }
-  process.exit(0); // Instead of --exit
-});
-```
 ## Credits
 - [Frank Carver](http://www.frankcarver.me/) for schooling me on the things a test harness should and shouldn't do.
 - [geopic](https://github.com/geopic) for contributing zUnit's TypeScript defintions.
