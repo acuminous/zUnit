@@ -6,6 +6,9 @@
 ### Added
 - Launch script documentation
 
+### Changed
+- Use bundled launch script
+
 ## [3.0.6]
 ### Added
 - Launch script (work in progress)
