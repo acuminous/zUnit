@@ -4,6 +4,7 @@
 [![NPM downloads](https://img.shields.io/npm/dm/zunit.svg?style=flat-square)](https://www.npmjs.com/package/zunit)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6837424f9e1fc6a634bf/maintainability)](https://codeclimate.com/github/acuminous/zUnit/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6837424f9e1fc6a634bf/test_coverage)](https://codeclimate.com/github/acuminous/zUnit/test_coverage)
+[![Discover tripitaka](https://img.shields.io/badge/Discover-tripitaka-brightgreen)](https://www.npmjs.com/package/tripitaka)
 
 ## TL;DR
 zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](https://www.npmjs.com/package/mocha)) - dependencies;
