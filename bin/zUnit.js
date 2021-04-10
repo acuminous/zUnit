@@ -18,7 +18,7 @@ if (config.require) config.require.forEach((modulePath) => require(path.resolve(
 
 const options = {};
 if (config.directory) Object.assign(options, { directory: path.resolve(config.directory) });
-if (config.pattern) Object.assign(options, { pattern: new RegExp(path.resolve(config.pattern)) });
+if (config.pattern) Object.assign(options, { pattern: new RegExp(config.pattern) });
 
 const suite = new Suite(config.name).discover(options);
 const harness = new Harness(suite);

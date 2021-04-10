@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [3.0.8]
+### Fixed
+- Pattern option should not have been path.resolved
+
 ## [3.0.7]
 ### Added
 - Launch script documentation
