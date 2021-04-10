@@ -1,6 +1,9 @@
 {
   "name": "zunit",
   "version": "3.0.6",
+  "bin": {
+    "zUnit": "./bin/zUnit.js"
+  },
   "description": "A zero dependency, non-polluting, low magic, test harness for Node.js",
   "engines": {
     "node": ">=10"

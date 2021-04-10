@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [3.0.7]
+### Added
+- Launch script documentation
+
 ## [3.0.6]
 ### Added
 - Launch script (work in progress)
