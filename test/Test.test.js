@@ -46,6 +46,17 @@ describe('Test', () => {
       assert.stats(report.stats, { tests: 1, failed: 1 });
       assert.match(report.errors[0].message, /The expression evaluated to a falsy value/);
     });
+
+    it('should execute a failing sync function (throws non-error)', async () => {
+      const test = new Test('Test', () => {
+        throw 'Oh Noes!';
+      });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.errors[0], /Oh Noes!/);
+    });
   });
 
   describe('Callbacks', () => {
@@ -81,6 +92,17 @@ describe('Test', () => {
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
       assert.match(report.errors[0].message, /The expression evaluated to a falsy value/);
+    });
+
+    it('should execute failing sync function (throws non-error)', async () => {
+      const test = new Test('Test', async () => {
+        throw 'Oh Noes!';
+      });
+
+      const report = await run(test);
+
+      assert.stats(report.stats, { tests: 1, failed: 1 });
+      assert.match(report.errors[0], /Oh Noes/);
     });
 
     it('should execute passing async function (done)', async () => {
