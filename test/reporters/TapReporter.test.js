@@ -95,6 +95,23 @@ describe('Tap Reporter', () => {
     assert.equal(lines[lines.length - 2], 'not ok 3 - Suite / Test 3');
   });
 
+  it('should report failing tests (non errors)', async () => {
+    const test = new Test('Test', () => {
+      throw 'Oh Noes!';
+    });
+    const suite = new Suite('Suite').add(test);
+    const harness = new Harness(suite);
+    const stream = new TestOutputStream();
+
+    const reporter = new TapReporter({ stream });
+    await harness.run(reporter);
+
+    const lines = stream.lines;
+
+    assert.equal(lines[lines.length - 3], '# Oh Noes!');
+    assert.equal(lines[lines.length - 2], 'not ok 1 - Suite / Test');
+  });
+
   it('should prefix each error messages line with a # ', async () => {
     const test = new Test('Test', fail({ error: new Error(`Oh${EOL}Noes!`) }));
     const suite = new Suite('Suite').add(test);

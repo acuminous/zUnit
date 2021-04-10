@@ -124,6 +124,21 @@ describe('Surefire Reporter', () => {
     assert.match(lines[1], /^ {4}<failure message="Hook Error" type="Error">/);
   });
 
+  it('should report a failing testsuite with non error', async () => {
+    const test = new Test('Test 1', () => {
+      throw 'Oh Noes!';
+    });
+    const suite = new Suite('Suite').add(test);
+    const harness = new Harness(suite);
+    const stream = new TestOutputStream();
+
+    const reporter = new SurefireReporter({ stream });
+    await harness.run(reporter);
+
+    const lines = stream.lines.filter(l => /<failure message/.test(l));
+    assert.match(lines[0], /^ {4}<failure message="Oh Noes!" type="String">/);
+  });
+
   it('should report a skipped testcase', async () => {
     const test = skippedTest('Test 1');
     const suite = new Suite('Suite').add(test);
