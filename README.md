@@ -111,19 +111,20 @@ You can configure zUnit's launch script by:
 | pollute   | Boolean                         | `false`                | Control whether to pollute the global namespace with test functions so you don't have to require them. |
 | exit      | Boolean                         | `false`                | For the node process to exit after tests are complete. |
 
-Alternatively you can create your own runner based on the [script](https://github.com/acuminous/cryptus/blob/master/bin/zUnit.js) bundled with zUnit e.g.
+## Writing your own launch script
+If the packaged [launch script]([script](https://github.com/acuminous/cryptus/blob/master/bin/zUnit.js)) doesn't meet your needs you can create your own. For example, you may want to use a different reporter... 
 
 ```js
 const { EOL } = require('os');
-const { Harness, Suite, SpecReporter, syntax } = require('zunit');
+const { Harness, Suite, TapReporter, syntax } = require('zunit');
 
 Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
 
-const suite = new Suite('zUnit').discover({ directory: 'tests', pattern: /(?:\w+)Test.js/ });
+const suite = new Suite('zUnit').discover();
 const harness = new Harness(suite);
 
 const interactive = String(process.env.CI).toLowerCase() !== 'true';
-const reporter = new SpecReporter({ colours: interactive });
+const reporter = new TapReporter();
 
 harness.run(reporter).then((report) => {
   if (report.failed) process.exit(1);
