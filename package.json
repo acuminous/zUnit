@@ -1,6 +1,6 @@
 {
   "name": "zunit",
-  "version": "3.0.7",
+  "version": "3.0.8",
   "bin": {
     "zUnit": "bin/zUnit.js"
   },
