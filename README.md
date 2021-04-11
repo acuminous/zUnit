@@ -37,7 +37,7 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
 ## Usage
 1. Install zUnit
    ```
-   npm i zunit
+   npm i zunit --save-dev
    ```
 1. Add the zUnit script to package.json
    ```
@@ -110,7 +110,7 @@ You can configure zUnit's launch script by:
 | exit      | Boolean                         | `false`                | For the node process to exit after tests are complete. |
 
 ## Writing your own launch script
-If the packaged [launch script]([script](https://github.com/acuminous/cryptus/blob/master/bin/zUnit.js)) doesn't meet your needs you can create your own. For example, you may want to use a different reporter... 
+If the packaged [launch script]([script](https://github.com/acuminous/cryptus/blob/master/bin/zUnit.js)) doesn't meet your needs you can create your own. For example, you may want to use a different reporter...
 
 ```js
 const { EOL } = require('os');

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [3.0.9]
+### Changed
+- improved readme
+
 ## [3.0.8]
 ### Fixed
 - Pattern option should not have been path.resolved
