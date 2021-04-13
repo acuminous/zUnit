@@ -107,7 +107,11 @@ You can configure zUnit's launch script by:
    ```json
    {
      "zUnit": {
-       "pollute": true
+       "exit": true,
+       "pollute": true,
+       "require": [
+         "test/setup.js"
+       ]
      }
    }
    ```
