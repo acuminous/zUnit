@@ -802,7 +802,7 @@ describe('foo', () => {
 ```
 
 #### Global functions (describe, it, etc)
-zUnit
+Mocha conveniently makes its test functions global. If you want to achieve the same with zUnit, you can set `pollute` to true in the launch script config, or if you have written your own launch script, add the following code.
 ```js
 const { syntax } = require('zunit');
 Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
