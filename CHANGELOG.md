@@ -2,9 +2,13 @@
 
 ## [Unreleased]
 
+## [3.0.10]
+### Changed
+- Improved readme
+
 ## [3.0.9]
 ### Changed
-- improved readme
+- Improved readme
 
 ## [3.0.8]
 ### Fixed

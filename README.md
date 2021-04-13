@@ -96,10 +96,21 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
 ## Configuration
 You can configure zUnit's launch script by:
 
-1. Specifying a configuration file when invoking the script, e.g. `zUnit test/zUnit.json`,
-1. Adding a `zUnit` subdocument to package.json
-1. Creating a `.zUnit.json`, `.zUnit.js` file in the project root
+1. Specifying a configuration file when invoking the script, e.g.
+   ```
+   zUnit test/zUnit.json
+   ```
+1. Adding a `zUnit` subdocument to package.json, e.g.
+   ```json
+   {
+     "zUnit": {
+       "pollute": true
+     }
+   }
+   ```
+1. Creating a file called `.zUnit.json` or `.zUnit.js` in the project root
 
+### Configuration options
 | Name      | Type                            | Default                | Notes                                      |
 |-----------|---------------------------------|------------------------|--------------------------------------------|
 | name      | String                          | `package.name`         | The top level suite name.                  |
