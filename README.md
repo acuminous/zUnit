@@ -178,7 +178,6 @@ For example:
 ### Composing Test Suites Explicitly
 Instead of automatically discovering test suites, you can compose them explicitly as follows...
 ```js
-const { describe, include } = require('zunit');
 const userDbTests = require('./userDbTests');
 const productDbTests = require('./productDbTests');
 
@@ -187,7 +186,7 @@ describe('All Tests', () => {
 })
 ```
 
-You may then wish to change your test runner to be something like this...
+You may then wish to change your launch script to be something like this...
 ```js
 const path = require('path');
 const { Harness, SpecReporter } = require('zunit');
@@ -212,6 +211,8 @@ harness.run(reporter).then(() => {
 Sometimes the code under test uses callbacks, making it easier if the test is callback based too. If you define your test functions to take two arguments, the second argument will be passed a callback which you should invoke to signify that the test is done. e.g.
 
 ```js
+  const { describe, it } = require('zunit');
+
   it('should do something wonderful', (test, done) => {
     callbackApi((err, items) => {
       if (err) return done(err);
