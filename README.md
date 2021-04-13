@@ -40,7 +40,7 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
    npm i zunit --save-dev
    ```
 1. Add the zUnit script to package.json
-   ```
+   ```json
    {
      "scripts": {
        "test": "zUnit"
@@ -97,9 +97,12 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
 You can configure zUnit's launch script by:
 
 1. Specifying a configuration file when invoking the script, e.g.
-   ```
-   zUnit test/zUnit.json
-   ```
+   ```json
+   {
+     "scripts": {
+       "test": "zUnit test/zUnit.json"
+     }
+   }
 1. Adding a `zUnit` subdocument to package.json, e.g.
    ```json
    {
