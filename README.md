@@ -183,8 +183,8 @@ const userDbTests = require('./userDbTests');
 const productDbTests = require('./productDbTests');
 
 describe('All Tests', () => {
-  include(userDbTests, productDbTests)
-})
+  include(userDbTests, productDbTests);
+});
 ```
 
 You may then wish to change your launch script to be something like this...
@@ -565,7 +565,7 @@ describe('Database Tests', () => {
   it('should find no records when empty', async () => {
     const records = await db.findAll();
     assert.strictEqual(records.length, 0);
-  })
+  });
 })
 ```
 
@@ -580,16 +580,16 @@ It is a property of both suite and test objects available at runtime, i.e.
 ```js
 before(hook => {
   hook.suite.locals.set('a', 1);
-})
+});
 
 beforeEach(hook => {
   hook.test.locals.set('b', 2);
-})
+});
 
 it('some test', (test) => {
    assert.strictEqual(test.locals.get('a'), 1);
    assert.strictEqual(test.locals.get('b'), 2);
-})
+});
 ```
 *Note how test.locals automatically inherits from suite.locals*. Using locals, the previous database test can be rewritten as...
 
@@ -605,8 +605,8 @@ describe('Database Tests', () => {
     const db = test.locals.get('db');
     const records = await db.findAll();
     assert.strictEqual(records.length, 0);
-  })
-})
+  });
+});
 ```
 Locals also support nesting...
 
