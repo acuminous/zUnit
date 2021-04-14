@@ -591,7 +591,7 @@ it('some test', (test) => {
    assert.strictEqual(test.locals.get('b'), 2);
 });
 ```
-*Note how test.locals automatically inherits from suite.locals*. Using locals, the previous database test can be rewritten as...
+Using locals, the previous database test can be rewritten as...
 
 ```js
 describe('Database Tests', () => {
