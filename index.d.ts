@@ -347,3 +347,9 @@ export class TapReporter extends StreamReporter {
 
   withTest(test: Test): Test;
 }
+
+export class Locals {
+  get(name: string): any;
+  set(name: string, value: any): void;
+  del(name: string): void;
+}

@@ -18,6 +18,7 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
 - [Exclusive Tests](#exclusive-tests)
 - [Bailing Out / Failing Fast / Aborting Early](#bailing-out--failing-fast--aborting-early)
 - [Lifecycle Hooks](#lifecycle-hooks)
+- [Locals](#locals)
 - [Reporters](#reporters)
 - [Tips](#tips)
 - [Credits](#credits)
@@ -548,6 +549,97 @@ before(async (hook) => {
 ```
 
 Timeouts for before/after hooks are independent of test timeouts, but timeouts for beforeEach/afterEach operate within the test's timeout and so must be shorter if they are to be of any use.
+
+## Locals
+It is sometimes necessary to initialise a variable in a `before` or `beforeEach` function, which is subsequently used from your tests. The typical approach is as follows...
+
+```js
+describe('Database Tests', () => {
+
+  let db;
+
+  before(async () => {
+    db = await Databaes.connect();
+  });
+
+  it('should find no records when empty', async () => {
+    const records = await db.findAll();
+    assert.strictEqual(records.length, 0);
+  })
+})
+```
+
+This is fine providing your tests are declared within the same module as the variable, but occasionally they may not be. You could for example have a shared set of compliance tests for different database implementations, and therefore need a way to inject the database client into those tests. This is where Locals come in. In zUnit, locals is an object with three public methods
+
+- locals.get('name');
+- locals.set('name', value);
+- locals.del('name');
+
+It is a property of both suite and test objects available at runtime, i.e.
+
+```js
+before(hook => {
+  hook.suite.locals.set('a', 1);
+})
+
+beforeEach(hook => {
+  hook.test.locals.set('b', 2);
+})
+
+it('some test', (test) => {
+   assert.strictEqual(test.locals.get('a'), 1);
+   assert.strictEqual(test.locals.get('b'), 2);
+})
+```
+*Note how test.locals automatically inherits from suite.locals*. Using locals, the previous database test can be rewritten as...
+
+```js
+describe('Database Tests', () => {
+
+  before(async (hook) => {
+    const db = await Databaes.connect();
+    hook.suite.locals.set('db', db);
+  });
+
+  it('should find no records when empty', async (test) => {
+    const db = test.locals.get('db');
+    const records = await db.findAll();
+    assert.strictEqual(records.length, 0);
+  })
+})
+```
+Locals also support nesting...
+
+```js
+describe('Outer Suite', () => {
+
+  before(hook => {
+    hook.suite.locals.set('a', 1);
+    hook.suite.locals.set('b', 1);
+  });
+
+  describe('Nested Suite', () => {
+
+    before(hook => {
+      hook.suite.locals.set('b', 2);
+      hook.suite.locals.set('c', 3);
+    });
+
+    it('should access outer locals', async (test) => {
+      assert.strictEqual(test.locals.get('a'), 1);
+    });
+
+    it('should mask outer locals', async (test) => {
+      assert.strictEqual(test.locals.get('b'), 2);
+    });
+
+    it('should access nested locals', async (test) => {
+      assert.strictEqual(test.locals.get('c'), 3);
+    });
+  });
+});
+```
+Nested locals only mask values in upper scopes. They do not replace or delete them.
 
 ## Reporters
 zUnit ships with the following reporters

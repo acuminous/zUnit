@@ -1,6 +1,6 @@
 const assert = require('assert');
 const { run, fail, pass, passingTest, failingTest, skippedTest, exclusiveTest } = require('./support/helpers');
-const { Suite, Test, describe, it } = require('..');
+const { Suite, Test, Hook, describe, it } = require('..');
 
 describe('Suite', () => {
 
@@ -297,6 +297,55 @@ describe('Suite', () => {
       assert.strictEqual(report.resolve(0, 1).failed, true);
       assert.strictEqual(report.resolve(1, 0).name, 'Test 3');
       assert.strictEqual(report.resolve(1, 0).passed, true);
+    });
+
+    it('should scope nested locals', async () => {
+      const hook1 = new Hook('Hook 1', (h) => {
+        h.test.locals.set('Local 1', 1);
+        h.test.locals.set('Local 3a', 1);
+      });
+      const hook2 = new Hook('Hook 2', (h) => {
+        h.test.locals.set('Local 2', 2);
+        h.test.locals.set('Local 3a', 2);
+      });
+      const hook3 = new Hook('Hook 3', (h) => {
+        h.test.locals.set('Local 3a', 3);
+        h.test.locals.set('Local 3b', 3);
+      });
+      const hook4 = new Hook('Hook 4', (h) => {
+        h.suite.locals.set('Local 3a', 4);
+        h.suite.locals.set('Local 3b', 4);
+        h.suite.locals.set('Local 3c', 4);
+      });
+
+      const test1 = new Test('Test 1', (t) => {
+        assert.strictEqual(t.locals.get('Local 1'), 1);
+        assert.strictEqual(t.locals.get('Local 2'), undefined);
+        assert.strictEqual(t.locals.get('Local 3a'), 1);
+        assert.strictEqual(t.locals.get('Local 3b'), 3);
+        assert.strictEqual(t.locals.get('Local 3c'), 4);
+      });
+      const test2 = new Test('Test 2', (t) => {
+        assert.strictEqual(t.locals.get('Local 1'), undefined);
+        assert.strictEqual(t.locals.get('Local 2'), 2);
+        assert.strictEqual(t.locals.get('Local 3a'), 2);
+        assert.strictEqual(t.locals.get('Local 3b'), 3);
+        assert.strictEqual(t.locals.get('Local 3c'), 4);
+      });
+      const test3 = new Test('Test 3', (t) => {
+        assert.strictEqual(t.locals.get('Local 1'), undefined);
+        assert.strictEqual(t.locals.get('Local 2'), undefined);
+        assert.strictEqual(t.locals.get('Local 3a'), 3);
+        assert.strictEqual(t.locals.get('Local 3b'), 3);
+        assert.strictEqual(t.locals.get('Local 3c'), 4);
+      });
+
+      const suite1 = new Suite('Suite 1').add(test1).beforeEach(hook1);
+      const suite2 = new Suite('Suite 2').add(test2).beforeEach(hook2);
+      const suite3 = new Suite('Suite 3').add(suite1, suite2, test3).beforeEach(hook3).before(hook4);
+
+      const report = await run(suite3);
+      assert.strictEqual(report.passed, true);
     });
   });
 

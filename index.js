@@ -2,6 +2,7 @@ const Events = require('./lib/Events');
 const Harness = require('./lib/Harness');
 const Hook = require('./lib/Hook');
 const HookSet = require('./lib/HookSet');
+const Locals = require('./lib/Locals');
 const Options = require('./lib/Options');
 const Outcomes = require('./lib/Outcomes');
 const reporters = require('./lib/reporters');
@@ -15,6 +16,7 @@ module.exports = {
   Harness,
   Hook,
   HookSet,
+  Locals,
   Options,
   Outcomes,
   Suite,

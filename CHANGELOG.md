@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [3.1.0]
+### Added
+- Added locals for sharing state between tests
+
 ## [3.0.10]
 ### Changed
 - Improved readme
