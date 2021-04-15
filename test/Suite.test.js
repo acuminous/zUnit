@@ -348,7 +348,7 @@ describe('Suite', () => {
       assert.strictEqual(report.passed, true);
     });
 
-    oit('should report children that are untestable', async () => {
+    it('should report children that are untestable', async () => {
       const suite = new Suite('Untestable').add(null);
       await assert.rejects(() => run(suite), /Error: Suite Untestable was initialised something other than a suite or test/);
     });
