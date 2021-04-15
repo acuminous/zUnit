@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [3.2.0]
+### Updated
+- Typescript definitions to include test harness report
+- Throw a nicer error when a suite is intialised with somethingn other than an instance of Testable
+
 ## [3.1.0]
 ### Added
 - Added locals for sharing state between tests

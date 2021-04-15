@@ -114,7 +114,7 @@ export class Harness extends EventEmitter.EventEmitter {
 
   report: GraphNode;
 
-  run(reporter: zUnitReporter, runtime?: Pick<zUnitOptions, 'timeout'>): Promise<unknown>;
+  run(reporter: zUnitReporter, runtime?: Pick<zUnitOptions, 'timeout'>): Promise<GraphNode>;
 }
 
 export class Hook extends Runnable {
@@ -277,7 +277,7 @@ export class GraphReporter implements zUnitReporter {
 
   withTest(test: Test): Test;
 
-  toGraph(): unknown;
+  toGraph(): GraphNode;
 }
 
 export class MultiReporter implements zUnitReporter {
