@@ -117,8 +117,36 @@ export class Harness extends EventEmitter.EventEmitter {
   run(reporter: zUnitReporter, runtime?: Pick<zUnitOptions, 'timeout'>): Promise<GraphNode>;
 }
 
+type SuiteApi = {
+  name: string,
+  locals: Locals,
+  skip?: (reason?: string) => void;
+}
+
+type SuiteHookApi = {
+  name: string,
+  suite: SuiteApi,
+}
+
+type TestApi = {
+  name: string,
+  suite: SuiteApi,
+  locals: Locals,
+  skip?: (reason?: string) => void;
+}
+
+type TestHookApi = {
+  name: string,
+  test: TesApi,
+}
+
+type SuiteFunction = () => void;
+type SuiteHookFunction = (hook: SuiteHookApi, done: Function) => void;
+type TestFunction = (test: TestApi, done: Function) => void;
+type TestHookFunction = (hook: TestHookApi, done: Function) => void;
+
 export class Hook extends Runnable {
-  constructor(name: string, fn: Function, initial?: Pick<zUnitOptions, 'timeout'>);
+  constructor(name: string, fn: SuiteHookFunction | TestHookFunction, initial?: Pick<zUnitOptions, 'timeout'>);
 
   name: string;
 
@@ -208,7 +236,7 @@ export class Suite extends Testable {
 }
 
 export class Test extends Testable {
-  constructor(name: string, fn: Function, initial?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>);
+  constructor(name: string, fn: TestFunction, initial?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>);
 
   point: number;
 
@@ -251,20 +279,20 @@ export class Testable extends Runnable {
 
 export const syntax: zUnitSyntax;
 
-export function describe(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): Suite;
-export function xdescribe(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): Suite;
-export function odescribe(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): Suite;
-export function it(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): void;
-export function xit(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): void;
-export function oit(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): void;
-export function before(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
-export function before(fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
-export function beforeEach(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
-export function beforeEach(fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
-export function after(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
-export function after(fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
-export function afterEach(name: string, fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
-export function afterEach(fn: Function, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function describe(name: string, fn: SuiteFunction, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): Suite;
+export function xdescribe(name: string, fn: SuiteFunction, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): Suite;
+export function odescribe(name: string, fn: SuiteFunction, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): Suite;
+export function it(name: string, fn: TestFunction, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): void;
+export function xit(name: string, fn: TestFunction, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): void;
+export function oit(name: string, fn: TestFunction, options?: Pick<zUnitOptions, 'timeout' | 'exclusive' | 'skip' | 'reason'>): void;
+export function before(name: string, fn: SuiteHookFunction, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function before(fn: SuiteHookFunction, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function beforeEach(name: string, fn: TestHookFunction, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function beforeEach(fn: TestHookFunction, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function after(name: string, fn: SuiteHookFunction, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function after(fn: SuiteHookFunction, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function afterEach(name: string, fn: TestHookFunction, options?: Pick<zUnitOptions, 'timeout'>): void;
+export function afterEach(fn: TestHookFunction, options?: Pick<zUnitOptions, 'timeout'>): void;
 export function include(...testables: Testable[]): void;
 export function include(testables: Testable[]): void;
 
