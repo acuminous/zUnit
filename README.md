@@ -139,8 +139,6 @@ Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
 
 const suite = new Suite('zUnit').discover();
 const harness = new Harness(suite);
-
-const interactive = String(process.env.CI).toLowerCase() !== 'true';
 const reporter = new TapReporter();
 
 harness.run(reporter).then((report) => {
