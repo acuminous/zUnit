@@ -153,8 +153,8 @@ harness.run(reporter).then((report) => {
 zUnit suites can automatically discover child test suites by invoking their `discover` function. e.g.
 
 ```js
-  const suite = new Suite('zUnit').discover();
-  const harness = new Harness(suite);
+const suite = new Suite('zUnit').discover();
+const harness = new Harness(suite);
 ```
 
 By default, the discover function will recursively descended into the 'test' directory looking files which end in '.test.js'. You can override this behaviour through the following options.
@@ -168,8 +168,8 @@ By default, the discover function will recursively descended into the 'test' dir
 For example:
 
 ```js
-  const suite = new Suite('zUnit').discover({ directory: __dirname, pattern: /^.+\.test.(?:js|jsx)$/ });
-  const harness = new Harness(suite);
+const suite = new Suite('zUnit').discover({ directory: __dirname, pattern: /^.+\.test.(?:js|jsx)$/ });
+const harness = new Harness(suite);
 ```
 
 ### Composing Test Suites Explicitly
