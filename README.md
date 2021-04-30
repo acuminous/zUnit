@@ -133,9 +133,7 @@ If the packaged [launch script]([script](https://github.com/acuminous/cryptus/bl
 
 ```js
 const { EOL } = require('os');
-const { Harness, Suite, TapReporter, syntax } = require('zunit');
-
-Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
+const { Harness, Suite, TapReporter } = require('zunit');
 
 const suite = new Suite('zUnit').discover();
 const harness = new Harness(suite);
