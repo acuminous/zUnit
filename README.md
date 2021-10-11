@@ -787,6 +787,9 @@ ok 1 - Harnesses / should run a test suite
 ok 2 - Harnesses / should run an individual test
 ```
 
+### RickReporter
+The [Rick](https://www.youtube.com/watch?v=dQw4w9WgXcQ) Reporter is for when you need persistence and integrity.
+
 ## Creating suites and tests by hand
 There's no need to use `describe` and `it` if you prefer not to. You can just as easily create test suites as follows...
 ```js
