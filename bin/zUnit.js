@@ -6,14 +6,9 @@ const fs = require('fs');
 const { Harness, Suite, SpecReporter, syntax } = require('..');
 const pkg = require(path.join(process.cwd(), 'package.json'));
 
-const config = Object.assign(
-  { name: pkg.name, require: [] },
-  loadConfigFromPackageJson(),
-  loadConfigFromDefaultLocations(),
-  loadConfigFromSpecifiedLocation(process.argv[2]),
-);
+const config = Object.assign({ name: pkg.name, require: [] }, loadConfigFromPackageJson(), loadConfigFromDefaultLocations(), loadConfigFromSpecifiedLocation(process.argv[2]));
 
-if (config.pollute) Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
+if (config.pollute) Object.entries(syntax).forEach(([keyword, fn]) => (global[keyword] = fn));
 if (config.require) config.require.forEach((modulePath) => require(path.resolve(modulePath)));
 
 const options = {};
@@ -40,13 +35,12 @@ function loadConfigFromSpecifiedLocation(configPath) {
 }
 
 function loadConfigFromDefaultLocations() {
-  return [
-    '.zUnit.json',
-    '.zUnit.js',
-  ].map((candidate) => {
-    const configPath = path.resolve(candidate);
-    return fs.existsSync(configPath) && require(configPath);
-  }).find(Boolean);
+  return ['.zUnit.json', '.zUnit.js']
+    .map((candidate) => {
+      const configPath = path.resolve(candidate);
+      return fs.existsSync(configPath) && require(configPath);
+    })
+    .find(Boolean);
 }
 
 function loadConfigFromPackageJson() {

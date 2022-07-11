@@ -7,13 +7,13 @@ type EventsType = {
   SKIPPED: 'skipped';
   STARTED: 'started';
   FINISHED: 'finished';
-}
+};
 
 type zUnitReporter = {
   withHarness(harness: Harness): Harness;
   withSuite(suite: Suite): Suite;
   withTest(test: Test): Test;
-}
+};
 
 type zUnitOptions = Partial<{
   timeout: number;
@@ -44,13 +44,13 @@ type zUnitSyntax = {
   after: typeof after;
   afterEach: typeof afterEach;
   include: typeof include;
-}
+};
 
 type OutcomesType = {
   PASSED: 'passed';
   FAILED: 'failed';
   SKIPPED: 'skipped';
-}
+};
 
 declare class GraphNode {
   type: 'suite' | 'test';
@@ -68,7 +68,7 @@ declare class GraphNode {
     failed: number;
     skipped: number;
     duration: number;
-  }
+  };
   incomplete: boolean;
 
   constructor(type: 'suite' | 'test', name: string, description: string, point: number, parent?: GraphNode);
@@ -89,7 +89,12 @@ declare class GraphNode {
 
   add(additions: GraphNode[]): this;
 
-  finish({ result, errors, reason, stats }: {
+  finish({
+    result,
+    errors,
+    reason,
+    stats,
+  }: {
     result: 'PASSED' | 'FAILED' | 'SKIPPED';
     errors: Error[];
     reason: string;
@@ -99,7 +104,7 @@ declare class GraphNode {
       failed: number;
       skipped: number;
       duration: number;
-    }
+    };
   }): void;
 
   private _orphan(): GraphNode;
@@ -118,27 +123,27 @@ export class Harness extends EventEmitter.EventEmitter {
 }
 
 type SuiteApi = {
-  name: string,
-  locals: Locals,
+  name: string;
+  locals: Locals;
   skip?: (reason?: string) => void;
-}
+};
 
 type SuiteHookApi = {
-  name: string,
-  suite: SuiteApi,
-}
+  name: string;
+  suite: SuiteApi;
+};
 
 type TestApi = {
-  name: string,
-  suite: SuiteApi,
-  locals: Locals,
+  name: string;
+  suite: SuiteApi;
+  locals: Locals;
   skip?: (reason?: string) => void;
-}
+};
 
 type TestHookApi = {
-  name: string,
-  test: TesApi,
-}
+  name: string;
+  test: TesApi;
+};
 
 type SuiteFunction = () => void;
 type SuiteHookFunction = (hook: SuiteHookApi, done: Function) => void;
@@ -202,11 +207,13 @@ export class Suite extends Testable {
 
   numberOfSkipped: number;
 
-  discover(runtime?: Partial<{
-    directory: string;
-    pattern: RegExp;
-    filter: (str: string) => boolean;
-  }>): Testable;
+  discover(
+    runtime?: Partial<{
+      directory: string;
+      pattern: RegExp;
+      filter: (str: string) => boolean;
+    }>
+  ): Testable;
 
   hasExclusiveTests(): boolean;
 
@@ -272,7 +279,7 @@ export class Testable extends Runnable {
     failed: number;
     skipped: number;
     duration: number;
-  }
+  };
 
   exclusive: boolean;
 }
@@ -331,11 +338,14 @@ export class NullReporter implements zUnitReporter {
 }
 
 export class SpecReporter extends StreamReporter {
-  constructor(options?: Partial<{
-    stream: Writable;
-    colours: boolean;
-    colors: boolean;
-  }>, level?: number);
+  constructor(
+    options?: Partial<{
+      stream: Writable;
+      colours: boolean;
+      colors: boolean;
+    }>,
+    level?: number
+  );
 
   withHarness(harness: Harness): Harness;
 
@@ -353,9 +363,11 @@ export class StreamReporter implements zUnitReporter {
 }
 
 export class SurefireReporter extends StreamReporter {
-  constructor(options?: Partial<{
-    stream: Writable;
-  }>);
+  constructor(
+    options?: Partial<{
+      stream: Writable;
+    }>
+  );
 
   withHarness(harness: Harness): Harness;
 
@@ -365,9 +377,11 @@ export class SurefireReporter extends StreamReporter {
 }
 
 export class TapReporter extends StreamReporter {
-  constructor(options?: Partial<{
-    stream: Writable;
-  }>);
+  constructor(
+    options?: Partial<{
+      stream: Writable;
+    }>
+  );
 
   withHarness(harness: Harness): Harness;
 

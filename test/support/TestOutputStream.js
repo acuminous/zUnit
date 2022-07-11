@@ -2,7 +2,6 @@ const { EOL } = require('os');
 const { Writable } = require('stream');
 
 class TestOutputStream extends Writable {
-
   constructor() {
     super();
     this._chunks = [];

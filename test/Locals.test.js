@@ -2,7 +2,6 @@ const assert = require('assert');
 const { Locals } = require('..');
 
 describe('Locals', () => {
-
   it('should get and set values', async () => {
     const locals = new Locals();
 

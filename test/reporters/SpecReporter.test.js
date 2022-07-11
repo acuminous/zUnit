@@ -4,7 +4,6 @@ const { passingTest, failingTest, skippedTest } = require('../support/helpers');
 const { SpecReporter, Harness, Suite, Test, Hook } = require('../..');
 
 describe('Spec Reporter', () => {
-
   it('should report an empty test suite', async () => {
     const suite = new Suite('Suite');
     const harness = new Harness(suite);
@@ -113,7 +112,7 @@ describe('Spec Reporter', () => {
     const reporter = new SpecReporter({ stream, colours: false });
     await harness.run(reporter);
 
-    const lines = stream.lines.filter(l => /FAILED/.test(l));
+    const lines = stream.lines.filter((l) => /FAILED/.test(l));
     assert.match(lines[0], /^ {3}- FAILED \(1 of 2\): The expression evaluated to a falsy value: assert.ok\(false\) \(\d+ms\)/);
     assert.match(lines[1], /^ {3}- FAILED \(2 of 2\): Hook Error \(\d+ms\)/);
   });
@@ -129,7 +128,7 @@ describe('Spec Reporter', () => {
     const reporter = new SpecReporter({ stream, colours: false });
     await harness.run(reporter);
 
-    const lines = stream.lines.filter(l => /FAILED/.test(l));
+    const lines = stream.lines.filter((l) => /FAILED/.test(l));
     assert.match(lines[0], /^ {3}- FAILED \(1 of 1\): Oh Noes! \(\d+ms\)/);
   });
 

@@ -1,7 +1,7 @@
 const { EOL } = require('os');
 const { Harness, Suite, SpecReporter, syntax } = require('../..');
 
-Object.entries(syntax).forEach(([keyword, fn]) => global[keyword] = fn);
+Object.entries(syntax).forEach(([keyword, fn]) => (global[keyword] = fn));
 
 const suite = new Suite('Example').discover();
 const harness = new Harness(suite);

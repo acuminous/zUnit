@@ -1,34 +1,11 @@
 module.exports = {
-  'env': {
-    'node': true,
-    'commonjs': true,
-    'es2021': true,
+  extends: ['prettier'],
+  plugins: ['prettier'],
+  env: {
+    node: true,
   },
-  'extends': 'eslint:recommended',
-  'parserOptions': {
-    'ecmaVersion': 12,
+  parserOptions: {
+    ecmaVersion: 12,
   },
-  'rules': {
-    'indent': [
-      'error',
-      2,
-      { 'SwitchCase': 1 },
-    ],
-    'linebreak-style': [
-      'error',
-      'unix',
-    ],
-    'no-multiple-empty-lines': [
-      'error',
-      { 'max': 1, 'maxEOF': 0 }
-    ],
-    'quotes': [
-      'error',
-      'single',
-    ],
-    'semi': [
-      'error',
-      'always',
-    ],
-  }
+  rules: {},
 };

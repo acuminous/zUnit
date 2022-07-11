@@ -2,13 +2,11 @@ const assert = require('assert');
 const productDb = require('../../lib/db/product-db');
 
 describe('Product DB Tests', () => {
-
   beforeEach(async () => {
     await productDb.flush();
   });
 
   describe('List Products', () => {
-
     it('should list all products', async () => {
       await productDb.create({ name: 'Broken Sword' });
       await productDb.create({ name: 'Flight of the Amazon Queen' });
@@ -19,13 +17,10 @@ describe('Product DB Tests', () => {
       assert.strictEqual(products[1].name, 'Flight of the Amazon Queen');
     });
 
-    xit('should list matching products', async () => {
-    });
-
+    xit('should list matching products', async () => {});
   });
 
   xdescribe('Get Product', () => {
-
     it('should find a product by product id', async () => {
       const { productId } = await productDb.create({ name: 'Broken Sword' });
 
@@ -42,7 +37,6 @@ describe('Product DB Tests', () => {
   });
 
   describe('Create Product', () => {
-
     it('should create a new product', async () => {
       const productId = await productDb.create({ name: 'Broken Sword' });
 
@@ -50,11 +44,9 @@ describe('Product DB Tests', () => {
       assert.strictEqual(product.productId, productId);
       assert.strictEqual(product.name, 'Borked Sword');
     });
-
   });
 
   describe('Update Product', () => {
-
     it('should update a product', async () => {
       const productId = await productDb.create({ name: 'Full Throttle' });
 

@@ -3,13 +3,11 @@ const userApi = require('../../lib/api/user-api');
 const userDb = require('../../lib/db/user-db');
 
 describe('User API Tests', () => {
-
   beforeEach(async () => {
     await userDb.flush();
   });
 
   describe('List Users', () => {
-
     it('should list all users', async () => {
       await userDb.create({ name: 'John' });
       await userDb.create({ name: 'Julie' });
@@ -23,13 +21,10 @@ describe('User API Tests', () => {
       assert.strictEqual(response.body[1].name, 'Julie');
     });
 
-    xit('should list matching users', async () => {
-    });
-
+    xit('should list matching users', async () => {});
   });
 
   xdescribe('Get User', () => {
-
     it('should find a user by user id', async () => {
       await userDb.create({ name: 'John' });
 
@@ -46,17 +41,14 @@ describe('User API Tests', () => {
   });
 
   describe('Create User', () => {
-
     it('should create a new user', async () => {
       const response = await userApi.create({ name: 'Steve' });
       assert.strictEqual(response.status, 200);
       assert.strictEqual(response.body.userId, 1);
     });
-
   });
 
   describe('Update User', () => {
-
     it('should update a user', async () => {
       await userDb.create({ name: 'John' });
 
@@ -69,5 +61,4 @@ describe('User API Tests', () => {
       assert.strictEqual(response.status, 404);
     });
   });
-
 });

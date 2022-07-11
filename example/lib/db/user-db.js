@@ -5,7 +5,7 @@ module.exports = {
     return users;
   },
   findById: async (userId) => {
-    const user = users.find(u => u.userId === userId);
+    const user = users.find((u) => u.userId === userId);
     if (user) return user;
     throw new Error(`Not found: ${userId}`);
   },
@@ -19,7 +19,7 @@ module.exports = {
     return userId;
   },
   update: async (userId, details) => {
-    const existing = users.find(u => u.userId === userId);
+    const existing = users.find((u) => u.userId === userId);
     if (!existing) throw new Error(`Not found: ${userId}`);
 
     existing.name = details.name;
@@ -27,5 +27,5 @@ module.exports = {
   },
   flush: async () => {
     users.length = 0;
-  }
+  },
 };

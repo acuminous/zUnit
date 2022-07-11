@@ -24,5 +24,5 @@ module.exports = {
     } catch (err) {
       return { status: 404, body: {} };
     }
-  }
+  },
 };

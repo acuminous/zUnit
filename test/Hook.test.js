@@ -3,9 +3,7 @@ const { skip, passingTest, failingTest, skippedTest } = require('./support/helpe
 const { Harness, Suite, Test, Hook, NullReporter, GraphReporter } = require('..');
 
 describe('Hook', () => {
-
   describe('Before', () => {
-
     it('should inject hook api', async () => {
       let api;
       const hook = new Hook('Hook', (h) => {
@@ -52,8 +50,7 @@ describe('Hook', () => {
 
     it('should timeout if callback is not invoked', async () => {
       // eslint-disable-next-line no-unused-vars
-      const hook = new Hook('Hook', (h, done) => {
-      }, { timeout: 100 });
+      const hook = new Hook('Hook', (h, done) => {}, { timeout: 100 });
 
       const test = passingTest();
       const suite = new Suite('Suite').before(hook).add(test);
@@ -68,9 +65,13 @@ describe('Hook', () => {
 
     it('should timeout if promise is unresolved', async () => {
       // eslint-disable-next-line no-unused-vars
-      const hook = new Hook('Hook', (h) => {
-        return new Promise(() => {});
-      }, { timeout: 100 });
+      const hook = new Hook(
+        'Hook',
+        () => {
+          return new Promise(() => {});
+        },
+        { timeout: 100 }
+      );
 
       const test = passingTest();
       const suite = new Suite('Suite').before(hook).add(test);
@@ -147,7 +148,9 @@ describe('Hook', () => {
     it('should bypass remaining before hooks and test following a skipped suite (programmatic)', async () => {
       const executed = [];
       const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
-      const hook2 = new Hook('Hook 2', (h) => { h.suite.skip(); });
+      const hook2 = new Hook('Hook 2', (h) => {
+        h.suite.skip();
+      });
       const hook3 = new Hook('Hook 3', () => executed.push('Before 3'));
       const test = new Test('Test', () => executed.push('Test'));
       const suite = new Suite('Suite').before(hook1, hook2, hook3).add(test);
@@ -161,7 +164,9 @@ describe('Hook', () => {
     it('should bypass remaining before hooks following a failure', async () => {
       const executed = [];
       const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
-      const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
+      const hook2 = new Hook('Hook 2', () => {
+        throw new Error('Oh Noes!');
+      });
       const hook3 = new Hook('Hook 3', () => executed.push('Before 3'));
       const test = new Test('Test', () => executed.push('Test'));
       const suite = new Suite('Suite').before(hook1, hook2, hook3).add(test);
@@ -172,7 +177,9 @@ describe('Hook', () => {
     });
 
     it('should report a failure', async () => {
-      const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+      const hook = new Hook('Hook', () => {
+        throw new Error('Oh Noes!');
+      });
       const test1 = passingTest();
       const test2 = skippedTest();
       const test3 = failingTest();
@@ -187,7 +194,9 @@ describe('Hook', () => {
     });
 
     it('should a failure in a nested suite', async () => {
-      const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+      const hook = new Hook('Hook', () => {
+        throw new Error('Oh Noes!');
+      });
       const test1 = passingTest();
       const test2 = skippedTest();
       const test3 = failingTest();
@@ -204,7 +213,6 @@ describe('Hook', () => {
   });
 
   describe('After', () => {
-
     it('should inject hook api', async () => {
       let api;
       const hook = new Hook('Hook', (h) => {
@@ -236,8 +244,7 @@ describe('Hook', () => {
 
     it('should timeout if callback is not invoked', async () => {
       // eslint-disable-next-line no-unused-vars
-      const hook = new Hook('Hook', (h, done) => {
-      }, { timeout: 100 });
+      const hook = new Hook('Hook', (h, done) => {}, { timeout: 100 });
 
       const test = passingTest();
       const suite = new Suite('Suite', { timeout: 100 }).after(hook).add(test);
@@ -251,9 +258,13 @@ describe('Hook', () => {
 
     it('should timeout if promise is unresolved', async () => {
       // eslint-disable-next-line no-unused-vars
-      const hook = new Hook('Hook', (h) => {
-        return new Promise(() => {});
-      }, { timeout: 100 });
+      const hook = new Hook(
+        'Hook',
+        () => {
+          return new Promise(() => {});
+        },
+        { timeout: 100 }
+      );
 
       const test = passingTest();
       const suite = new Suite('Suite').after(hook).add(test);
@@ -363,7 +374,9 @@ describe('Hook', () => {
     });
 
     it('should fail the suite if an after hook fails', async () => {
-      const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+      const hook = new Hook('Hook', () => {
+        throw new Error('Oh Noes!');
+      });
       const test = passingTest();
       const suite = new Suite('Suite').after(hook).add(test);
 
@@ -374,7 +387,9 @@ describe('Hook', () => {
     });
 
     it('should report a failure', async () => {
-      const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+      const hook = new Hook('Hook', () => {
+        throw new Error('Oh Noes!');
+      });
       const test1 = passingTest();
       const test2 = skippedTest();
       const suite = new Suite('Suite').after(hook).add(test1, test2);
@@ -386,7 +401,9 @@ describe('Hook', () => {
     });
 
     it('should report a failure in a nested suite', async () => {
-      const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+      const hook = new Hook('Hook', () => {
+        throw new Error('Oh Noes!');
+      });
       const test1 = passingTest();
       const test2 = skippedTest();
       const suite1 = new Suite('Suite 1').after(hook).add(test1, test2);
@@ -401,7 +418,9 @@ describe('Hook', () => {
     it('should bypass remaining after hooks following a failure', async () => {
       const executed = [];
       const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
-      const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
+      const hook2 = new Hook('Hook 2', () => {
+        throw new Error('Oh Noes!');
+      });
       const hook3 = new Hook('Hook 3', () => executed.push('After 3'));
       const test = passingTest();
       const suite = new Suite('Suite').after(hook1, hook2, hook3).add(test);
@@ -415,7 +434,9 @@ describe('Hook', () => {
     it('should bypass after hooks associated with skipped before hooks', async () => {
       const executedBefore = [];
       const before1 = new Hook('Before 1', () => executedBefore.push('Before 1'));
-      const before2 = new Hook('Before 2', () => { throw new Error('Oh Noes!'); });
+      const before2 = new Hook('Before 2', () => {
+        throw new Error('Oh Noes!');
+      });
       const before3 = new Hook('Before 3', () => executedBefore.push('Before 3'));
 
       const executedAfter = [];
@@ -439,7 +460,6 @@ describe('Hook', () => {
   });
 
   describe('Before Each', () => {
-
     it('should inject hook api', async () => {
       let api;
       const hook = new Hook('Hook', (h) => {
@@ -486,8 +506,7 @@ describe('Hook', () => {
 
     it('should timeout if callback is not invoked', async () => {
       // eslint-disable-next-line no-unused-vars
-      const hook = new Hook('Hook', (h, done) => {
-      }, { timeout: 100 });
+      const hook = new Hook('Hook', (h, done) => {}, { timeout: 100 });
 
       const test = passingTest();
       const suite = new Suite('Suite').beforeEach(hook).add(test);
@@ -500,9 +519,13 @@ describe('Hook', () => {
 
     it('should timeout if promise is unresolved', async () => {
       // eslint-disable-next-line no-unused-vars
-      const hook = new Hook('Hook', (h) => {
-        return new Promise(() => {});
-      }, { timeout: 100 });
+      const hook = new Hook(
+        'Hook',
+        () => {
+          return new Promise(() => {});
+        },
+        { timeout: 100 }
+      );
 
       const test = passingTest();
       const suite = new Suite('Suite').beforeEach(hook).add(test);
@@ -587,7 +610,9 @@ describe('Hook', () => {
     it('should bypass remaining before hooks following a skipped test (programmatic)', async () => {
       const executed = [];
       const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
-      const hook2 = new Hook('Hook 2', (h) => { h.test.skip('Whatever'); });
+      const hook2 = new Hook('Hook 2', (h) => {
+        h.test.skip('Whatever');
+      });
       const hook3 = new Hook('Hook 3', () => executed.push('Before 3'));
       const test = passingTest();
       const suite = new Suite('Suite').beforeEach(hook1, hook2, hook3).add(test);
@@ -600,7 +625,9 @@ describe('Hook', () => {
     it('should bypass remaining before hooks following a failure', async () => {
       const executed = [];
       const hook1 = new Hook('Hook 1', () => executed.push('Before 1'));
-      const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
+      const hook2 = new Hook('Hook 2', () => {
+        throw new Error('Oh Noes!');
+      });
       const hook3 = new Hook('Hook 3', () => executed.push('Before 3'));
       const test = passingTest();
       const suite = new Suite('Suite').beforeEach(hook1, hook2, hook3).add(test);
@@ -611,7 +638,9 @@ describe('Hook', () => {
     });
 
     it('should fail the test if a before hook fails', async () => {
-      const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+      const hook = new Hook('Hook', () => {
+        throw new Error('Oh Noes!');
+      });
       const test = passingTest();
       const suite = new Suite('Suite').beforeEach(hook).add(test);
 
@@ -622,7 +651,6 @@ describe('Hook', () => {
   });
 
   describe('After Each', () => {
-
     it('should inject hook api', async () => {
       let api;
       const hook = new Hook('Hook', (h) => {
@@ -655,8 +683,7 @@ describe('Hook', () => {
 
     it('should timeout if callback is not invoked', async () => {
       // eslint-disable-next-line no-unused-vars
-      const hook = new Hook('Hook', (h, done) => {
-      }, { timeout: 100 });
+      const hook = new Hook('Hook', (h, done) => {}, { timeout: 100 });
 
       const test = passingTest();
       const suite = new Suite('Suite').afterEach(hook).add(test);
@@ -669,9 +696,13 @@ describe('Hook', () => {
 
     it('should timeout if promise is unresolved', async () => {
       // eslint-disable-next-line no-unused-vars
-      const hook = new Hook('Hook', (h) => {
-        return new Promise(() => {});
-      }, { timeout: 100 });
+      const hook = new Hook(
+        'Hook',
+        () => {
+          return new Promise(() => {});
+        },
+        { timeout: 100 }
+      );
 
       const test = passingTest();
       const suite = new Suite('Suite').afterEach(hook).add(test);
@@ -758,7 +789,9 @@ describe('Hook', () => {
     });
 
     it('should fail the test if an after hook fails', async () => {
-      const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+      const hook = new Hook('Hook', () => {
+        throw new Error('Oh Noes!');
+      });
       const test = passingTest();
       const suite = new Suite('Suite').afterEach(hook).add(test);
 
@@ -770,7 +803,9 @@ describe('Hook', () => {
     it('should bypass remaining after hooks following a failure', async () => {
       const executed = [];
       const hook1 = new Hook('Hook 1', () => executed.push('After 1'));
-      const hook2 = new Hook('Hook 2', () => { throw new Error('Oh Noes!'); });
+      const hook2 = new Hook('Hook 2', () => {
+        throw new Error('Oh Noes!');
+      });
       const hook3 = new Hook('Hook 3', () => executed.push('After 3'));
       const test = passingTest();
       const suite = new Suite('Suite').afterEach(hook1, hook2, hook3).add(test);
@@ -784,7 +819,9 @@ describe('Hook', () => {
     it('should bypass after hooks associated with skipped before hooks', async () => {
       const executedBefore = [];
       const before1 = new Hook('Before 1', () => executedBefore.push('Before 1'));
-      const before2 = new Hook('Before 2', () => { throw new Error('Oh Noes!'); });
+      const before2 = new Hook('Before 2', () => {
+        throw new Error('Oh Noes!');
+      });
       const before3 = new Hook('Before 3', () => executedBefore.push('Before 3'));
 
       const executedAfter = [];
@@ -814,5 +851,4 @@ describe('Hook', () => {
     await harness.run(reporter, options);
     return reporter.toGraph();
   }
-
 });

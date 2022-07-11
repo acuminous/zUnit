@@ -2,13 +2,11 @@ const assert = require('assert');
 const userDb = require('../../lib/db/user-db');
 
 xdescribe('User DB Tests', () => {
-
   beforeEach(async () => {
     await userDb.flush();
   });
 
   describe('List Users', () => {
-
     it('should list all users', async () => {
       await userDb.create({ name: 'John' });
       await userDb.create({ name: 'Julie' });
@@ -19,13 +17,10 @@ xdescribe('User DB Tests', () => {
       assert.strictEqual(users[1].name, 'Julie');
     });
 
-    xit('should list matching users', async () => {
-    });
-
+    xit('should list matching users', async () => {});
   });
 
   xdescribe('Get User', () => {
-
     it('should find a user by user id', async () => {
       const { userId } = await userDb.create({ name: 'John' });
 
@@ -42,7 +37,6 @@ xdescribe('User DB Tests', () => {
   });
 
   describe('Create User', () => {
-
     it('should create a new user', async () => {
       const userId = await userDb.create({ name: 'John' });
 
@@ -50,11 +44,9 @@ xdescribe('User DB Tests', () => {
       assert.strictEqual(user.userId, userId);
       assert.strictEqual(user.name, 'John');
     });
-
   });
 
   describe('Update User', () => {
-
     it('should update a user', async () => {
       const userId = await userDb.create({ name: 'Steve' });
 

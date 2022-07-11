@@ -3,13 +3,11 @@ const productApi = require('../../lib/api/product-api');
 const productDb = require('../../lib/db/product-db');
 
 describe('Product API Tests', () => {
-
   beforeEach(async () => {
     await productDb.flush();
   });
 
   describe('List Products', () => {
-
     it('should list all products', async () => {
       await productDb.create({ name: 'Broken Sword' });
       await productDb.create({ name: 'Flight of the Amazon Queen' });
@@ -23,13 +21,10 @@ describe('Product API Tests', () => {
       assert.strictEqual(response.body[1].name, 'Flight of the Amazon Queen');
     });
 
-    xit('should list matching products', async () => {
-    });
-
+    xit('should list matching products', async () => {});
   });
 
   xdescribe('Get Product', () => {
-
     it('should find a product by product id', async () => {
       await productDb.create({ name: 'Broken Sword' });
 
@@ -46,7 +41,6 @@ describe('Product API Tests', () => {
   });
 
   describe('Create Product', () => {
-
     it('should create a new product', async () => {
       const response = await productApi.create({ name: 'Full Throttle' });
       assert.strictEqual(response.status, 200);
@@ -55,7 +49,6 @@ describe('Product API Tests', () => {
   });
 
   describe('Update Product', () => {
-
     it('should update a product', async () => {
       await productDb.create({ name: 'Broken Sword' });
 
@@ -68,5 +61,4 @@ describe('Product API Tests', () => {
       assert.strictEqual(response.status, 404);
     });
   });
-
 });

@@ -3,9 +3,7 @@ const { Harness, Suite } = require('..');
 const { skippedTest } = require('./support/helpers');
 
 describe('Harness', () => {
-
   describe('Run', () => {
-
     it('should error if not initialised with a testable', async () => {
       const harness = new Harness();
       const messagePattern = /The harness must be initialised with a suite or test/;
@@ -23,5 +21,4 @@ describe('Harness', () => {
       assert.strictEqual(report.incomplete, true);
     });
   });
-
 });

@@ -1,8 +1,8 @@
-version: "2"
+version: '2'
 plugins:
- eslint:
-  enabled: false
+  eslint:
+    enabled: false
 exclude_patterns:
-- "example/"
-- "test/"
-- "index.d.ts"
+  - 'example/'
+  - 'test/'
+  - 'index.d.ts'

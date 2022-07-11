@@ -29,11 +29,20 @@
     "lint": "eslint .",
     "test": "bin/zUnit.js",
     "coverage": "nyc --report html --reporter lcov --reporter text-summary npm test",
-    "example": "pushd example; npm t; popd"
+    "example": "pushd example; npm t; popd",
+    "prepare": "husky install"
   },
   "author": "Stephen Cresswell",
   "license": "ISC",
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "nyc": "^15.1.0",
+    "prettier": "2.7.1"
+  },
   "directories": {
     "example": "example",
     "lib": "lib",
@@ -53,5 +62,8 @@
       "./test/support/assertions",
       "./test/support/polyfill"
     ]
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }

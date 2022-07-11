@@ -5,7 +5,7 @@ module.exports = {
     return products;
   },
   findById: async (productId) => {
-    const product = products.find(u => u.productId === productId);
+    const product = products.find((u) => u.productId === productId);
     if (product) return product;
     throw new Error(`Not found: ${productId}`);
   },
@@ -19,7 +19,7 @@ module.exports = {
     return productId;
   },
   update: async (productId, details) => {
-    const existing = products.find(u => u.productId === productId);
+    const existing = products.find((u) => u.productId === productId);
     if (!existing) throw new Error(`Not found: ${productId}`);
 
     existing.name = details.name;
@@ -27,5 +27,5 @@ module.exports = {
   },
   flush: async () => {
     products.length = 0;
-  }
+  },
 };

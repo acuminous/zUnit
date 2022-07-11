@@ -4,7 +4,6 @@ const { passingTest, failingTest, skippedTest } = require('../support/helpers');
 const { SurefireReporter, Harness, Suite, Test, Hook } = require('../..');
 
 describe('Surefire Reporter', () => {
-
   it('should report the xml version and encoding', async () => {
     const suite = new Suite('Test Suite');
     const harness = new Harness(suite);
@@ -118,7 +117,7 @@ describe('Surefire Reporter', () => {
     const reporter = new SurefireReporter({ stream });
     await harness.run(reporter);
 
-    const lines = stream.lines.filter(l => /<failure message/.test(l));
+    const lines = stream.lines.filter((l) => /<failure message/.test(l));
 
     assert.match(lines[0], /^ {4}<failure message="The expression evaluated to a falsy value: assert.ok\(false\)" type="AssertionError">/);
     assert.match(lines[1], /^ {4}<failure message="Hook Error" type="Error">/);
@@ -135,7 +134,7 @@ describe('Surefire Reporter', () => {
     const reporter = new SurefireReporter({ stream });
     await harness.run(reporter);
 
-    const lines = stream.lines.filter(l => /<failure message/.test(l));
+    const lines = stream.lines.filter((l) => /<failure message/.test(l));
     assert.match(lines[0], /^ {4}<failure message="Oh Noes!" type="String">/);
   });
 

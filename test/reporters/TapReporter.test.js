@@ -5,7 +5,6 @@ const { passingTest, failingTest, skippedTest, fail } = require('../support/help
 const { TapReporter, Harness, Suite, Test, Hook } = require('../..');
 
 describe('Tap Reporter', () => {
-
   it('should report TAP version', async () => {
     const suite = new Suite('Suite');
     const harness = new Harness(suite);
@@ -161,7 +160,9 @@ describe('Tap Reporter', () => {
   });
 
   it('should output before hook errors', async () => {
-    const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+    const hook = new Hook('Hook', () => {
+      throw new Error('Oh Noes!');
+    });
     const test1 = passingTest('Test 1');
     const test2 = passingTest('Test 2');
     const test3 = passingTest('Test 3');
@@ -177,7 +178,9 @@ describe('Tap Reporter', () => {
   });
 
   it('should output after hook errors', async () => {
-    const hook = new Hook('Hook', () => { throw new Error('Oh Noes!'); });
+    const hook = new Hook('Hook', () => {
+      throw new Error('Oh Noes!');
+    });
     const test1 = passingTest('Test 1');
     const test2 = passingTest('Test 2');
     const test3 = passingTest('Test 3');
@@ -193,8 +196,12 @@ describe('Tap Reporter', () => {
   });
 
   it('should output multiple suite errors', async () => {
-    const hook1 = new Hook('Hook', () => { throw new Error('Before!'); });
-    const hook2 = new Hook('Hook', () => { throw new Error('After!'); });
+    const hook1 = new Hook('Hook', () => {
+      throw new Error('Before!');
+    });
+    const hook2 = new Hook('Hook', () => {
+      throw new Error('After!');
+    });
     const test1 = passingTest('Test 1');
     const test2 = passingTest('Test 2');
     const test3 = passingTest('Test 3');
@@ -205,14 +212,18 @@ describe('Tap Reporter', () => {
     const reporter = new TapReporter({ stream });
     await harness.run(reporter);
 
-    const lines = stream.lines.filter(l => /# Error:/.test(l));
+    const lines = stream.lines.filter((l) => /# Error:/.test(l));
     assert.strictEqual(lines[0], '# Error: Before!');
     assert.strictEqual(lines[1], '# Error: After!');
   });
 
   it('should output multiple test errors', async () => {
-    const hook1 = new Hook('Hook', () => { throw new Error('Before!'); });
-    const hook2 = new Hook('Hook', () => { throw new Error('After!'); });
+    const hook1 = new Hook('Hook', () => {
+      throw new Error('Before!');
+    });
+    const hook2 = new Hook('Hook', () => {
+      throw new Error('After!');
+    });
     const test = passingTest();
     const suite = new Suite('Suite').beforeEach(hook1).afterEach(hook2).add(test);
     const harness = new Harness(suite);
@@ -226,5 +237,4 @@ describe('Tap Reporter', () => {
     assert.strictEqual(lines[2], '# Error: Before!');
     assert.strictEqual(lines[13], '# Error: After!');
   });
-
 });

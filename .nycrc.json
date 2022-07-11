@@ -1,6 +1,3 @@
 {
-  "exclude": [
-    "example/**",
-    "test/**"
-  ]
+  "exclude": ["example/**", "test/**"]
 }

@@ -1,49 +1,53 @@
 # Changelog
 
-## [Unreleased]
+## Unreleased
 
-## [3.2.1]
-### Updated
+- Added nyc, husky, lint-staged, eslint and prettier dev dependencies
+
+## 3.2.1
+
 - Improved TypeScript definitions
 
-## [3.2.0]
-### Updated
+## 3.2.0
+
 - TypeScript definitions to include test harness report
 - Throw a nicer error when a suite is intialised with somethingn other than an instance of Testable
 
-## [3.1.0]
-### Added
+## 3.1.0
+
 - Added locals for sharing state between tests
 
-## [3.0.10]
-### Changed
+## 3.0.10
+
 - Improved readme
 
-## [3.0.9]
-### Changed
+## 3.0.9
+
 - Improved readme
 
-## [3.0.8]
+## 3.0.8
+
 ### Fixed
+
 - Pattern option should not have been path.resolved
 
-## [3.0.7]
-### Added
+## 3.0.7
+
 - Launch script documentation
 
-### Changed
 - Use bundled launch script
 
-## [3.0.6]
-### Added
+## 3.0.6
+
 - Launch script (work in progress)
 
-## [3.0.5]
+## 3.0.5
+
 ### Fixed
+
 - Throwing a non-error from tests breaks various reporters
 - Replaced deprecated assert.equal with assert.strictEqual
 - SpecReporter colours could not be disabled
 
-### Added
 - Discover tripitaka badge
 - SpecReporter tests

@@ -3,17 +3,14 @@ const { run, fail, pass, passingTest, failingTest, skippedTest, exclusiveTest } 
 const { Suite, Test, Hook, describe, it } = require('..');
 
 describe('Suite', () => {
-
   describe('Discover', () => {
-
-    it('should report missing directory', async() => {
+    it('should report missing directory', async () => {
       const suite = new Suite('Suite', { directory: '' });
       assert.throws(() => suite.discover(), /Error: directory is a required option/);
     });
   });
 
   describe('Normal', () => {
-
     it('should report successful tests', async () => {
       const test1 = passingTest();
       const test2 = passingTest();
@@ -49,7 +46,6 @@ describe('Suite', () => {
   });
 
   describe('Timeout', () => {
-
     it('should timeout slow tests (suite configuration)', async () => {
       const test = new Test('Test', pass({ delay: 200 }));
       const suite = new Suite('Suite', { timeout: 100 }).add(test);
@@ -62,7 +58,6 @@ describe('Suite', () => {
   });
 
   describe('Skip', () => {
-
     it('should skip tests (run configuration)', async () => {
       const test1 = passingTest();
       const test2 = failingTest();
@@ -150,7 +145,6 @@ describe('Suite', () => {
   });
 
   describe('Abort', () => {
-
     it('should abort early (run configuration)', async () => {
       const test1 = failingTest();
       const test2 = passingTest();
@@ -173,7 +167,6 @@ describe('Suite', () => {
   });
 
   describe('Exclusive', () => {
-
     it('should only run exclusive tests (test configuration)', async () => {
       const test1 = passingTest();
       const test2 = exclusiveTest();
@@ -258,11 +251,9 @@ describe('Suite', () => {
 
       assert.stats(report.stats, { tests: 1, skipped: 1 });
     });
-
   });
 
   describe('Nesting', () => {
-
     it('should support nesting', async () => {
       const test1 = passingTest('Test 1');
       const test2 = failingTest('Test 2');
@@ -355,7 +346,6 @@ describe('Suite', () => {
   });
 
   describe('Points', () => {
-
     it('should assign test points to tests in a suite', async () => {
       const test1 = new Test('Test 1', pass());
       const test2 = new Test('Test 2', pass());
@@ -417,5 +407,4 @@ describe('Suite', () => {
       assert.strictEqual(report.children[1].point, 2);
     });
   });
-
 });

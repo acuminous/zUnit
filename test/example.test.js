@@ -3,7 +3,6 @@ const path = require('path');
 const { Harness, Suite } = require('..');
 
 describe('Example', () => {
-
   it('should run the example project', async () => {
     const directory = path.join(process.cwd(), 'example', 'test');
     const suite = new Suite('Example').discover({ directory });
@@ -13,5 +12,4 @@ describe('Example', () => {
 
     assert.stats(report.stats, { tests: 28, passed: 11, failed: 1, skipped: 16 });
   });
-
 });

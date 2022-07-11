@@ -3,9 +3,7 @@ const { run, pass, fail, skip, timeout } = require('./support/helpers');
 const { Harness, Test, GraphReporter } = require('..');
 
 describe('Test', () => {
-
   describe('Async', () => {
-
     it('should execute a passing async function', async () => {
       const test = new Test('Test', pass());
 
@@ -25,7 +23,6 @@ describe('Test', () => {
   });
 
   describe('Sync', () => {
-
     it('should execute a passing sync function', async () => {
       const test = new Test('Test', () => {
         assert.ok(true);
@@ -60,7 +57,6 @@ describe('Test', () => {
   });
 
   describe('Callbacks', () => {
-
     it('should execute passing sync function (done)', async () => {
       const test = new Test('Test', (t, done) => {
         done();
@@ -152,7 +148,6 @@ describe('Test', () => {
   });
 
   describe('Duration', () => {
-
     it('should calculate the duration for passing tests', async () => {
       const test = new Test('Test', pass({ delay: 100 }));
 
@@ -171,7 +166,6 @@ describe('Test', () => {
   });
 
   describe('Timeout', () => {
-
     it('should timeout slow asynchronous tests (runtime configuration)', async () => {
       const test = new Test('Test', pass({ delay: 200 }));
 
@@ -260,7 +254,6 @@ describe('Test', () => {
   });
 
   describe('Incomplete Tests', () => {
-
     it('should timeout unresolved promises', async () => {
       const test = new Test('Test', timeout(), { timeout: 200 });
 
@@ -272,19 +265,16 @@ describe('Test', () => {
 
     it('should timeout unused done', async () => {
       // eslint-disable-next-line no-unused-vars
-      const test = new Test('Test', async (t, done) => {
-      }, { timeout: 100 });
+      const test = new Test('Test', async (t, done) => {}, { timeout: 100 });
 
       const report = await run(test);
 
       assert.stats(report.stats, { tests: 1, failed: 1 });
       assert.strictEqual(report.errors[0].message, 'Timed out after 100ms');
     });
-
   });
 
   describe('Points', () => {
-
     it('should assign a test point to an individual test', async () => {
       const test = new Test('Test', pass());
 
@@ -294,5 +284,4 @@ describe('Test', () => {
       assert.strictEqual(report.point, 1);
     });
   });
-
 });

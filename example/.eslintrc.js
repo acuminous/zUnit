@@ -9,5 +9,5 @@ module.exports = {
     after: 'readonly',
     afterEach: 'readonly',
     include: 'readonly',
-  }
+  },
 };
