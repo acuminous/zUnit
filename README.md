@@ -17,16 +17,16 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Testing](#testing)
-   - [Callbacks](#callbacks)
-   - [Pending / Skipping Tests](#pending--skipping-tests)
-   - [Exclusive Tests](#exclusive-tests)
-   - [Bailing Out / Failing Fast / Aborting Early](#bailing-out--failing-fast--aborting-early)
-   - [Lifecycle Hooks](#lifecycle-hooks)
-   - [Locals](#locals)
-   - [API](#api)
+  - [Callbacks](#callbacks)
+  - [Pending / Skipping Tests](#pending--skipping-tests)
+  - [Exclusive Tests](#exclusive-tests)
+  - [Bailing Out / Failing Fast / Aborting Early](#bailing-out--failing-fast--aborting-early)
+  - [Lifecycle Hooks](#lifecycle-hooks)
+  - [Locals](#locals)
+  - [API](#api)
 - [Launch Scripts](#launch-scripts)
-   - [Automatically Discovering Test Suites](#automatically-discovering-test-suites)
-   - [Manaully Defining Test Suites(#manually-defining-test-suites)
+  - [Automatically Discovering Test Suites](#automatically-discovering-test-suites)
+  - [Manaully Defining Test Suites(#manually-defining-test-suites)
 - [Reporters](#reporters)
 - [Tips](#tips)
 - [Credits](#credits)
@@ -137,7 +137,7 @@ You can configure zUnit's launch script by:
 | name      | String           | `package.name`         | The top level suite name.                                                                              |
 | directory | String           | `path.resolve('test')` | The initial directory to recurse when requiring tests.                                                 |
 | pattern   | String or RegExp | `/^[\w-]+\.test\.js$/` | The regular expression to use for matching test files. Omit the start and end slashes when using json  |
-| require   | Array            | `[]`                   | A list of CommonJS or ECMAScript modules to load before discovering tests.                                                 |
+| require   | Array            | `[]`                   | A list of CommonJS or ECMAScript modules to load before discovering tests.                             |
 | pollute   | Boolean          | `false`                | Control whether to pollute the global namespace with test functions so you don't have to require them. |
 | exit      | Boolean          | `false`                | For the node process to exit after tests are complete.                                                 |
 
@@ -178,6 +178,7 @@ You can define pending tests / skip tests in the following ways...
    ```
 
 1. Passing an option to `it`
+   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
@@ -188,6 +189,8 @@ You can define pending tests / skip tests in the following ways...
      }, { skip: true, reason: 'Optional Reason' });
    });
    ```
+
+   <!-- prettier-ignore-end -->
 
 1. Using `xdescribe`
 
@@ -202,6 +205,7 @@ You can define pending tests / skip tests in the following ways...
    ```
 
 1. Passing an option to `describe`
+   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
@@ -212,6 +216,8 @@ You can define pending tests / skip tests in the following ways...
      });
    }, { skip: true, reason: 'Optional Reason' });
    ```
+
+   <!-- prettier-ignore-end -->
 
 1. Defining a test without a test function
 
@@ -284,20 +290,19 @@ You can selectively run tests or suites as follows...
    ```
 
 1. Passing an option to `it`
+   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
 
    describe('My Suite', () => {
-     it(
-       'should do something wonderful',
-       async () => {
-         // ...
-       },
-       { exclusive: true }
-     );
+     it('should do something wonderful', async () => {
+       // ...
+     }, { exclusive: true });
    });
    ```
+
+   <!-- prettier-ignore-end -->
 
 1. Using `odescribe`
 
@@ -312,20 +317,19 @@ You can selectively run tests or suites as follows...
    ```
 
 1. Passing an option to `describe` (affects all tests in the enclosing and included suites)
+   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
 
-   describe(
-     'My Suite',
-     () => {
-       it('should do something wonderful', async () => {
-         // ...
-       });
-     },
-     { exclusive: true }
-   );
+   describe('My Suite', () => {
+     it('should do something wonderful', async () => {
+       // ...
+     });
+   }, { exclusive: true });
    ```
+
+   <!-- prettier-ignore-end -->
 
 ### Timeouts
 
@@ -340,6 +344,7 @@ Tests default to timing out after 5 seconds. You can override this as follows...
    ```
 
 1. Passing a timeout option to `it`
+   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
@@ -351,7 +356,10 @@ Tests default to timing out after 5 seconds. You can override this as follows...
    });
    ```
 
+   <!-- prettier-ignore-end -->
+
 1. Passing a timeout option to `describe` (affects all tests in the suite)
+   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
@@ -362,6 +370,8 @@ Tests default to timing out after 5 seconds. You can override this as follows...
      });
    }, { timeout: 10000 });
    ```
+
+   <!-- prettier-ignore-end -->
 
 The timeout includes the duration of beforeEach/afterEach [lifecycle hooks](#lifecycle-hooks), although these may also have their own timeouts.
 
@@ -378,6 +388,7 @@ Test suites continue running tests after failure by default. You can override th
    ```
 
 1. Passing an option to `describe`
+   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
@@ -388,6 +399,8 @@ Test suites continue running tests after failure by default. You can override th
      });
    }, { abort: true });
    ```
+
+    <!-- prettier-ignore-end -->
 
 ### Lifecycle Hooks
 
@@ -658,16 +671,16 @@ The launch script can automatically discover test suites using the `discover` fu
 ```js
 new Suite('zUnit').discover().then((suite) => {
   const harness = new Harness(suite);
-  // ...  
+  // ...
 });
 ```
 
 By default, the discover function will recursively descended into the 'test' directory looking files which end in '.test.js', '.test.cjs' and '.test.mjs'. You can override this behaviour through the following options.
 
 | Name      | Type                 | Default                | Notes                                                                                                                                   |
-| --------- | -------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| --------- | -------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------ |
 | directory | String               | `path.resolve('test')` | The initial directory to recurse when requiring tests.                                                                                  |
-| pattern   | Regular Expression   | `/^[\w-]+\.test\.(?:js|cjs|mjs)$/` | The regular expression to use for matching test files.                                                                                  |
+| pattern   | Regular Expression   | `/^[\w-]+\.test\.(?:js | cjs                                                                                                                                     | mjs)$/` | The regular expression to use for matching test files. |
 | filter    | Function() : Boolean |                        | Indicates whether a directory should be recursed or a file should be included. Override this if you have directories you want to ignore |
 
 For example:
