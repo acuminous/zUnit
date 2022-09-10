@@ -28,15 +28,15 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
 
 ## About
 
-zUnit is a zero production dependency, non-polluting<sup>[1](#1-non-polluting)</sup>, low magic<sup>[2](#2-low-magic)</sup>, test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning. While zUnit does lack some of the advanced features, such as concurrent tests, automatic retries and true file globbing<sup>[3](#3-advanced-features)</sup>, most of the day-to-day features are present.
+zUnit is a zero dependency, non-polluting<sup>[2](#1-non-polluting)</sup> test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning. While zUnit does lack some of the advanced features, such as concurrent tests, automatic retries and true file globbing<sup>[3](#3-advanced-features)</sup>, most of the day-to-day features are present.
 
-##### 1 non-polluting
+##### 1 zero-dependency
+
+zUnit has no production dependencies, but does depend on a few development dependencies such as eslint and prettier.
+
+##### 2 non-polluting
 
 You can add test functions (describe, it, etc) to the global namespace via the [pollute](#config) config option.
-
-##### 2 low-magic
-
-The only &#x2728;magical&#x2728; code in zUnit is how it automatically exports suites without using `module.exports` by inspecting the call stack.
 
 ##### 3 advanced-features
 
@@ -59,7 +59,7 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
 1. Create a test suite, e.g. `test/user-db.test.js`
 
    ```js
-   const { describe, it, xit, beforeEach } = require('zunit'); // Can be made global
+   const { describe, it, xit, beforeEach } = require('zunit');
    const assert = require('assert');
    const userDb = require('../lib/user-db');
 
@@ -144,17 +144,18 @@ If the packaged [launch script](<[script](https://github.com/acuminous/cryptus/b
 const { EOL } = require('os');
 const { Harness, Suite, TapReporter } = require('zunit');
 
-const suite = new Suite('zUnit').discover();
-const harness = new Harness(suite);
-const reporter = new TapReporter();
+new Suite('zUnit').discover().then((suite) => {
+  const harness = new Harness(suite);
+  const reporter = new TapReporter();
 
-harness.run(reporter).then((report) => {
-  if (report.failed) process.exit(1);
-  if (report.incomplete) {
-    console.log(`One or more tests were not run!${EOL}`);
-    process.exit(2);
-  }
-  process.exit();
+  harness.run(reporter).then((report) => {
+    if (report.failed) process.exit(1);
+    if (report.incomplete) {
+      console.log(`One or more tests were not run!${EOL}`);
+      process.exit(2);
+    }
+    process.exit();
+  });
 });
 ```
 
@@ -163,8 +164,9 @@ harness.run(reporter).then((report) => {
 zUnit suites can automatically discover child test suites by invoking their `discover` function. e.g.
 
 ```js
-const suite = new Suite('zUnit').discover();
-const harness = new Harness(suite);
+new Suite('zUnit').discover().then((suite) => {
+  const harness = new Harness(suite);
+});
 ```
 
 By default, the discover function will recursively descended into the 'test' directory looking files which end in '.test.js'. You can override this behaviour through the following options.
@@ -178,13 +180,26 @@ By default, the discover function will recursively descended into the 'test' dir
 For example:
 
 ```js
-const suite = new Suite('zUnit').discover({ directory: __dirname, pattern: /^.+\.test.(?:js|jsx)$/ });
-const harness = new Harness(suite);
+new Suite('zUnit').discover({ directory: __dirname, pattern: /^.+\.test.(?:js|jsx)$/ }).then((suite) => {
+  const harness = new Harness(suite);
+});
 ```
 
 ### Composing Test Suites Explicitly
 
-Instead of automatically discovering test suites, you can compose them explicitly as follows...
+You can compose test suites explicitly by exporting your test modules and including them...
+
+```js
+module.export = describe('User DB', () => {
+  // ...
+});
+```
+
+```js
+module.export = describe('Product DB tests', () => {
+  // ...
+});
+```
 
 ```js
 const userDbTests = require('./userDbTests');
@@ -195,7 +210,7 @@ describe('All Tests', () => {
 });
 ```
 
-You may then wish to change your launch script to be something like this...
+You can then selectively run test suites by updating your launch script to be something like this...
 
 ```js
 const path = require('path');

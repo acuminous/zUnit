@@ -5,7 +5,7 @@ const { Harness, Suite } = require('..');
 describe('Example', () => {
   it('should run the example project', async () => {
     const directory = path.join(process.cwd(), 'example', 'test');
-    const suite = new Suite('Example').discover({ directory });
+    const suite = await new Suite('Example').discover({ directory });
     const harness = new Harness(suite);
 
     const report = await harness.run();

@@ -6,7 +6,7 @@ describe('Suite', () => {
   describe('Discover', () => {
     it('should report missing directory', async () => {
       const suite = new Suite('Suite', { directory: '' });
-      assert.throws(() => suite.discover(), /Error: directory is a required option/);
+      assert.rejects(() => suite.discover(), /Error: directory is a required option/);
     });
   });
 

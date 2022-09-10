@@ -213,7 +213,7 @@ export class Suite extends Testable {
       pattern: RegExp;
       filter: (str: string) => boolean;
     }>
-  ): Testable;
+  ): Promise<Suite>;
 
   hasExclusiveTests(): boolean;
 

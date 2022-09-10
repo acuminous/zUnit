@@ -15,19 +15,20 @@ const options = {};
 if (config.directory) Object.assign(options, { directory: path.resolve(config.directory) });
 if (config.pattern) Object.assign(options, { pattern: new RegExp(config.pattern) });
 
-const suite = new Suite(config.name).discover(options);
-const harness = new Harness(suite);
+new Suite(config.name).discover(options).then((suite) => {
+  const harness = new Harness(suite);
 
-const interactive = String(process.env.CI).toLowerCase() !== 'true';
-const reporter = new SpecReporter({ colours: interactive });
+  const interactive = String(process.env.CI).toLowerCase() !== 'true';
+  const reporter = new SpecReporter({ colours: interactive });
 
-harness.run(reporter).then((report) => {
-  if (report.failed) process.exit(1);
-  if (report.incomplete) {
-    console.log(`One or more tests were not run!${EOL}`);
-    process.exit(2);
-  }
-  if (config.exit) process.exit();
+  harness.run(reporter).then((report) => {
+    if (report.failed) process.exit(1);
+    if (report.incomplete) {
+      console.log(`One or more tests were not run!${EOL}`);
+      process.exit(2);
+    }
+    if (config.exit) process.exit();
+  });
 });
 
 function loadConfigFromSpecifiedLocation(configPath) {
