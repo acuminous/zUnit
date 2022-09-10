@@ -18,7 +18,7 @@ describe('Module Loader', () => {
     await assert.rejects(
       () => load('CommonJS.unloadable.cjs'),
       (err) => {
-        assert.match(err.message, /Module not found in .*\/CommonJS.unloadable.cjs. Did you forget to export it\?/);
+        assert.match(err.message, /No zUnit suite or test found in .*\/CommonJS.unloadable.cjs. Did you forget to export one\?/);
         return true;
       }
     );
@@ -38,7 +38,7 @@ describe('Module Loader', () => {
     await assert.rejects(
       () => load('ECMAScript.unloadable.mjs'),
       (err) => {
-        assert.match(err.message, /Module not found in .*\/ECMAScript.unloadable.mjs. Did you forget to export it\?/);
+        assert.match(err.message, /No zUnit suite or test found in .*\/ECMAScript.unloadable.mjs. Did you forget to export one\?/);
         return true;
       }
     );
