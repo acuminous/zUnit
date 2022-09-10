@@ -23,7 +23,10 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
    - [Bailing Out / Failing Fast / Aborting Early](#bailing-out--failing-fast--aborting-early)
    - [Lifecycle Hooks](#lifecycle-hooks)
    - [Locals](#locals)
+   - [API](#api)
 - [Launch Scripts](#launch-scripts)
+   - [Automatically Discovering Test Suites](#automatically-discovering-test-suites)
+   - [Manaully Defining Test Suites(#manually-defining-test-suites)
 - [Reporters](#reporters)
 - [Tips](#tips)
 - [Credits](#credits)
@@ -627,61 +630,9 @@ describe('Outer Suite', () => {
 
 Nested locals only mask values in upper scopes. They do not replace or delete them.
 
-## Launch Scripts
+### API
 
-If the packaged [launch script](<[script](https://github.com/acuminous/cryptus/blob/master/bin/zUnit.js)>) doesn't meet your needs you can create your own. For example, you may want to use a different reporter...
-
-```js
-const { EOL } = require('os');
-const { Harness, Suite, TapReporter } = require('zunit');
-
-new Suite('zUnit').discover().then((suite) => {
-  const harness = new Harness(suite);
-  const reporter = new TapReporter();
-
-  harness.run(reporter).then((report) => {
-    if (report.failed) process.exit(1);
-    if (report.incomplete) {
-      console.log(`One or more tests were not run!${EOL}`);
-      process.exit(2);
-    }
-    process.exit();
-  });
-});
-```
-
-### Discovering Test Suites
-
-zUnit suites can automatically discover child test suites by invoking their `discover` function. e.g.
-
-```js
-new Suite('zUnit').discover().then((suite) => {
-  const harness = new Harness(suite);
-  // ...  
-});
-```
-
-By default, the discover function will recursively descended into the 'test' directory looking files which end in '.test.js', '.test.cjs' and '.test.mjs'. You can override this behaviour through the following options.
-
-| Name      | Type                 | Default                | Notes                                                                                                                                   |
-| --------- | -------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| directory | String               | `path.resolve('test')` | The initial directory to recurse when requiring tests.                                                                                  |
-| pattern   | Regular Expression   | `/^[\w-]+\.test\.(?:js|cjs|mjs)$/` | The regular expression to use for matching test files.                                                                                  |
-| filter    | Function() : Boolean |                        | Indicates whether a directory should be recursed or a file should be included. Override this if you have directories you want to ignore |
-
-For example:
-
-```js
-const options = { directory: __dirname, pattern: /^\w+Test.(?:js|cjs|mjs)$/ };
-new Suite('zUnit').discover(options).then((suite) => {
-  const harness = new Harness(suite);
-  // ...
-});
-```
-
-### Manually defined test suites
-
-There's no need to use `describe` and `it` if you prefer not to. You can just as easily create test suites as follows...
+There's no need to use `describe` and `it` if you prefer not to. You can just as easily create test suites programmatically using the API...
 
 ```js
 const assert = require('assert');
@@ -708,6 +659,85 @@ Both the `Suite` and `Test` constructors accept an optional `options` object whi
 ```js
 const suite = new Suite('Test Suite', { abort: true, skip: true });
 const test = new Test('Test 1', { exclusive: true });
+```
+
+## Launch Scripts
+
+If the packaged [launch script](<[script](https://github.com/acuminous/cryptus/blob/master/bin/zUnit.js)>) doesn't meet your needs you can create your own. For example, you may want to use a different reporter...
+
+```js
+const { EOL } = require('os');
+const { Harness, Suite, TapReporter } = require('zunit');
+
+new Suite('zUnit').discover().then((suite) => {
+  const harness = new Harness(suite);
+  const reporter = new TapReporter();
+
+  harness.run(reporter).then((report) => {
+    if (report.failed) process.exit(1);
+    if (report.incomplete) {
+      console.log(`One or more tests were not run!${EOL}`);
+      process.exit(2);
+    }
+    process.exit();
+  });
+});
+```
+
+### Automatically Discovering Test Suites
+
+The launch script can automatically discover test suites using the `discover` function. e.g.
+
+```js
+new Suite('zUnit').discover().then((suite) => {
+  const harness = new Harness(suite);
+  // ...  
+});
+```
+
+By default, the discover function will recursively descended into the 'test' directory looking files which end in '.test.js', '.test.cjs' and '.test.mjs'. You can override this behaviour through the following options.
+
+| Name      | Type                 | Default                | Notes                                                                                                                                   |
+| --------- | -------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| directory | String               | `path.resolve('test')` | The initial directory to recurse when requiring tests.                                                                                  |
+| pattern   | Regular Expression   | `/^[\w-]+\.test\.(?:js|cjs|mjs)$/` | The regular expression to use for matching test files.                                                                                  |
+| filter    | Function() : Boolean |                        | Indicates whether a directory should be recursed or a file should be included. Override this if you have directories you want to ignore |
+
+For example:
+
+```js
+const options = { directory: __dirname, pattern: /^\w+Test.(?:js|cjs|mjs)$/ };
+new Suite('zUnit').discover(options).then((suite) => {
+  const harness = new Harness(suite);
+  // ...
+});
+```
+
+### Manually Defining Test Suites
+
+The launch script can also manually compose tests suites, but this does necessate that the suites are exported, e.g.
+
+const databaseSuite = require('./database.test.js');
+const apiSuite = require('./api.test.js');
+
+```js
+const suite = new Suite('zUnit')
+ .add(databaseSuite)
+ .add(apiSuite)
+]);
+const harness = new Harness(suite);
+```
+
+```js
+module.exports = describe('Database Suite', () => {
+  // ...
+});
+```
+
+```js
+module.exports = describe('API Suite', () => {
+  // ...
+});
 ```
 
 ## Reporters
