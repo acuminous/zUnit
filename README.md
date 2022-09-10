@@ -178,19 +178,20 @@ You can define pending tests / skip tests in the following ways...
    ```
 
 1. Passing an option to `it`
-   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
 
    describe('My Suite', () => {
-     it('should do something wonderful', async () => {
-       // ...
-     }, { skip: true, reason: 'Optional Reason' });
+     it(
+       'should do something wonderful',
+       async () => {
+         // ...
+       },
+       { skip: true, reason: 'Optional Reason' }
+     );
    });
    ```
-
-   <!-- prettier-ignore-end -->
 
 1. Using `xdescribe`
 
@@ -205,19 +206,20 @@ You can define pending tests / skip tests in the following ways...
    ```
 
 1. Passing an option to `describe`
-   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
 
-   describe('My Suite', () => {
-     it('should do something wonderful', async () => {
-       // ...
-     });
-   }, { skip: true, reason: 'Optional Reason' });
+   describe(
+     'My Suite',
+     () => {
+       it('should do something wonderful', async () => {
+         // ...
+       });
+     },
+     { skip: true, reason: 'Optional Reason' }
+   );
    ```
-
-   <!-- prettier-ignore-end -->
 
 1. Defining a test without a test function
 
@@ -290,19 +292,20 @@ You can selectively run tests or suites as follows...
    ```
 
 1. Passing an option to `it`
-   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
 
    describe('My Suite', () => {
-     it('should do something wonderful', async () => {
-       // ...
-     }, { exclusive: true });
+     it(
+       'should do something wonderful',
+       async () => {
+         // ...
+       },
+       { exclusive: true }
+     );
    });
    ```
-
-   <!-- prettier-ignore-end -->
 
 1. Using `odescribe`
 
@@ -317,19 +320,20 @@ You can selectively run tests or suites as follows...
    ```
 
 1. Passing an option to `describe` (affects all tests in the enclosing and included suites)
-   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
 
-   describe('My Suite', () => {
-     it('should do something wonderful', async () => {
-       // ...
-     });
-   }, { exclusive: true });
+   describe(
+     'My Suite',
+     () => {
+       it('should do something wonderful', async () => {
+         // ...
+       });
+     },
+     { exclusive: true }
+   );
    ```
-
-   <!-- prettier-ignore-end -->
 
 ### Timeouts
 
@@ -344,34 +348,36 @@ Tests default to timing out after 5 seconds. You can override this as follows...
    ```
 
 1. Passing a timeout option to `it`
-   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
 
    describe('My Suite', () => {
-     it('should do something wonderful', async () => {
-       // ...
-     }, { timeout: 10000 });
+     it(
+       'should do something wonderful',
+       async () => {
+         // ...
+       },
+       { timeout: 10000 }
+     );
    });
    ```
 
-   <!-- prettier-ignore-end -->
-
 1. Passing a timeout option to `describe` (affects all tests in the suite)
-   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
 
-   describe('My Suite', () => {
-     it('should do something wonderful', async () => {
-       // ...
-     });
-   }, { timeout: 10000 });
+   describe(
+     'My Suite',
+     () => {
+       it('should do something wonderful', async () => {
+         // ...
+       });
+     },
+     { timeout: 10000 }
+   );
    ```
-
-   <!-- prettier-ignore-end -->
 
 The timeout includes the duration of beforeEach/afterEach [lifecycle hooks](#lifecycle-hooks), although these may also have their own timeouts.
 
@@ -388,19 +394,20 @@ Test suites continue running tests after failure by default. You can override th
    ```
 
 1. Passing an option to `describe`
-   <!-- prettier-ignore-start -->
 
    ```js
    const { describe, it } = require('zunit');
 
-   describe('My Suite', () => {
-     it('should do something wonderful', async () => {
-       // ...
-     });
-   }, { abort: true });
+   describe(
+     'My Suite',
+     () => {
+       it('should do something wonderful', async () => {
+         // ...
+       });
+     },
+     { abort: true }
+   );
    ```
-
-    <!-- prettier-ignore-end -->
 
 ### Lifecycle Hooks
 
