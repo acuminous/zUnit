@@ -16,12 +16,14 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
 - [About](#about)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Callbacks](#callbacks)
-- [Pending / Skipping Tests](#pending--skipping-tests)
-- [Exclusive Tests](#exclusive-tests)
-- [Bailing Out / Failing Fast / Aborting Early](#bailing-out--failing-fast--aborting-early)
-- [Lifecycle Hooks](#lifecycle-hooks)
-- [Locals](#locals)
+- [Testing](#testing)
+   - [Callbacks](#callbacks)
+   - [Pending / Skipping Tests](#pending--skipping-tests)
+   - [Exclusive Tests](#exclusive-tests)
+   - [Bailing Out / Failing Fast / Aborting Early](#bailing-out--failing-fast--aborting-early)
+   - [Lifecycle Hooks](#lifecycle-hooks)
+   - [Locals](#locals)
+- [Launch Scripts](#launch-scripts)
 - [Reporters](#reporters)
 - [Tips](#tips)
 - [Credits](#credits)
@@ -136,103 +138,9 @@ You can configure zUnit's launch script by:
 | pollute   | Boolean          | `false`                | Control whether to pollute the global namespace with test functions so you don't have to require them. |
 | exit      | Boolean          | `false`                | For the node process to exit after tests are complete.                                                 |
 
-## Writing your own launch script
+## Testing
 
-If the packaged [launch script](<[script](https://github.com/acuminous/cryptus/blob/master/bin/zUnit.js)>) doesn't meet your needs you can create your own. For example, you may want to use a different reporter...
-
-```js
-const { EOL } = require('os');
-const { Harness, Suite, TapReporter } = require('zunit');
-
-new Suite('zUnit').discover().then((suite) => {
-  const harness = new Harness(suite);
-  const reporter = new TapReporter();
-
-  harness.run(reporter).then((report) => {
-    if (report.failed) process.exit(1);
-    if (report.incomplete) {
-      console.log(`One or more tests were not run!${EOL}`);
-      process.exit(2);
-    }
-    process.exit();
-  });
-});
-```
-
-### Discovering Test Suites
-
-zUnit suites can automatically discover child test suites by invoking their `discover` function. e.g.
-
-```js
-new Suite('zUnit').discover().then((suite) => {
-  const harness = new Harness(suite);
-});
-```
-
-By default, the discover function will recursively descended into the 'test' directory looking files which end in '.test.js'. You can override this behaviour through the following options.
-
-| Name      | Type                 | Default                | Notes                                                                                                                                   |
-| --------- | -------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| directory | String               | `path.resolve('test')` | The initial directory to recurse when requiring tests.                                                                                  |
-| pattern   | Regular Expression   | `/^[\w-]+\.test\.js$/` | The regular expression to use for matching test files.                                                                                  |
-| filter    | Function() : Boolean |                        | Indicates whether a directory should be recursed or a file should be included. Override this if you have directories you want to ignore |
-
-For example:
-
-```js
-new Suite('zUnit').discover({ directory: __dirname, pattern: /^.+\.test.(?:js|jsx)$/ }).then((suite) => {
-  const harness = new Harness(suite);
-});
-```
-
-### Composing Test Suites Explicitly
-
-You can compose test suites explicitly by exporting your test modules and including them...
-
-```js
-module.export = describe('User DB', () => {
-  // ...
-});
-```
-
-```js
-module.export = describe('Product DB tests', () => {
-  // ...
-});
-```
-
-```js
-const userDbTests = require('./userDbTests');
-const productDbTests = require('./productDbTests');
-
-describe('All Tests', () => {
-  include(userDbTests, productDbTests);
-});
-```
-
-You can then selectively run test suites by updating your launch script to be something like this...
-
-```js
-const path = require('path');
-const { Harness, SpecReporter } = require('zunit');
-
-const filename = path.resolve(__dirname, process.argv[2]);
-const suite = require(filename);
-const harness = new Harness(suite);
-
-const interactive = String(process.env.CI).toLowerCase() !== 'true';
-const reporter = new SpecReporter({ colours: interactive });
-
-harness.run(reporter).then(() => {
-  if (harness.failed) process.exit(1);
-  if (harness.exclusive) {
-    console.log(`Found one or more exclusive tests!`);
-    process.exit(2);
-  }
-});
-```
-
-## Callbacks
+### Callbacks
 
 Sometimes the code under test uses callbacks, making it easier if the test is callback based too. If you define your test functions to take two arguments, the second argument will be passed a callback which you should invoke to signify that the test is done. e.g.
 
@@ -250,7 +158,7 @@ it('should do something wonderful', (test, done) => {
 
 Unlike with mocha, you can make the test function asynchronous, allowing you to use `await` when you have a mixture of callback and promise based code in your test.
 
-## Pending / Skipping Tests
+### Pending / Skipping Tests
 
 You can define pending tests / skip tests in the following ways...
 
@@ -364,7 +272,7 @@ You can define pending tests / skip tests in the following ways...
    });
    ```
 
-## Exclusive Tests
+### Exclusive Tests
 
 You can selectively run tests or suites as follows...
 
@@ -437,7 +345,7 @@ You can selectively run tests or suites as follows...
    );
    ```
 
-## Timeouts
+### Timeouts
 
 Tests default to timing out after 5 seconds. You can override this as follows...
 
@@ -483,7 +391,7 @@ Tests default to timing out after 5 seconds. You can override this as follows...
 
 The timeout includes the duration of beforeEach/afterEach [lifecycle hooks](#lifecycle-hooks), although these may also have their own timeouts.
 
-## Bailing Out / Failing Fast / Aborting Early
+### Bailing Out / Failing Fast / Aborting Early
 
 Test suites continue running tests after failure by default. You can override this in the following ways...
 
@@ -511,7 +419,7 @@ Test suites continue running tests after failure by default. You can override th
    );
    ```
 
-## Lifecycle Hooks
+### Lifecycle Hooks
 
 - before - runs once before the first test in the enclosing and included suites
 - after - runs once after the last test in the enclosing and included suites
@@ -568,7 +476,7 @@ describe('Suite', () => {
 });
 ```
 
-### Reporting Before/After Hook Failures
+#### Reporting Before/After Hook Failures
 
 When a Before hook fails, the tests are not run, and therefore denied opportunity to pass or fail. This means there will be a discrepancy in the stats (i.e. tests != passed + failed). In this case the harness report will be marked as incomplete and failed.
 
@@ -588,7 +496,7 @@ harness.run(reporter).then((report) => {
 });
 ```
 
-### Advanced Usage
+#### Advanced Usage
 
 You can explicitly name hooks by passing a string as the first parameter. You can also skip a suite from a before hook, and a test from a beforeEach hook. e.g.
 
@@ -628,7 +536,7 @@ before(
 
 Timeouts for before/after hooks are independent of test timeouts, but timeouts for beforeEach/afterEach operate within the test's timeout and so must be shorter if they are to be of any use.
 
-## Locals
+### Locals
 
 It is sometimes necessary to initialise a variable in a `before` or `beforeEach` function, which is subsequently used from your tests. The typical approach is as follows...
 
@@ -718,6 +626,89 @@ describe('Outer Suite', () => {
 ```
 
 Nested locals only mask values in upper scopes. They do not replace or delete them.
+
+## Launch Scripts
+
+If the packaged [launch script](<[script](https://github.com/acuminous/cryptus/blob/master/bin/zUnit.js)>) doesn't meet your needs you can create your own. For example, you may want to use a different reporter...
+
+```js
+const { EOL } = require('os');
+const { Harness, Suite, TapReporter } = require('zunit');
+
+new Suite('zUnit').discover().then((suite) => {
+  const harness = new Harness(suite);
+  const reporter = new TapReporter();
+
+  harness.run(reporter).then((report) => {
+    if (report.failed) process.exit(1);
+    if (report.incomplete) {
+      console.log(`One or more tests were not run!${EOL}`);
+      process.exit(2);
+    }
+    process.exit();
+  });
+});
+```
+
+### Discovering Test Suites
+
+zUnit suites can automatically discover child test suites by invoking their `discover` function. e.g.
+
+```js
+new Suite('zUnit').discover().then((suite) => {
+  const harness = new Harness(suite);
+  // ...  
+});
+```
+
+By default, the discover function will recursively descended into the 'test' directory looking files which end in '.test.js', '.test.cjs' and '.test.mjs'. You can override this behaviour through the following options.
+
+| Name      | Type                 | Default                | Notes                                                                                                                                   |
+| --------- | -------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| directory | String               | `path.resolve('test')` | The initial directory to recurse when requiring tests.                                                                                  |
+| pattern   | Regular Expression   | `/^[\w-]+\.test\.(?:js|cjs|mjs)$/` | The regular expression to use for matching test files.                                                                                  |
+| filter    | Function() : Boolean |                        | Indicates whether a directory should be recursed or a file should be included. Override this if you have directories you want to ignore |
+
+For example:
+
+```js
+const options = { directory: __dirname, pattern: /^\w+Test.(?:js|cjs|mjs)$/ };
+new Suite('zUnit').discover(options).then((suite) => {
+  const harness = new Harness(suite);
+  // ...
+});
+```
+
+### Manually defined test suites
+
+There's no need to use `describe` and `it` if you prefer not to. You can just as easily create test suites as follows...
+
+```js
+const assert = require('assert');
+const { Hook, Suite, Test } = require('zunit');
+
+const reset = new Hook('Reset Environment', () => {
+  // ...
+});
+
+const suite = new Suite('Test Suite').beforeEach(reset);
+const test1 = new Test('Test 1', async () => {
+  assert.strictEqual(1, 2);
+});
+const test2 = new Test('Test 2', async () => {
+  assert.strictEqual(1, 2);
+});
+suite.add(test1, test2);
+
+module.exports = suite;
+```
+
+Both the `Suite` and `Test` constructors accept an optional `options` object which can be used for aborting early, skipping tests or making them exclusive. e.g.
+
+```js
+const suite = new Suite('Test Suite', { abort: true, skip: true });
+const test = new Test('Test 1', { exclusive: true });
+```
 
 ## Reporters
 
@@ -885,37 +876,6 @@ ok 2 - Harnesses / should run an individual test
 ### RickReporter
 
 The [Rick](https://www.youtube.com/watch?v=dQw4w9WgXcQ) Reporter is for when you need persistence and integrity.
-
-## Creating suites and tests by hand
-
-There's no need to use `describe` and `it` if you prefer not to. You can just as easily create test suites as follows...
-
-```js
-const assert = require('assert');
-const { Hook, Suite, Test } = require('zunit');
-
-const reset = new Hook('Reset Environment', () => {
-  // ...
-});
-
-const suite = new Suite('Test Suite').beforeEach(reset);
-const test1 = new Test('Test 1', async () => {
-  assert.strictEqual(1, 2);
-});
-const test2 = new Test('Test 2', async () => {
-  assert.strictEqual(1, 2);
-});
-suite.add(test1, test2);
-
-module.exports = suite;
-```
-
-Both the `Suite` and `Test` constructors accept an optional `options` object which can be used for aborting early, skipping tests or making them exclusive. e.g.
-
-```js
-const suite = new Suite('Test Suite', { abort: true, skip: true });
-const test = new Test('Test 1', { exclusive: true });
-```
 
 ## Tips
 
