@@ -183,13 +183,9 @@ You can define pending tests / skip tests in the following ways...
    const { describe, it } = require('zunit');
 
    describe('My Suite', () => {
-     it(
-       'should do something wonderful',
-       async () => {
-         // ...
-       },
-       { skip: true, reason: 'Optional Reason' }
-     );
+     it('should do something wonderful', async () => {
+       // ...
+     }, { skip: true, reason: 'Optional Reason' });
    });
    ```
 
@@ -210,15 +206,11 @@ You can define pending tests / skip tests in the following ways...
    ```js
    const { describe, it } = require('zunit');
 
-   describe(
-     'My Suite',
-     () => {
-       it('should do something wonderful', async () => {
-         // ...
-       });
-     },
-     { skip: true, reason: 'Optional Reason' }
-   );
+   describe('My Suite', () => {
+     it('should do something wonderful', async () => {
+       // ...
+     });
+   }, { skip: true, reason: 'Optional Reason' });
    ```
 
 1. Defining a test without a test function
@@ -278,19 +270,6 @@ You can define pending tests / skip tests in the following ways...
 ### Exclusive Tests
 
 You can selectively run tests or suites as follows...
-
-1. Create a dedicated suite
-
-   ```js
-   const { describe, include } = require('zunit');
-   const homePageTests = require('./frontend/profile-page.test');
-   const settingsPageTests = require('./frontend/settings-page.test');
-   const searchPageTests = require('./frontend/search-page.test');
-
-   describe('Frontend Tests', () => {
-     include(homePageTests, settingsPageTests, searchPageTests);
-   });
-   ```
 
 1. Using `oit`
 
@@ -366,13 +345,9 @@ Tests default to timing out after 5 seconds. You can override this as follows...
    const { describe, it } = require('zunit');
 
    describe('My Suite', () => {
-     it(
-       'should do something wonderful',
-       async () => {
-         // ...
-       },
-       { timeout: 10000 }
-     );
+     it('should do something wonderful', async () => {
+       // ...
+     }, { timeout: 10000 });
    });
    ```
 
@@ -381,15 +356,11 @@ Tests default to timing out after 5 seconds. You can override this as follows...
    ```js
    const { describe, it } = require('zunit');
 
-   describe(
-     'My Suite',
-     () => {
-       it('should do something wonderful', async () => {
-         // ...
-       });
-     },
-     { timeout: 10000 }
-   );
+   describe('My Suite', () => {
+     it('should do something wonderful', async () => {
+       // ...
+     });
+   }, { timeout: 10000 });
    ```
 
 The timeout includes the duration of beforeEach/afterEach [lifecycle hooks](#lifecycle-hooks), although these may also have their own timeouts.
@@ -411,15 +382,11 @@ Test suites continue running tests after failure by default. You can override th
    ```js
    const { describe, it } = require('zunit');
 
-   describe(
-     'My Suite',
-     () => {
-       it('should do something wonderful', async () => {
-         // ...
-       });
-     },
-     { abort: true }
-   );
+   describe('My Suite', () => {
+     it('should do something wonderful', async () => {
+       // ...
+     });
+   }, { abort: true });
    ```
 
 ### Lifecycle Hooks
