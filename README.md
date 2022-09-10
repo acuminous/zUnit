@@ -132,7 +132,7 @@ You can configure zUnit's launch script by:
 | name      | String           | `package.name`         | The top level suite name.                                                                              |
 | directory | String           | `path.resolve('test')` | The initial directory to recurse when requiring tests.                                                 |
 | pattern   | String or RegExp | `/^[\w-]+\.test\.js$/` | The regular expression to use for matching test files. Omit the start and end slashes when using json  |
-| require   | Array            | `[]`                   | A list of modules to require before discovering tests.                                                 |
+| require   | Array            | `[]`                   | A list of mjs or cjs modules to require before discovering tests.                                                 |
 | pollute   | Boolean          | `false`                | Control whether to pollute the global namespace with test functions so you don't have to require them. |
 | exit      | Boolean          | `false`                | For the node process to exit after tests are complete.                                                 |
 
