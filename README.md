@@ -114,20 +114,18 @@ Since writing zUnit I've begun to wonder whether some of Mocha's advanced featur
 Suite.discover() was made asynchronous to support dynmically importing [ECMAScript modules](https://nodejs.org/api/esm.html#modules-ecmascript-modules). If you used a custom [launch script](#launch-scripts) that automatically discovers tests you will need to update it to wait for discover to resolve. Another breaking side-effect of this change is that it is no longer possible to implicitly export test suites. Previously you could require test suites that were defined with the `describe` syntax as follows...
 
 ```js
+describe('Database Tests', () => {
+  // ...
+});
+```
+
+```js
 const databaseTests = require('./databaseTests.test.js');
 
 const allTests = new Suite('All Tests').add(databaseTests);
 ```
 
-even if mySuite.test.js did not explicitly export anything. Now if you manually compose test suites rather than discovering them, they must now be explicitly exported, e.g.
-
-```js
-export default describe('Database Tests', () => {
-  // ...
-});
-```
-
-or
+Now if you manually compose test suites rather than discovering them, they must be explicitly exported, e.g.
 
 ```js
 module.exports = describe('Database Tests', () => {
