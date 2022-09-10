@@ -715,16 +715,13 @@ new Suite('zUnit').discover(options).then((suite) => {
 
 ### Manually Defining Test Suites
 
-The launch script can also manually compose tests suites, but this does necessate that the suites are exported, e.g.
+The launch script can also manually compose tests suites, but this does necessitate that the suites are exported, e.g.
 
+```
 const databaseSuite = require('./database.test.js');
 const apiSuite = require('./api.test.js');
 
-```js
-const suite = new Suite('zUnit')
- .add(databaseSuite)
- .add(apiSuite)
-]);
+const suite = new Suite('zUnit').add(databaseSuite, apiSuite)
 const harness = new Harness(suite);
 ```
 
