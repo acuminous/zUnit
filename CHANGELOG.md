@@ -4,6 +4,7 @@
 
 - Make suite.discover asynchronous
 - Require Node 14 or greater
+- Support cjs and mjs module types
 - Added nyc, husky, lint-staged, eslint and prettier dev dependencies
 
 ## 3.2.1
