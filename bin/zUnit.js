@@ -6,30 +6,32 @@ const fs = require('fs');
 const { Harness, Suite, SpecReporter, syntax } = require('..');
 const pkg = require(path.join(process.cwd(), 'package.json'));
 
-const config = Object.assign({ name: pkg.name, require: [] }, loadConfigFromPackageJson(), loadConfigFromDefaultLocations(), loadConfigFromSpecifiedLocation(process.argv[2]));
+const config = getConfig();
 
-if (config.pollute) Object.entries(syntax).forEach(([keyword, fn]) => (global[keyword] = fn));
-if (config.require) config.require.forEach((modulePath) => require(path.resolve(modulePath)));
+if (config.pollute) exportSyntax();
 
-const options = {};
-if (config.directory) Object.assign(options, { directory: path.resolve(config.directory) });
-if (config.pattern) Object.assign(options, { pattern: new RegExp(config.pattern) });
+loadRequiredModules().then(() => {
+  const options = getDiscoveryOptions();
+  new Suite(config.name).discover(options).then((suite) => {
+    const harness = new Harness(suite);
 
-new Suite(config.name).discover(options).then((suite) => {
-  const harness = new Harness(suite);
+    const interactive = String(process.env.CI).toLowerCase() !== 'true';
+    const reporter = new SpecReporter({ colours: interactive });
 
-  const interactive = String(process.env.CI).toLowerCase() !== 'true';
-  const reporter = new SpecReporter({ colours: interactive });
-
-  harness.run(reporter).then((report) => {
-    if (report.failed) process.exit(1);
-    if (report.incomplete) {
-      console.log(`One or more tests were not run!${EOL}`);
-      process.exit(2);
-    }
-    if (config.exit) process.exit();
+    harness.run(reporter).then((report) => {
+      if (report.failed) process.exit(1);
+      if (report.incomplete) {
+        console.log(`One or more tests were not run!${EOL}`);
+        process.exit(2);
+      }
+      if (config.exit) process.exit();
+    });
   });
 });
+
+function getConfig() {
+  return Object.assign({ name: pkg.name, require: [] }, loadConfigFromPackageJson(), loadConfigFromDefaultLocations(), loadConfigFromSpecifiedLocation(process.argv[2]));
+}
 
 function loadConfigFromSpecifiedLocation(configPath) {
   return configPath && require(path.resolve(configPath));
@@ -46,4 +48,23 @@ function loadConfigFromDefaultLocations() {
 
 function loadConfigFromPackageJson() {
   return pkg.zUnit;
+}
+
+function exportSyntax() {
+  Object.entries(syntax).forEach(([keyword, fn]) => (global[keyword] = fn));
+}
+
+function getDiscoveryOptions() {
+  const options = {};
+  if (config.directory) Object.assign(options, { directory: path.resolve(config.directory) });
+  if (config.pattern) Object.assign(options, { pattern: new RegExp(config.pattern) });
+  return options;
+}
+
+async function loadRequiredModules() {
+  return config.require.reduce(async (p, modulePath) => {
+    await p;
+    return import(path.resolve(modulePath));
+  }, Promise.resolve());
+  // config.require.forEach((modulePath) => require(path.resolve(modulePath)));
 }

@@ -59,8 +59,8 @@
   "zUnit": {
     "pollute": true,
     "require": [
-      "./test/support/assertions",
-      "./test/support/polyfill"
+      "./test/support/assertions.js",
+      "./test/support/polyfill.js"
     ]
   },
   "lint-staged": {
