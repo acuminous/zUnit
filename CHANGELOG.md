@@ -3,6 +3,7 @@
 ## 4.0.0
 
 - Make suite.discover asynchronous
+- Require Node 14 or greater
 - Added nyc, husky, lint-staged, eslint and prettier dev dependencies
 
 ## 3.2.1

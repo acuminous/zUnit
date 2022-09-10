@@ -6,7 +6,7 @@
   },
   "description": "A zero dependency, non-polluting, low magic, test harness for Node.js",
   "engines": {
-    "node": ">=10"
+    "node": ">=14"
   },
   "main": "index.js",
   "types": "index.d.ts",
