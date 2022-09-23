@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.1
+
+- Fix table formatting in README
+- Fix menu in README
+
 ## 4.0.0
 
 - Make suite.discover asynchronous

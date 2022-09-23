@@ -27,7 +27,7 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
   - [API](#api)
 - [Launch Scripts](#launch-scripts)
   - [Automatically Discovering Test Suites](#automatically-discovering-test-suites)
-  - [Manaully Defining Test Suites(#manually-defining-test-suites)
+  - [Manaully Defining Test Suites](#manually-defining-test-suites)
 - [Reporters](#reporters)
 - [Tips](#tips)
 - [Credits](#credits)
