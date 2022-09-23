@@ -711,11 +711,11 @@ new Suite('zUnit').discover().then((suite) => {
 
 By default, the discover function will recursively descended into the 'test' directory looking files which end in '.test.js', '.test.cjs' and '.test.mjs'. You can override this behaviour through the following options.
 
-| Name      | Type                 | Default                | Notes                                                                                                                                   |
-| --------- | -------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------ |
-| directory | String               | `path.resolve('test')` | The initial directory to recurse when requiring tests.                                                                                  |
-| pattern   | Regular Expression   | `/^[\w-]+\.test\.(?:js | cjs                                                                                                                                     | mjs)$/` | The regular expression to use for matching test files. |
-| filter    | Function() : Boolean |                        | Indicates whether a directory should be recursed or a file should be included. Override this if you have directories you want to ignore |
+| Name      | Type                 | Default                              | Notes                                                                                                                                   |
+| --------- | -------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| directory | String               | `path.resolve('test')`               | The initial directory to recurse when requiring tests.                                                                                  |
+| pattern   | Regular Expression   | `/^[\w-]+\.test\.(?:js\|cjs\|mjs)$/` | The regular expression to use for matching test files.                                                                                  |
+| filter    | Function() : Boolean |                                      | Indicates whether a directory should be recursed or a file should be included. Override this if you have directories you want to ignore |
 
 For example:
 
