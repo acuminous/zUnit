@@ -3,6 +3,11 @@ const { run, fail, pass, passingTest, failingTest, skippedTest, exclusiveTest } 
 const { Suite, Test, Hook, describe, it } = require('..');
 
 describe('Suite', () => {
+  it('should be testable', () => {
+    const suite = new Suite('Suite');
+    assert.ok(suite.initialised);
+  });
+
   describe('Discover', () => {
     it('should report missing directory', async () => {
       const suite = new Suite('Suite', { directory: '' });

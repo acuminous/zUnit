@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.2
+
+- Initialised check was failing on zUnit tests imported from another module. Replaced it with an explicit call to testable.initialised
+
 ## 4.0.1
 
 - Fix table formatting in README

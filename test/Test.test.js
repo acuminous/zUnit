@@ -3,6 +3,11 @@ const { run, pass, fail, skip, timeout } = require('./support/helpers');
 const { Harness, Test, GraphReporter } = require('..');
 
 describe('Test', () => {
+  it('should be testable', () => {
+    const test = new Test('Test', pass());
+    assert.ok(test.initialised);
+  });
+
   describe('Async', () => {
     it('should execute a passing async function', async () => {
       const test = new Test('Test', pass());
