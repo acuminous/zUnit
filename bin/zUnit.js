@@ -66,5 +66,4 @@ async function loadRequiredModules() {
     await p;
     return import(path.resolve(modulePath));
   }, Promise.resolve());
-  // config.require.forEach((modulePath) => require(path.resolve(modulePath)));
 }
