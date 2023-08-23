@@ -34,7 +34,7 @@ zUnit = goodbits([tape](https://www.npmjs.com/package/tape)) + goodbits([mocha](
 
 ## About
 
-zUnit is a zero dependency<sup>[1](#1--zero-dependency)</sup>, non-polluting<sup>[2](#2--non-polluting)</sup> test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning. While zUnit does lack some of the advanced features, such as concurrent tests, automatic retries and true file globbing<sup>[3](#3--advanced-features)</sup>, most of the day-to-day features are present.
+zUnit is a zero dependency<sup>[1](#1-zero-dependency)</sup>, non-polluting<sup>[2](#2-non-polluting)</sup> test harness for Node.js that you can execute like any other JavaScript program. I wrote it because [mocha](https://mochajs.org/), my preferred test harness, is the number one culprit for vulnerabilities in my open source projects and I'm tired of updating them just because mocha, or one of its dependencies triggered an audit warning. While zUnit does lack some of the advanced features, such as concurrent tests, automatic retries and true file globbing<sup>[3](#3-advanced-features)</sup>, most of the day-to-day features are present.
 
 ##### 1. zero-dependency
 
